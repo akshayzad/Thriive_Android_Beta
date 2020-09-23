@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/light_background"
+    tools:context="com.thriive.app.HomeActivity">
+    <LinearLayout
+        android:id="@+id/layoutToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/_10dp">
+        <include layout="@layout/layout_light_toolbar"></include>
+
+
+    </LinearLayout>
+
+    <com.thriive.app.utilities.NonSwipeableViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+
+        android:layout_below="@id/layoutToolbar"
+        android:layout_above="@id/space" />
+    <com.thriive.app.utilities.spacenavigation.SpaceNavigationView
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:outlineSpotShadowColor="@color/battleshipGrey"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        app:active_centre_button_icon_color="@null"
+        app:inactive_centre_button_icon_color="@null"
+        app:active_item_color="@color/terracota"
+        app:centre_button_color="@color/whiteTwo"
+        app:space_background_color="@color/space_white"
+        app:centre_button_icon="@drawable/logo"
+        app:inactive_item_color="@null"
+        app:space_item_icon_size="@dimen/space_item_icon_default_size"
+        android:outlineAmbientShadowColor="@color/battleshipGrey"
+        app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
+        app:space_item_text_size="@dimen/_11dp" />
+
+
+</LinearLayout>

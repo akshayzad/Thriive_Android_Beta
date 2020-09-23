@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_background_fragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="@dimen/_30dp"
+            android:layout_height="@dimen/_30dp"
+            android:layout_weight="0"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/_10dp"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_close"></ImageView>
+        <TextView
+            android:id="@+id/label_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_18dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:textAlignment="center"
+            android:padding="@dimen/_10dp"
+            android:textColor="@color/darkGreyBlue"
+            android:text="Choose Date" />
+    </RelativeLayout>
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10dp"></CalendarView>
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/filled_circle_terracota"
+        android:textColor="@color/whiteTwo"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_14dp"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:text="Next"></Button>
+</LinearLayout>

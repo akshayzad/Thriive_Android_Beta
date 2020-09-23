@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "363029609360",
+    "firebase_url": "https://thriive-cd7b7.firebaseio.com",
+    "project_id": "thriive-cd7b7",
+    "storage_bucket": "thriive-cd7b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:363029609360:android:28398dba48fde0bc049115",
+        "android_client_info": {
+          "package_name": "com.thriive.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "363029609360-09mo2j6hmlhvknqp07ugl1iptrb8gnje.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thriive.app",
+            "certificate_hash": "87d1e389db93ddc9fab28b47556b34b1789e51b2"
+          }
+        },
+        {
+          "client_id": "363029609360-8bl6e40cqg0kss5d1a43tr92ogfemm3r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKf6f4pMumakQ-FYKYNy_-x_-jThAzoLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "363029609360-8bl6e40cqg0kss5d1a43tr92ogfemm3r.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "363029609360-frhhf8chvr7lo8m5cm90tbusrprm4l8s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "om.thrive.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_color" format="color"/>
+        <attr name="civ_border_width" format="dimension"/>
+        <attr name="highlightEnable" format="boolean"/>
+        <attr name="highlightColor" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="Pinview">
+        <attr name="pinBackground" format="reference"/>
+        <attr name="pinLength" format="integer"/>
+        <attr name="pinWidth" format="dimension"/>
+        <attr name="pinHeight" format="dimension"/>
+        <attr name="splitWidth" format="dimension"/>
+        <attr name="cursorVisible" format="boolean"/>
+        <attr name="password" format="boolean"/>
+        <attr name="forceKeyboard" format ="boolean"/>
+        <attr name="hint" format="string"/>
+        <attr name="inputType" />
+        <attr name="textSize" format="dimension"/>
+    </declare-styleable>
+    <attr name="inputType" format="enum">
+        <enum name="text" value="0"/>
+        <enum name="number" value="1"/>
+    </attr>
+    <declare-styleable name="RangeSeekBar">
+        <attr name="absoluteMinValue" format="integer|float"/>
+        <attr name="absoluteMaxValue" format="integer|float"/>
+        <!-- the step value -->
+        <attr name="step" format="integer|float"/>
+        <!-- show a single slider -->
+        <attr name="singleThumb" format="boolean"/>
+        <!-- show the labels on the right and left-->
+        <attr name="showLabels" format="boolean"/>
+        <!-- alwaysActive will make the buttons and bar always draw as the activeColor (the default is false) -->
+        <attr name="alwaysActive" format="boolean"/>
+        <!-- show the currently selected value above each thumb (defaults to true) -->
+        <attr name="valuesAboveThumbs" format="boolean"/>
+        <!-- padding on either side on the slider -->
+        <attr name="internalPadding" format="dimension"/>
+        <!-- the height of the bar -->
+        <attr name="barHeight" format="dimension"/>
+        <!-- the color of the bar that is not selected -->
+        <attr name="defaultColor" format="color"/>
+        <!-- the color of the bar that is selected -->
+        <attr name="activeColor" format="color"/>
+        <!-- the color of the text above thumbs -->
+        <attr name="textAboveThumbsColor" format="color"/>
+        <!-- set drawables for thumb handles -->
+        <attr name="thumbNormal" format="reference"/>
+        <attr name="thumbPressed" format="reference"/>
+        <attr name="thumbDisabled" format="reference"/>
+        <!-- thumb shadow specifications -->
+        <attr name="thumbShadow" format="boolean"/>
+        <attr name="thumbShadowColor" format="color"/>
+        <attr name="thumbShadowXOffset" format="dimension"/>
+        <attr name="thumbShadowYOffset" format="dimension"/>
+        <attr name="thumbShadowBlur" format="dimension"/>
+        <!-- to activate the thumbs and texts when the min and max values are the default ones (defaults to false) -->
+        <attr name="activateOnDefaultValues" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="ZoomageView">
+        <attr name="zoomage_zoomable" format="boolean" />
+        <attr name="zoomage_translatable" format="boolean" />
+        <attr name="zoomage_restrictBounds" format="boolean" />
+        <attr name="zoomage_animateOnReset" format="boolean" />
+        <attr name="zoomage_doubleTapToZoom" format="boolean" />
+        <attr name="zoomage_doubleTapToZoomScaleFactor" format="float" />
+        <attr name="zoomage_autoCenter" format="boolean" />
+        <attr name="zoomage_minScale" format="float" />
+        <attr name="zoomage_maxScale" format="float" />
+        <attr name="zoomage_autoResetMode" format="enum">
+            <enum name="UNDER" value="0" />
+            <enum name="OVER" value="1" />
+            <enum name="ALWAYS" value="2" />
+            <enum name="NEVER" value="3" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="ShimmerFrameLayout">
+        <attr name="shimmer_clip_to_children" format="boolean"/>
+        <attr name="shimmer_colored" format="boolean"/>
+        <attr name="shimmer_base_color" format="color"/>
+        <attr name="shimmer_highlight_color" format="color"/>
+        <attr name="shimmer_base_alpha" format="float"/>
+        <attr name="shimmer_highlight_alpha" format="float"/>
+        <attr name="shimmer_auto_start" format="boolean"/>
+        <attr name="shimmer_duration" format="integer"/>
+        <attr name="shimmer_repeat_count" format="integer"/>
+        <attr name="shimmer_repeat_delay" format="integer"/>
+        <attr name="shimmer_repeat_mode" format="enum">
+            <enum name="restart" value="1"/>
+            <enum name="reverse" value="2"/>
+        </attr>
+        <attr name="shimmer_direction" format="enum">
+            <enum name="left_to_right" value="0"/>
+            <enum name="top_to_bottom" value="1"/>
+            <enum name="right_to_left" value="2"/>
+            <enum name="bottom_to_top" value="3"/>
+        </attr>
+        <attr name="shimmer_dropoff" format="float"/>
+        <attr name="shimmer_fixed_width" format="dimension"/>
+        <attr name="shimmer_fixed_height" format="dimension"/>
+        <attr name="shimmer_intensity" format="float"/>
+        <attr name="shimmer_width_ratio" format="float"/>
+        <attr name="shimmer_height_ratio" format="float"/>
+        <attr name="shimmer_shape" format="enum">
+            <enum name="linear" value="0"/>
+            <enum name="radial" value="1"/>
+        </attr>
+        <attr name="shimmer_tilt" format="float"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="CircleProgressbar">
+        <attr name="cpb_progress" format="float"/>
+        <attr name="cpb_backgroundProgressWidth" format="integer"/>
+        <attr name="cpb_foregroundProgressWidth" format="integer"/>
+        <attr name="cpb_backgroundProgressColor" format="color"/>
+        <attr name="cpb_foregroundProgressColor" format="color"/>
+        <attr name="cpb_roundedCorner" format="boolean"/>
+        <attr name="cpb_touchEnabled" format="boolean"/>
+        <attr name="cpb_clockwise" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="ViewPagerIndicator">
+        <!-- Style of the circle indicator. -->
+        <attr name="vpiCirclePageIndicatorStyle" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="CirclePageIndicator">
+        <!-- Whether or not the indicators should be centered. -->
+<!--     //   <attr name="centered" />-->
+        <!-- Color of the filled circle that represents the current page. -->
+        <attr name="fillColor" format="color" />
+        <!-- Color of the filled circles that represents pages. -->
+        <attr name="pageColor" format="color" />
+        <!-- Orientation of the indicator. -->
+        <attr name="android:orientation"/>
+        <!-- Radius of the circles. This is also the spacing between circles. -->
+        <attr name="radius" format="dimension" />
+        <!-- Whether or not the selected indicator snaps to the circles. -->
+        <attr name="snap" format="boolean" />
+        <!-- Color of the open circles. -->
+        <attr name="cstrokeColor" format="color" />
+        <!-- Width of the stroke used to draw the circles. -->
+<!--      //  <attr name="cstrokeWidth" />-->
+        <!-- View background -->
+        <attr name="android:background"/>
+    </declare-styleable>
+
+    <declare-styleable name="CropImageView">
+        <attr name="cropGuidelines">
+            <enum name="off" value="0"/>
+            <enum name="onTouch" value="1"/>
+            <enum name="on" value="2"/>
+        </attr>
+        <attr name="cropScaleType">
+            <enum name="fitCenter" value="0"/>
+            <enum name="center" value="1"/>
+            <enum name="centerCrop" value="2"/>
+            <enum name="centerInside" value="3"/>
+        </attr>
+        <attr name="cropShape">
+            <enum name="rectangle" value="0"/>
+            <enum name="oval" value="1"/>
+        </attr>
+        <attr name="cropAutoZoomEnabled" format="boolean"/>
+        <attr name="cropMaxZoom" format="integer"/>
+        <attr name="cropMultiTouchEnabled" format="boolean"/>
+        <attr name="cropFixAspectRatio" format="boolean"/>
+        <attr name="cropAspectRatioX" format="integer"/>
+        <attr name="cropAspectRatioY" format="integer"/>
+        <attr name="cropInitialCropWindowPaddingRatio" format="float"/>
+        <attr name="cropBorderLineThickness" format="dimension"/>
+        <attr name="cropBorderLineColor" format="color"/>
+        <attr name="cropBorderCornerThickness" format="dimension"/>
+        <attr name="cropBorderCornerOffset" format="dimension"/>
+        <attr name="cropBorderCornerLength" format="dimension"/>
+        <attr name="cropBorderCornerColor" format="color"/>
+        <attr name="cropGuidelinesThickness" format="dimension"/>
+        <attr name="cropGuidelinesColor" format="color"/>
+        <attr name="cropBackgroundColor" format="color"/>
+        <attr name="cropSnapRadius" format="dimension"/>
+        <attr name="cropTouchRadius" format="dimension"/>
+        <attr name="cropSaveBitmapToInstanceState" format="boolean"/>
+        <attr name="cropShowCropOverlay" format="boolean"/>
+        <attr name="cropShowProgressBar" format="boolean"/>
+        <attr name="cropMinCropWindowWidth" format="dimension"/>
+        <attr name="cropMinCropWindowHeight" format="dimension"/>
+        <attr name="cropMinCropResultWidthPX" format="float"/>
+        <attr name="cropMinCropResultHeightPX" format="float"/>
+        <attr name="cropMaxCropResultWidthPX" format="float"/>
+        <attr name="cropMaxCropResultHeightPX" format="float"/>
+        <attr name="cropFlipHorizontally" format="boolean"/>
+        <attr name="cropFlipVertically" format="boolean"/>
+    </declare-styleable>
+
+
+
+
+
+
+
+
+    <attr name="scrollingPagerIndicatorStyle"/>
+
+
+    <declare-styleable name="ScrollingPagerIndicator">
+
+        <attr name="spi_dotColor" format="color"/>
+
+        <attr name="spi_dotSelectedColor" format="color"/>
+
+        <attr name="spi_dotSize" format="dimension"/>
+
+        <attr name="spi_dotSelectedSize" format="dimension"/>
+
+        <attr name="spi_dotMinimumSize" format="dimension"/>
+
+        <attr name="spi_dotSpacing" format="dimension"/>
+
+        <attr name="spi_visibleDotCount" format="integer"/>
+
+        <attr name="spi_visibleDotThreshold" format="integer"/>
+
+        <attr name="spi_looped" format="boolean"/>
+
+
+        <attr name="spi_orientation" format="enum">
+
+            <enum name="horizontal" value="0"/>
+
+            <enum name="vertical" value="1"/>
+
+        </attr>
+
+    </declare-styleable>
+
+    <declare-styleable name="SpaceNavigationView">
+
+    <attr name="space_item_icon_size" format="dimension"/>
+
+    <attr name="space_item_icon_only_size" format="dimension"/>
+
+    <attr name="space_item_text_size" format="dimension"/>
+
+    <attr name="space_background_color" format="color"/>
+
+    <attr name="centre_button_color" format="color"/>
+
+    <attr name="active_item_color" format="color"/>
+
+    <attr name="inactive_item_color" format="color"/>
+
+    <attr name="centre_button_icon" format="reference"/>
+
+    <attr name="active_centre_button_icon_color" format="color"/>
+
+    <attr name="inactive_centre_button_icon_color" format="color"/>
+
+    <attr name="active_centre_button_background_color" format="color"/>
+
+    <attr name="centre_part_linear" format="boolean"/>
+
+</declare-styleable>
+
+</resources>
