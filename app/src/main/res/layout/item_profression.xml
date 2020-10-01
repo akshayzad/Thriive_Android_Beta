@@ -8,7 +8,7 @@
     android:layout_marginLeft="2dp"
     android:layout_marginTop="5dp">
     <TextView
-        android:id="@+id/label_shortlisting"
+        android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
@@ -18,9 +18,9 @@
         android:paddingLeft="@dimen/_10dp"
         android:textAlignment="center"
         android:textColor="@color/slateGrey"
-        android:textSize="@dimen/_12dp"
-        android:fontFamily="@font/roboto_light"
+        android:textSize="@dimen/_11dp"
+        android:fontFamily="@font/roboto_regular"
         android:background="@drawable/outline_circle_gray"
-        android:text="Data Analyst"
+        android:text="Analyst"
         android:layout_gravity="center"></TextView>
 </LinearLayout>

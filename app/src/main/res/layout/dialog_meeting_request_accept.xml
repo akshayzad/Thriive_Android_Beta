@@ -6,13 +6,13 @@
     app:cardCornerRadius="@dimen/_20dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:layout_margin="@dimen/_10dp">
@@ -46,7 +46,7 @@
                     android:text="Meeting request received from" />
 
                 <TextView
-                    android:id="@+id/txt_06"
+                    android:id="@+id/txt_objective"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
@@ -59,7 +59,7 @@
 
 
                 <TextView
-                    android:id="@+id/txt_07"
+                    android:id="@+id/txt_requestor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
@@ -69,12 +69,24 @@
                     android:textColor="#9A9A9A"
                     android:layout_margin="@dimen/_10dp"
                     android:text="Saxxx Kaxxx" />
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/layout_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:flexWrap="wrap"
+                    app:alignItems="center"
+                    app:alignContent="space_between"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"></com.google.android.flexbox.FlexboxLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_expertise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
                 <TextView
                     android:id="@+id/txt_08"
@@ -95,7 +107,7 @@
                     android:layout_gravity="center"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
                 <TextView
-                    android:id="@+id/txt_09"
+                    android:id="@+id/txt_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
@@ -125,7 +137,7 @@
                             android:id="@+id/img_decline"
                             android:layout_width="45dp"
                             android:layout_height="45dp"
-                            android:background="@drawable/ggg"
+                            android:background="@drawable/decline_mr"
                             android:padding="@dimen/_10dp"
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/_5dp"
@@ -157,7 +169,7 @@
                             android:id="@+id/img_accept"
                             android:layout_width="45dp"
                             android:layout_height="45dp"
-                            android:background="@drawable/ggg"
+                            android:background="@drawable/accept_mr"
                             android:layout_margin="@dimen/_5dp"
                             android:layout_gravity="center"
                             android:padding="@dimen/_10dp"></ImageButton>

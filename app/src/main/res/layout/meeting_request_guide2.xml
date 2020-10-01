@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/background_request_meeting_guide">
+    </ImageView>
+
+    <ImageView
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/mr_quick_guide"></ImageView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mr_quide2"
+        android:textColor="@color/darkGreyBlue"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="@dimen/_20dp"
+        android:gravity="center"
+        android:padding="@dimen/_10dp"
+        android:layout_margin="@dimen/_20dp"
+        android:layout_above="@id/layout_dot"></TextView>
+    <LinearLayout
+        android:id="@+id/layout_dot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/_10dp"
+        android:layout_alignParentBottom="true">
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

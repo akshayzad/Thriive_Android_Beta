@@ -36,7 +36,7 @@
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp">
                     <TextView
-                        android:id="@+id/label_name"
+                        android:id="@+id/txt_giverName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
@@ -46,7 +46,7 @@
                         android:textColor="@color/darkGrey"
                         android:text="Ashish Ashraful" />
                     <TextView
-                        android:id="@+id/label_profession"
+                        android:id="@+id/txt_profession"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
@@ -70,7 +70,7 @@
                             android:background="@drawable/ic_watch"
                             android:layout_weight="0"></ImageView>
                         <TextView
-                            android:id="@+id/label_date"
+                            android:id="@+id/txt_dateTime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_regular"
@@ -84,6 +84,7 @@
 
                 </LinearLayout>
                 <com.thriive.app.utilities.CircleImageView
+                    android:id="@+id/img_giver"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_weight="0"
@@ -93,14 +94,26 @@
                     android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_profession"
+                android:id="@+id/rv_tags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_marginTop="1dp"
                 android:layout_marginBottom="3dp"
                 android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"></androidx.recyclerview.widget.RecyclerView>
+                android:layout_marginRight="@dimen/_10dp"
+                ></androidx.recyclerview.widget.RecyclerView>
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layout_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                app:alignItems="stretch"
+                app:alignContent="space_between"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"></com.google.android.flexbox.FlexboxLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

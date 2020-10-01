@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="First Name"
+            android:text="@string/f_name"
             android:fontFamily="@font/roboto_medium"
             android:textSize="@dimen/_14dp"
             android:layout_marginTop="@dimen/_10dp"
@@ -57,10 +57,11 @@
             android:layout_marginBottom="@dimen/_10dp"
             android:layout_marginTop="@dimen/_10dp">
             <EditText
+                android:id="@+id/edt_fName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_10dp"
-                android:hint=""
+                android:hint="@string/f_name"
                 android:textColor="@color/darkGrey"
                 android:fontFamily="@font/roboto_regular"
                 android:textSize="@dimen/_16dp"
@@ -71,7 +72,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lase Name"
+            android:text="@string/l_name"
             android:layout_marginTop="@dimen/_10dp"
             android:fontFamily="@font/roboto_medium"
             android:textSize="@dimen/_14dp"
@@ -88,10 +89,11 @@
             android:layout_marginBottom="@dimen/_10dp"
             android:layout_marginTop="@dimen/_10dp">
             <EditText
+                android:id="@+id/edt_lName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/_10dp"
-                android:hint=""
+                android:hint="@string/l_name"
                 android:textColor="@color/darkGrey"
                 android:textSize="@dimen/_16dp"
                 android:fontFamily="@font/roboto_regular"

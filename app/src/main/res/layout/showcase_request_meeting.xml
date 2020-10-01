@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:gravity="right"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#14070707">
+
+    <TextView
+        android:id="@+id/txt_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_25dp"
+        android:text="Close"
+        android:textColor="@color/whiteTwo"
+        android:textSize="@dimen/_14dp"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:textAllCaps="true"
+        android:fontFamily="@font/roboto_bold"
+        android:textStyle="bold" />
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/card"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        app:cardCornerRadius="@dimen/_10dp"
+        app:cardBackgroundColor="@color/darkSeaGreen"
+        android:layout_margin="@dimen/_5dp"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/titlqe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Select who do you  want to meet with"
+                android:textAlignment="center"
+                android:textColor="@color/whiteTwo"
+                android:textSize="@dimen/_14dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_10dp"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_skip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_margin="@dimen/_5dp"
+                    android:background="@drawable/filled_circle_grey"
+                    android:fontFamily="@font/roboto_bold"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:text="Skip"
+                    android:textColor="@color/battleshipGrey"
+                    android:textSize="@dimen/_14dp"></Button>
+
+
+                <Button
+                    android:id="@+id/btn_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_margin="@dimen/_5dp"
+                    android:background="@drawable/circle_white"
+                    android:fontFamily="@font/roboto_bold"
+                    android:paddingLeft="@dimen/_10dp"
+                    android:paddingRight="@dimen/_10dp"
+                    android:text="Next"
+                    android:textColor="@color/terracota"
+                    android:textSize="@dimen/_14dp"></Button>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

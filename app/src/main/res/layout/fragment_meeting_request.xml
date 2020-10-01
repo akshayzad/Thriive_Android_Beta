@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@drawable/rounded_background_fragment"
     tools:context="com.thriive.app.fragments.MeetingRequestFragment">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/txt_03"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -38,15 +38,17 @@
                 android:textColor="@color/darkGreyBlue"
                 android:text="Meeting Request" />
         </RelativeLayout>
+
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_weight="0">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/_20dp">
-
                 <LinearLayout
                     android:id="@+id/layout_meeting_request"
                     android:layout_width="match_parent"
@@ -72,200 +74,17 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_20dp"
-                        android:layout_marginBottom="@dimen/_20dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_10dp"
                         android:orientation="vertical">
-                        <LinearLayout
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_reason"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_mr1"
-                                android:layout_width="100dp"
-                                android:layout_margin="@dimen/_7dp"
-                                android:layout_height="100dp"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp"
-                                android:layout_weight="1">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:padding="2dp"
-                                        android:textAlignment="viewEnd"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:textSize="@dimen/_13dp"
-                                        android:textColor="@color/darkGrey"
-                                        android:text="Consulting"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_mr2"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp"
-                                android:layout_margin="@dimen/_7dp"
-                                android:layout_weight="1">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:padding="2dp"
-                                        android:text="Partnership"
-                                        android:textAlignment="viewEnd"
-                                        android:textColor="@color/darkGrey"
-                                        android:textSize="@dimen/_13dp"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_mr3"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp"
-                                android:layout_margin="@dimen/_7dp"
-                                android:layout_weight="1">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:padding="2dp"
-                                        android:text="Business Development"
-                                        android:textAlignment="viewEnd"
-                                        android:textColor="@color/darkGrey"
-                                        android:textSize="@dimen/_13dp"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_mr4"
-                                android:layout_width="100dp"
-                                android:layout_margin="@dimen/_7dp"
-                                android:layout_height="100dp"
-                                android:layout_weight="1"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:padding="2dp"
-                                        android:text="Technology Advice"
-                                        android:textAlignment="viewEnd"
-                                        android:textColor="@color/darkGrey"
-                                        android:textSize="@dimen/_13dp"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/card_mr5"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_margin="@dimen/_7dp"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp"
-                                android:layout_weight="1">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:padding="2dp"
-                                        android:text="Hiring"
-                                        android:textAlignment="viewEnd"
-                                        android:textColor="@color/darkGrey"
-                                        android:textSize="@dimen/_13dp"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:visibility="invisible"
-                                app:cardCornerRadius="@dimen/_5dp"
-                                app:cardElevation="1dp"
-                                android:layout_margin="@dimen/_7dp"
-                                android:layout_weight="1">
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent">
-                                    <ImageView
-                                        android:layout_width="match_parent"
-                                        android:src="@drawable/mr1"
-                                        android:scaleType="fitXY"
-                                        android:layout_height="match_parent"></ImageView>
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_alignParentBottom="true"
-                                        android:layout_marginBottom="@dimen/_10dp"
-                                        android:padding="2dp"
-                                        android:textAlignment="center"
-                                        android:fontFamily="@font/roboto_regular"
-                                        android:textSize="@dimen/_12dp"
-                                        android:textColor="@color/darkGrey"
-                                        android:text="Business Guru"></TextView>
-                                </RelativeLayout>
-                            </androidx.cardview.widget.CardView>
-                        </LinearLayout>
+                            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
                     </LinearLayout>
 
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/layout_meeting"
@@ -278,6 +97,7 @@
                         android:fontFamily="@font/roboto_medium"
                         android:textColor="@color/darkGreyBlue"
                         android:textSize="@dimen/_16dp"
+                        android:visibility="gone"
                         android:layout_margin="1dp"
                         android:text="@string/label_meeting_request"></TextView>
                     <TextView
@@ -286,32 +106,118 @@
                         android:fontFamily="@font/roboto_regular"
                         android:textColor="@color/darkGreyBlue"
                         android:textSize="@dimen/_14dp"
+                        android:visibility="gone"
                         android:layout_margin="1dp"
                         android:text="@string/label_meeting_request1"></TextView>
+
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:paddingBottom="@dimen/_5dp"
-                        android:paddingTop="@dimen/_5dp"
-                        android:paddingLeft="@dimen/_10dp"
-                        android:paddingRight="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:layout_marginBottom="@dimen/_5dp"
-                        android:background="@drawable/circle_white"
                         android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/layout_reason"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textColor="@color/terracota"
-                            android:textSize="@dimen/_13dp"
-                            android:layout_marginRight="@dimen/_10dp"
-                            android:text="@string/consulting"></TextView>
-                        <ImageView
-                            android:layout_width="@dimen/_12dp"
-                            android:layout_height="@dimen/_12dp"
-                            android:src="@drawable/ic_edit"></ImageView>
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:paddingBottom="@dimen/_5dp"
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingLeft="@dimen/_10dp"
+                            android:paddingRight="@dimen/_10dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="@drawable/circle_white"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/txt_reason"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="@color/terracota"
+                                android:textSize="@dimen/_13dp"
+                                android:textAlignment="center"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:layout_weight="1"
+                                android:text="@string/consulting"></TextView>
+                            <ImageView
+                                android:layout_width="@dimen/_12dp"
+                                android:layout_height="@dimen/_12dp"
+                                android:layout_weight="0"
+                                android:layout_marginLeft="2dp"
+                                android:src="@drawable/ic_edit"></ImageView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_persona"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:paddingBottom="@dimen/_5dp"
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingLeft="@dimen/_10dp"
+                            android:paddingRight="@dimen/_10dp"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="@drawable/circle_white"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/txt_persona"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="@color/terracota"
+                                android:textSize="@dimen/_13dp"
+                                android:layout_weight="01"
+                                android:textAlignment="center"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:text="string consulting    jdhfjgdjfg fjgfj "></TextView>
+                            <ImageView
+                                android:layout_width="@dimen/_12dp"
+                                android:layout_height="@dimen/_12dp"
+                                android:layout_weight="0"
+                                android:layout_marginRight="2dp"
+                                android:src="@drawable/ic_edit"></ImageView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_domains"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_weight="1"
+                            android:paddingBottom="@dimen/_5dp"
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingLeft="@dimen/_10dp"
+                            android:paddingRight="@dimen/_10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="@drawable/circle_white"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/txt_domains"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="@color/terracota"
+                                android:textSize="@dimen/_13dp"
+                                android:layout_weight="01"
+                                android:textAlignment="center"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:text="string consulting"></TextView>
+                            <ImageView
+                                android:layout_width="@dimen/_12dp"
+                                android:layout_height="@dimen/_12dp"
+                                android:layout_weight="0"
+                                android:layout_marginRight="2dp"
+                                android:src="@drawable/ic_edit"></ImageView>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -344,10 +250,17 @@
                             android:layout_gravity="center"
                             android:textColor="@color/darkGreyBlue"
                             android:text="Expertise" />
+                        <ImageView
+                            android:layout_width="@dimen/_25dp"
+                            android:layout_height="@dimen/_25dp"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_search"></ImageView>
                         <EditText
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/_5dp"
+                            android:visibility="gone"
                             android:textSize="@dimen/_12dp"
                             android:fontFamily="@font/roboto_regular"
                             android:layout_gravity="center"
@@ -372,6 +285,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_marginBottom="3dp"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/label_domain"
@@ -379,14 +293,35 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
                             android:textSize="@dimen/_16dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center"
+                            android:layout_weight="0"
                             android:textColor="@color/darkGreyBlue"
                             android:text="Domain" />
-                        <ImageView
-                            android:layout_width="@dimen/_25dp"
-                            android:layout_height="@dimen/_25dp"
-                            android:layout_marginLeft="@dimen/_10dp"
+                        <EditText
+                            android:id="@+id/edt_domain"
+                            android:layout_width="230dp"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_7dp"
+                            android:textSize="@dimen/_13dp"
+                            android:drawablePadding="@dimen/_5dp"
+                            android:fitsSystemWindows="true"
+                            android:hint="Search Domain"
+                            android:drawableLeft="@drawable/ic_search"
+                            android:textColorHint="@color/darkGreyBlue"
+                            android:fontFamily="@font/roboto_regular"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_search"></ImageView>
+                            android:backgroundTint="#CCFFFFFF"
+                            android:background="@drawable/rectangle_white"
+                            android:layout_marginLeft="@dimen/_5dp"></EditText>
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:layout_marginLeft="@dimen/_20dp"></Switch>
                     </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_domain"
@@ -448,6 +383,7 @@
                             android:layout_width="@dimen/_25dp"
                             android:layout_height="@dimen/_25dp"
                             android:layout_marginLeft="@dimen/_10dp"
+                            android:visibility="invisible"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_search"></ImageView>
                     </LinearLayout>
@@ -549,6 +485,12 @@
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
+    <TextView
+        android:id="@+id/txt_03"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:layout_alignParentBottom="true"></TextView>
 
 <!--    <androidx.cardview.widget.CardView-->
 <!--        android:layout_width="match_parent"-->
@@ -559,4 +501,4 @@
 <!--       -->
 <!--    </androidx.cardview.widget.CardView>-->
 
-</LinearLayout>
+</RelativeLayout>

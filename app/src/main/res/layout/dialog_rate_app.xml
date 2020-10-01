@@ -36,7 +36,7 @@
             android:layout_margin="@dimen/_10dp"
             android:textAlignment="center"
             android:textColor="@color/darkGreyBlue"
-            android:text="Thriive platform" />
+            android:text="@string/rateapptext" />
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:gravity="center"
             android:layout_margin="@dimen/_20dp"
             android:textColor="#A4A5B2"
-            android:text="Thank you! Team Thriive" />
+            android:text="@string/thankyou" />
 
     </LinearLayout>
 

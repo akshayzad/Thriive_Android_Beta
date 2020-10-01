@@ -23,7 +23,7 @@ public class APIClient {
 
         if(apiInterface == null){
             apiInterface = new Retrofit.Builder()
-                    .baseUrl("https://niticode.com/api/default/")
+                    .baseUrl("https://niticode.com/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build().create(APIInterface.class);

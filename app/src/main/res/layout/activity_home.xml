@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,45 +7,75 @@
     android:orientation="vertical"
     android:background="@drawable/light_background"
     tools:context="com.thriive.app.HomeActivity">
+
     <LinearLayout
-        android:id="@+id/layoutToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:layout_marginBottom="@dimen/_10dp">
-        <include layout="@layout/layout_light_toolbar"></include>
-
-
-    </LinearLayout>
-
-    <com.thriive.app.utilities.NonSwipeableViewPager
-        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_above="@id/space"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/layoutToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/_10dp">
+            <include layout="@layout/layout_light_toolbar"></include>
 
-        android:layout_below="@id/layoutToolbar"
-        android:layout_above="@id/space" />
+
+        </LinearLayout>
+
+        <com.thriive.app.utilities.NonSwipeableViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:layout_below="@id/layoutToolbar"
+            android:layout_above="@id/space" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/meeting"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_margin="@dimen/_20dp"
+        android:layout_above="@id/space"></RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/uu"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_weight="0"
+        android:layout_margin="@dimen/_20dp"
+        android:layout_height="wrap_content"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+
     <com.thriive.app.utilities.spacenavigation.SpaceNavigationView
         android:id="@+id/space"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
+        android:elevation="@dimen/_10dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/kprogresshud_spinner"
         android:outlineSpotShadowColor="@color/battleshipGrey"
         android:layout_gravity="bottom"
         android:gravity="bottom"
         app:active_centre_button_icon_color="@null"
         app:inactive_centre_button_icon_color="@null"
         app:active_item_color="@color/terracota"
+
         app:centre_button_color="@color/whiteTwo"
         app:space_background_color="@color/space_white"
         app:centre_button_icon="@drawable/logo"
-        app:inactive_item_color="@null"
-        app:space_item_icon_size="@dimen/space_item_icon_default_size"
+        app:inactive_item_color="@color/pinkishGrey"
+        app:space_item_icon_size="@dimen/_22dp"
         android:outlineAmbientShadowColor="@color/battleshipGrey"
         app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
         app:space_item_text_size="@dimen/_11dp" />
-
-
-</LinearLayout>
+</RelativeLayout>

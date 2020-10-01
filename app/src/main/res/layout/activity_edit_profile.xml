@@ -90,6 +90,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:layout_weight="2"></TextView>
                 <TextView
+                    android:id="@+id/txt_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5dp"
@@ -124,6 +125,7 @@
                     android:fontFamily="@font/roboto_regular"
                     android:layout_weight="0"></TextView>
                 <TextView
+                    android:id="@+id/txt_profession"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5dp"
@@ -358,23 +360,24 @@
                         android:background="@drawable/outline_background_rate"
                         android:text="EdTech"
                         android:layout_gravity="center"></TextView>
+
                     <TextView
                         android:id="@+id/txt_02"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:paddingTop="@dimen/_10dp"
-                        android:paddingBottom="@dimen/_10dp"
-                        android:paddingRight="@dimen/_16dp"
-                        android:paddingLeft="@dimen/_16dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
                         android:layout_margin="@dimen/_5dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/outline_background_rate"
+                        android:fontFamily="@font/roboto_regular"
+                        android:paddingLeft="@dimen/_16dp"
+                        android:paddingTop="@dimen/_10dp"
+                        android:paddingRight="@dimen/_16dp"
+                        android:paddingBottom="@dimen/_10dp"
+                        android:text="Analyst"
                         android:textAlignment="center"
                         android:textColor="@color/darkGrey"
-                        android:textSize="@dimen/_12dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:background="@drawable/outline_background_rate"
-                        android:text="Data Analyst"
-                        android:layout_gravity="center"></TextView>
+                        android:textSize="@dimen/_12dp"></TextView>
                 </LinearLayout>
                 <ImageView
                     android:layout_width="wrap_content"

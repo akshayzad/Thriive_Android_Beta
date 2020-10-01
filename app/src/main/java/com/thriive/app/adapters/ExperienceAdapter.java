@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thriive.app.R;
-import com.thriive.app.models.CommonRequesterPOJO;
+
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class ExperienceAdapter extends RecyclerView.Adapter<ExperienceAdapter.RecyclerAdapterHolder> {
     private Context context;
-    private ArrayList<CommonRequesterPOJO> requesterPOJOArrayList;
+    private ArrayList<String> requesterPOJOArrayList;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_experience)
@@ -28,7 +28,7 @@ public class ExperienceAdapter extends RecyclerView.Adapter<ExperienceAdapter.Re
             ButterKnife.bind(this, itemView);
         }
     }
-    public ExperienceAdapter(Context context, ArrayList<CommonRequesterPOJO> requesterPOJOArrayList){
+    public ExperienceAdapter(Context context, ArrayList<String> requesterPOJOArrayList){
         this.context = context;
         this.requesterPOJOArrayList = requesterPOJOArrayList;
     }
@@ -42,8 +42,8 @@ public class ExperienceAdapter extends RecyclerView.Adapter<ExperienceAdapter.Re
 
     @Override
     public void onBindViewHolder(final ExperienceAdapter.RecyclerAdapterHolder holder,int position) {
-        CommonRequesterPOJO item  = requesterPOJOArrayList.get(position);
-      //  holder.txt_experience.setText(item.getName());
+        String item  = requesterPOJOArrayList.get(position);
+        holder.txt_experience.setText(item);
     }
 
     @Override

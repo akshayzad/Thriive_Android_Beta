@@ -36,5 +36,20 @@
     <string name="rateapp">Rate the app</string>
     <string name="your_availability">Your Availability</string>
     <string name="meeting_preference">Meeting preference</string>
+    <string name="agora_access_token">006ed22bc424c1d49d1af31bcb11d187009IABpItn8QF6UnUVYQrwBFKWkAYOmRCcPFn2TgvO9i9KrbaHYMoUAAAAAEAAShR76xzxsXwEAAQDGPGxf</string>
+    <string name="meeting_request_success">Thank you. \n\nYour meeting is now confirmed.</string>
+    <string name="rate_meeting">Please rate your meeting relevancy?</string>
+    <string name="rate_meeting1">How happy were you with your match?</string>
+    <string name="thankyou">Thank you for your feedback. It helps us improve our platform so we can make sure that every meeting matters.</string>
+    <string name="rateapptext">Please rate your experience with Thriive so far?</string>
+    <string name="meeting_request">Your meeting request has been submitted.\nBusiness-changing meetings start here.</string>
+    <string name="mr_quide1">Thriive platform received your request</string>
+    <string name="mr_quide2">Thriive AI-based people conector is doing the heavy lifting and finding you the best match</string>
+    <string name="mr_guide4">"Thriive sets up a 1:1 match of highly releveant professionals. You should receive a notification soon "</string>
+    <string name="mr_guide3">The AI engine is shortlisting the highly curated people on the platform</string>
+    <string name="f_name">First Name</string>
+    <string name="l_name">Last Name</string>
+    <string name="no_schedule">You don’t have any meetings:</string>
+
 
 </resources>

@@ -5,91 +5,130 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.thriive.app.fragments.MeetingsFragment">
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none">
-        <LinearLayout
+        android:layout_marginTop="70dp">
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/_20dp"
-            android:paddingTop="@dimen/_10dp"
-            android:paddingLeft="@dimen/_10dp"
-            android:paddingBottom="@dimen/_10dp"
-            android:paddingRight="@dimen/_10dp">
-            <TextView
-                android:id="@+id/txt_02"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_18dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="@dimen/_30dp"
-                android:textColor="@color/darkGrey"
-                android:text="@string/scheduled" />
-            <TextView
-                android:id="@+id/txt_04"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_14dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="1dp"
-                android:textColor="@color/slateGrey"
-                android:text="Toady, Sept 13" />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_scheduled"
+            android:layout_height="wrap_content"
+
+            android:scrollbars="none">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="true"
-                android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
-            <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
-                android:id="@+id/indicator_schedule"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
-            <TextView
-                android:id="@+id/txt_03"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_18dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:textColor="@color/darkGrey"
-                android:text="@string/requested" />
-            <TextView
-                android:id="@+id/txt_06"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_14dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="1dp"
-                android:textColor="@color/slateGrey"
-                android:text="Tuesday, Sept 3" />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_requested"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="true"
-                android:layout_margin="5dp">
+                android:orientation="vertical"
+                android:paddingTop="@dimen/_10dp"
+                android:paddingLeft="@dimen/_10dp"
+                android:paddingBottom="@dimen/_10dp"
+                android:paddingRight="@dimen/_10dp">
+                <TextView
+                    android:id="@+id/txt_02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_18dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:textColor="@color/darkGrey"
+                    android:text="@string/scheduled" />
+                <TextView
+                    android:id="@+id/txt_04"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_14dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="1dp"
+                    android:textColor="@color/slateGrey"
+                    android:text="Today, Sept 13" />
 
-            </androidx.recyclerview.widget.RecyclerView>
-            <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
-                android:id="@+id/indicator_requster"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
+                <TextView
+                    android:id="@+id/txt_noSchedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_18dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_25dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:textColor="@color/slateGrey"
+                    android:text="No Meetings Available" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_scheduled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
+                <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
+                    android:id="@+id/indicator_schedule"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
+                <TextView
+                    android:id="@+id/txt_03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_18dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:textColor="@color/darkGrey"
+                    android:text="@string/requested" />
+                <TextView
+                    android:id="@+id/txt_06"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_14dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="1dp"
+                    android:textColor="@color/slateGrey"
+                    android:text="Tuesday, Sept 3" />
 
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/txt_noRequest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_18dp"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_25dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:textColor="@color/slateGrey"
+                    android:text="No Request" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_requested"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_margin="5dp">
+
+                </androidx.recyclerview.widget.RecyclerView>
+                <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
+                    android:id="@+id/indicator_requster"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
+
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

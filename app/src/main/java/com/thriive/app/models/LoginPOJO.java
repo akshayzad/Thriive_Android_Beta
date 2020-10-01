@@ -1,4 +1,5 @@
 package com.thriive.app.models;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class LoginPOJO {
         this.returnEntity = returnEntity;
     }
 
-    private class ReturnEntity {
+    public class ReturnEntity {
         @SerializedName("entity_persona_list")
         private List<EntityPersonaList> entityPersonaList = null;
         @SerializedName("entity_id")
@@ -103,6 +104,25 @@ public class LoginPOJO {
         private String rowcode;
         @SerializedName("primary_login_key")
         private String primaryLoginKey;
+        @SerializedName("first_name")
+        private String firstName;
+        @SerializedName("last_name")
+        private String lastName;
+        @SerializedName("invite_code")
+        private String inviteCode;
+        @SerializedName("oauth_token")
+        private String oauthToken;
+        @SerializedName("designation_id")
+        private Integer designationId;
+        @SerializedName("designation_name")
+        private String designationName;
+        @SerializedName("push_token")
+        private String pushToken;
+        @SerializedName("platform_ver")
+        private String platformVer;
+        @SerializedName("voip_token")
+        private String voipToken;
+
 
         public List<EntityPersonaList> getEntityPersonaList() {
             return entityPersonaList;
@@ -367,9 +387,81 @@ public class LoginPOJO {
         public void setPrimaryLoginKey(String primaryLoginKey) {
             this.primaryLoginKey = primaryLoginKey;
         }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getInviteCode() {
+            return inviteCode;
+        }
+
+        public void setInviteCode(String inviteCode) {
+            this.inviteCode = inviteCode;
+        }
+
+        public String getOauthToken() {
+            return oauthToken;
+        }
+
+        public void setOauthToken(String oauthToken) {
+            this.oauthToken = oauthToken;
+        }
+
+        public Integer getDesignationId() {
+            return designationId;
+        }
+
+        public void setDesignationId(Integer designationId) {
+            this.designationId = designationId;
+        }
+
+        public String getDesignationName() {
+            return designationName;
+        }
+
+        public void setDesignationName(String designationName) {
+            this.designationName = designationName;
+        }
+
+        public String getPushToken() {
+            return pushToken;
+        }
+
+        public void setPushToken(String pushToken) {
+            this.pushToken = pushToken;
+        }
+
+        public String getPlatformVer() {
+            return platformVer;
+        }
+
+        public void setPlatformVer(String platformVer) {
+            this.platformVer = platformVer;
+        }
+
+        public String getVoipToken() {
+            return voipToken;
+        }
+
+        public void setVoipToken(String voipToken) {
+            this.voipToken = voipToken;
+        }
     }
 
-    private class EntityPersonaList {
+    public class EntityPersonaList {
         @SerializedName("entity_persona_id")
         private Integer entityPersonaId;
         @SerializedName("entity_persona_name")

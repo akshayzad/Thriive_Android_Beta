@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class ExpertiseAdapter extends RecyclerView.Adapter<ExpertiseAdapter.RecyclerAdapterHolder> {
     private Context context;
-    private ArrayList<CommonRequesterPOJO> requesterPOJOArrayList;
+    private ArrayList<String> requesterPOJOArrayList;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_expertise)
@@ -28,7 +28,7 @@ public class ExpertiseAdapter extends RecyclerView.Adapter<ExpertiseAdapter.Recy
             ButterKnife.bind(this, itemView);
         }
     }
-    public ExpertiseAdapter(Context context, ArrayList<CommonRequesterPOJO> requesterPOJOArrayList){
+    public ExpertiseAdapter(Context context, ArrayList<String> requesterPOJOArrayList){
         this.context = context;
         this.requesterPOJOArrayList = requesterPOJOArrayList;
     }
@@ -42,8 +42,8 @@ public class ExpertiseAdapter extends RecyclerView.Adapter<ExpertiseAdapter.Recy
 
     @Override
     public void onBindViewHolder(final ExpertiseAdapter.RecyclerAdapterHolder holder,int position) {
-        CommonRequesterPOJO item  = requesterPOJOArrayList.get(position);
-        holder.txt_expertise.setText(item.getName());
+        String item  = requesterPOJOArrayList.get(position);
+        holder.txt_expertise.setText(item);
     }
 
     @Override

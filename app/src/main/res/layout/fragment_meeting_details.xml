@@ -82,6 +82,7 @@
                                 android:gravity="center"
                                 android:orientation="horizontal">
                                 <com.thriive.app.utilities.CircleImageView
+                                    android:id="@id/img_user"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:layout_weight="0"
@@ -166,7 +167,7 @@
                                     android:layout_weight="0"></ImageView>
 
                                 <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/rv_expertise"
+                                    android:id="@+id/rv_tags"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -180,6 +181,41 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_margin="@dimen/_5dp">
+
+                        <TextView
+                            android:id="@+id/label_reason"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="@dimen/_16dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_marginRight="@dimen/_10dp"
+                            android:padding="2dp"
+                            android:textColor="@color/darkGreyBlue"
+                            android:text="Purpose of meeting" />
+
+
+                        <TextView
+                            android:id="@+id/txt_reason"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_marginTop="7dp"
+                            android:layout_marginRight="@dimen/_10dp"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:background="@drawable/bg_pinkish_grey"
+                            android:fontFamily="@font/roboto_medium"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/_20dp"
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingRight="@dimen/_20dp"
+                            android:paddingBottom="@dimen/_5dp"
+                            android:text="Meeting for fundraising"
+                            android:textAlignment="center"
+                            android:textColor="@color/darkGrey"
+                            android:textSize="@dimen/_12dp" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -212,6 +248,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_5dp"
                             android:gravity="center"
+                            android:layout_weight="1"
                             android:orientation="horizontal">
                             <ImageView
                                 android:layout_width="@dimen/_20dp"
@@ -232,6 +269,27 @@
                                 android:layout_marginRight="@dimen/_5dp"
                                 android:textColor="@color/slateGreyTwo"
                                 android:text="Aug 24, 2020" />
+                            <LinearLayout
+                                android:id="@+id/layout_avail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_weight="0"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:padding="@dimen/_5dp"
+                                android:backgroundTint="@color/butterscotch"
+                                android:background="@drawable/filled_circle_butterscotch_dark">
+                                <ImageView
+                                    android:layout_width="@dimen/_18dp"
+                                    android:layout_height="@dimen/_18dp"
+                                    android:src="@drawable/ic_clock"
+                                    android:layout_gravity="center"
+                                    android:layout_marginRight="@dimen/_14dp"
+                                    android:layout_marginLeft="@dimen/_14dp"
+                                    ></ImageView>
+                            </LinearLayout>
+
 
                         </LinearLayout>
                         <LinearLayout

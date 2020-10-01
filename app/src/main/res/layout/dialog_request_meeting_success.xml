@@ -18,7 +18,7 @@
             android:layout_marginTop="@dimen/_30dp"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/_10dp"
-            android:src="@drawable/ic_meeting_success"></ImageView>
+            android:src="@drawable/meeting_accept"></ImageView>
         <TextView
             android:id="@+id/label_title"
             android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:textAlignment="center"
             android:textColor="@color/darkGreyBlue"
-            android:text="Meeting request successfully submitted." />
+            android:text="@string/meeting_request" />
 
         <LinearLayout
             android:layout_width="match_parent"

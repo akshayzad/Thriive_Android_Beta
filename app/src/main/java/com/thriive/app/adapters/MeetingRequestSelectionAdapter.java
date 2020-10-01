@@ -39,6 +39,12 @@ public class MeetingRequestSelectionAdapter extends RecyclerView.Adapter<Meeting
         }
     }
 
+    public MeetingRequestSelectionAdapter(Context context, ArrayList<CommonRequesterPOJO> requesterPOJOArrayList) {
+        this.context = context;
+        this.fragment = fragment;
+        this.requesterPOJOArrayList = requesterPOJOArrayList;
+    }
+
     public MeetingRequestSelectionAdapter(Context context, Fragment fragment, ArrayList<CommonRequesterPOJO> requesterPOJOArrayList) {
         this.context = context;
         this.fragment = fragment;

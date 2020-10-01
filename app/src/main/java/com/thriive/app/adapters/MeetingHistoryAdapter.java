@@ -4,12 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.thriive.app.R;
-import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.models.CommonRequesterPOJO;
 
 import java.util.ArrayList;

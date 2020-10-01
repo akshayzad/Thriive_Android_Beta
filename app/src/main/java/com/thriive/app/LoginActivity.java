@@ -1,5 +1,6 @@
 package com.thriive.app;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -9,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -18,6 +20,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
+import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
+import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,6 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.onesignal.OneSignal;
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken;
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress;
 import com.ssw.linkedinmanager.dto.LinkedInUserProfile;
@@ -32,10 +38,15 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse;
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
+import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.Validation;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -72,22 +83,29 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     private KProgressHUD progressHUD;
 
 
-    private String email = "", password = "", login_method = "";
+    private String email = "", password = "", login_method = "", app_ver = "", platform_ver= "", token = "";
     private APIInterface apiInterface;
 
+    private SharedData sharedData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife .bind(this);
 
+        sharedData = new SharedData(getApplicationContext());
+
         apiInterface = APIClient.getApiInterface();
+
+        getOneSignalToken();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
         mGoogleSignInClient.signOut();
+
 
 
         linkedInRequestManager = new LinkedInRequestManager(LoginActivity.this, this,
@@ -128,28 +146,89 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             case R.id.btn_linklined:
 
                 login_method = "linkedin";
-                linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY);
+                LinkedInFromActivityBuilder.getInstance(LoginActivity.this)
+                        .setClientID(CLIENT_ID)
+                        .setClientSecret(CLIENT_SECRET)
+                        .setRedirectURI(REDIRECTION_URL)
+                        .authenticate(100);
+             //   linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY);
              //  signInWithLinkLined();
                 break;
         }
     }
 
+
+
+    private void getOneSignalToken() {
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                if (userId != null) {
+                    token = userId;
+                } else {
+                    getOneSignalToken();
+                }
+            }
+        });
+        Log.d("token","one signal token "+token);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 100 && data != null) {
+            if (resultCode == RESULT_OK) {
+                //Successfully signed in
+                LinkedInUser user = data.getParcelableExtra("social_login");
+
+                //acessing user info
+                Log.i("LinkedInLogin", user.getFirstName());
+                email = user.getEmail();
+                getLogin();
+
+            } else {
+
+                if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_USER_DENIED) {
+                    //Handle : user denied access to account
+
+                } else if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_FAILED) {
+
+                    //Handle : Error in API : see logcat output for details
+                    Log.e("LINKEDIN ERROR", data.getStringExtra("err_message"));
+                }
+            }
+        }
+               // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        else  if (requestCode == GOOGLE_SIGN_IN) {
+                // The Task returned from this call is always completed, no need to attach
+                // a listener.
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInResult(task);
+            }
+
+    }
     private void getLogin() {
         progressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<LoginPOJO> call = apiInterface.login(email, password, login_method);
+        Call<LoginPOJO> call = apiInterface.login(email, password, login_method, BuildConfig.VERSION_NAME,
+                ""+android.os.Build.VERSION.SDK_INT, token, token, "android");
         call.enqueue(new Callback<LoginPOJO>() {
             @Override
             public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {
                 if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
                     LoginPOJO loginPOJO = response.body();
                     progressHUD.dismiss();
                     if (loginPOJO.getOK()) {
+                        Utility.saveLoginData(LoginActivity.this, loginPOJO);
                         Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        sharedData.addBooleanData(SharedData.isLogged, true);
                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.putExtra("intent_type", "FLOW");
                         startActivity(intent);
                         finish();
                     } else {
@@ -177,18 +256,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         startActivityForResult(signInIntent, GOOGLE_SIGN_IN);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // Add this line to your existing onActivityResult() method
-        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-        if (requestCode == GOOGLE_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
+
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -206,6 +274,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     }
 
     private void getData(GoogleSignInAccount acct) {
+        progressHUD.dismiss();
      //   GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
             String personName = acct.getDisplayName();
@@ -214,11 +283,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             email = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-            progressHUD.dismiss();
-            Toast.makeText(this, ""+email, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-            finish();
+            getLogin();
+
         }
     }
 
@@ -264,6 +330,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
     @Override
     public void onGetEmailAddressSuccess(LinkedInEmailAddress linkedInEmailAddress) {
+        email = linkedInEmailAddress.getEmailAddress();
+        getLogin();
         Toast.makeText(this, ""+linkedInEmailAddress.getEmailAddress(), Toast.LENGTH_SHORT).show();
 
     }
