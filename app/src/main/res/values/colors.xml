@@ -27,7 +27,8 @@
     <color name="battleshipGrey">#73737F</color>
     <color name="whiteFour">#E2E2E2</color>
     <color name="whiteThree">#F5F5F5</color>
-<color name="pinkishGreyThree">#D0C8B9</color>
+
+    <color name="pinkishGreyThree">#D0C8B9</color>
     <color name="space_background_color">#757575</color>
     <color name="space_transparent">#00000000</color>
     <color name="space_white">#ffffff</color>

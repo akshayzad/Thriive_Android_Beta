@@ -31,7 +31,7 @@
                 android:layout_weight="1"
                 android:padding="@dimen/_5dp">
                 <TextView
-                    android:id="@+id/label_name"
+                    android:id="@+id/txt_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
@@ -42,7 +42,7 @@
                     android:textColor="@color/darkGrey"
                     android:text="Ashish Ashraful" />
                 <TextView
-                    android:id="@+id/label_date"
+                    android:id="@+id/txt_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
@@ -66,6 +66,7 @@
                     style="@style/Widget.AppCompat.RatingBar.Small"></RatingBar>
             </LinearLayout>
             <com.thriive.app.utilities.CircleImageView
+                android:id="@+id/img_user"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_weight="0"

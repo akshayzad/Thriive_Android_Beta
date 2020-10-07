@@ -65,11 +65,10 @@ public class RequesterListAdapter extends RecyclerView.Adapter<RequesterListAdap
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());
         arrayList.addAll(item.getSubDomainTags());
+        arrayList.addAll(item.getExpertiseTags());
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
-        holder.rv_tags.setLayoutManager(gridLayout );
+        holder.rv_tags.setLayoutManager(gridLayout);
         holder.rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
-
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

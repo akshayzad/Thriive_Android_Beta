@@ -4,9 +4,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
@@ -36,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
                     intent.putExtra("intent_type", "FLOW");
                     startActivity(intent);
                     finishAffinity();
+
                 } else {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
@@ -47,7 +53,23 @@ public class SplashActivity extends AppCompatActivity {
 
 
 
+        //showLongToast(getResources().getString(R.string.call_message));
     }
 
+    private void showLongToast(final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast=Toast.makeText(getApplicationContext(),msg ,Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL,20,20);
+                View view=toast.getView();
+                TextView view1=(TextView)view.findViewById(android.R.id.message);
+                view1.setTextColor(Color.BLACK);
+                view1.setPadding(10,10,10,10);
+                view.setBackgroundResource(R.drawable.rectangle_white);
+                toast.show();
 
+            }
+        });
+    }
 }

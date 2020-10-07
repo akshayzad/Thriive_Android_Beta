@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="@string/crop_image_menu_rotate_left" app:showAsAction="ifRoom" android:visible="false" android:icon="@drawable/cropper_rotate_left" android:id="@+id/crop_image_menu_rotate_left"/>
+
+    <item android:title="@string/crop_image_menu_rotate_right" app:showAsAction="ifRoom" android:icon="@drawable/cropper_rotate_right" android:id="@+id/crop_image_menu_rotate_right"/>
+
+
+    -<item android:title="@string/crop_image_menu_flip" app:showAsAction="ifRoom" android:icon="@drawable/cropper_flip" android:id="@+id/crop_image_menu_flip">
+
+
+    -<menu>
+
+    <item android:title="@string/crop_image_menu_flip_horizontally" android:id="@+id/crop_image_menu_flip_horizontally"/>
+
+    <item android:title="@string/crop_image_menu_flip_vertically" android:id="@+id/crop_image_menu_flip_vertically"/>
+
+</menu>
+
+</item>
+
+    <item android:title="@string/crop_image_menu_crop" app:showAsAction="always" android:id="@+id/crop_image_menu_crop"/>
+</menu>

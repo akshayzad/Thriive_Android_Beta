@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onesignal.OneSignal;
 import com.thriive.app.HomeActivity;
 import com.thriive.app.R;
 import com.thriive.app.adapters.RequestedAdapter;
@@ -28,6 +29,7 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
@@ -67,6 +69,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private static String TAG = HomeFragment.class.getName();
     private KProgressHUD progressHUD;
 
+    private SharedData sharedData;
+    private String UUID;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -88,10 +92,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         loginPOJO  = Utility.getLoginData(getContext());
 
+        sharedData = new SharedData(getActivity());
 
        // getMeetingRequest();
 
       //  getPendingRequest();
+
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+
 
         ArrayList arrayList  = new ArrayList();
         arrayList.add(new CommonMeetingListPOJO().getMeetingList());
@@ -101,7 +109,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //recyclerSchedule.setAdapter(scheduleListAdapter);
 
         loginPOJO = Utility.getLoginData(getContext());
-        txt_name.setText(""+loginPOJO.getReturnEntity().getEntityName());
+        txt_name.setText(""+loginPOJO.getReturnEntity().getFirstName());
 
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
@@ -132,9 +140,15 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Subscribe()
     public void onMessageEvent(EventBusPOJO event) {
         if (event.getEvent() == Utility.MEETING_CANCEL){
-
             onResume();
             //  ((MeetingsFragment()).onResume();
+        }
+
+        if (event.getEvent() == Utility.END_CALL_DIALOG){
+            Toast.makeText(getContext(), "ended", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "event  " +  event.getMeeting_id());
+          //  ((HomeActivity)getActivity()).showMeetingDialog(event.getMeeting_id());
+            //showMeetingDialog();
         }
 
     }
@@ -147,9 +161,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void getMeetingHome() {
-
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+        if (UUID  == null)
+        {
+            UUID = "";
+        }
+        Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
         Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+                loginPOJO.getReturnEntity().getRowcode(),  UUID);
         call.enqueue(new Callback<CommonHomePOJO>() {
             @Override
             public void onResponse(Call<CommonHomePOJO> call, Response<CommonHomePOJO> response) {

@@ -21,7 +21,6 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
-import com.thriive.app.fragments.MeetingAvailabilityFragment;
 import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.fragments.MeetingsFragment;
 import com.thriive.app.models.CommonMeetingListPOJO;
@@ -29,7 +28,7 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
-import com.thriive.app.utilities.showcaseviewlib.shapes.Circle;
+
 
 import java.util.ArrayList;
 
@@ -88,6 +87,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
             arrayList.addAll(item.getGiverDomainTags());
             arrayList.addAll(item.getGiverSubDomainTags());
             holder.txt_giverName.setText(item.getGiverName());
+            sharedData.addStringData(SharedData.CALLING_NAME, item.getGiverName());
             if (item.getGiverDesignationTags().size() > 0){
                 holder.txt_profession.setText(item.getGiverDesignationTags().get(0));
             } else {
@@ -102,6 +102,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
             arrayList.addAll(item.getRequestorDomainTags());
             arrayList.addAll(item.getRequestorSubDomainTags());
             holder.txt_giverName.setText(item.getRequestorName());
+            sharedData.addStringData(SharedData.CALLING_NAME, item.getRequestorName());
             if (item.getRequestorDesignationTags().size() > 0) {
                 holder.txt_profession.setText(item.getRequestorDesignationTags().get(0));
             } else {
@@ -111,46 +112,8 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
                     .load(item.getRequestorPicUrl())
                     .into(holder.img_giver);
         }
-        holder.txt_dateTime.setText(Utility.getMeetingDate(item.getPlanStartTime(), item.getPlanEndTime()));
-
-//        if (item.getGiverDomains().equals("")){
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 5, 5, 5);
-//            valueTV.setLayoutParams(params);
-//            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_regular);
-//            valueTV.setTypeface(typeface);
-//            valueTV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//            valueTV.setTextColor(context.getColor(R.color.slateGrey));
-//            valueTV.setBackground(context.getDrawable(R.drawable.outline_circle_gray));
-//            valueTV.setText(item.getDomainName() + "Analyst");
-//            valueTV.setTextSize(11);
-//            holder.layout_tags.addView(valueTV);
-//
-//        }
-
-//        if (item.getGiverSubDomains().equals("")){
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 5, 5, 5);
-//            valueTV.setLayoutParams(params);
-//            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_regular);
-//            valueTV.setTypeface(typeface);
-//            valueTV.setTextSize(11);
-//            valueTV.setTextColor(context.getColor(R.color.slateGrey));
-//            valueTV.setText(item.getSubDomainName() + "AI");
-//            valueTV.setGravity(View.TEXT_ALIGNMENT_CENTER);
-//            valueTV.setBackground(context.getDrawable(R.drawable.outline_circle_gray));
-//            holder.layout_tags.addView(valueTV);
-//        }
-//        businessProfessionAdapter = new BusinessProfessionAdapter(context, requesterPOJOArrayList);
-
+        holder.txt_dateTime.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
+                Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
 
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout );
@@ -166,17 +129,21 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
               //  (MeetingsFragment).callFragment();
             }
         });
-
+        holder.img_giver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utility.saveMeetingDetailsData(context, item);
+                MeetingDetailsFragment addPhotoBottomDialogFragment =
+                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
+                addPhotoBottomDialogFragment.show(((FragmentActivity) view.getContext()).getSupportFragmentManager(),
+                        "MeetingDetailsFragment");
+                //  (MeetingsFragment).callFragment();
+            }
+        });
         holder.layout_avail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode());
-//                MeetingAvailabilityFragment addPhotoBottomDialogFragment =
-//                        (MeetingAvailabilityFragment) MeetingAvailabilityFragment.newInstance();
-//                addPhotoBottomDialogFragment.show(((FragmentActivity) view.getContext()).getSupportFragmentManager(),
-//                        "MeetingAvailabilityFragment");
-
-                //
             }
         });
 
@@ -186,13 +153,13 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
 
                  ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
 
-                //Intent intent = new Intent(view.getContext(), MeetingJoinActivity.class);
-                //view.getContext().startActivity(intent);
-                //
             }
         });
     }
 
+    public String getDate(int i ){
+       return requesterPOJOArrayList.get(i).getPlanStartTime();
+    }
     @Override
     public int getItemCount() {
         return requesterPOJOArrayList.size();

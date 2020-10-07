@@ -74,11 +74,22 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                     .load(item.getRequestorPicUrl())
                     .into(holder.img_user);
         }
-        holder.labelDate.setText(Utility.getMeetingDate(item.getPlanStartTime(), item.getPlanEndTime()));
+        holder.labelDate.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
+                Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                Utility.saveMeetingDetailsData(context, item);
+                MeetingDetailsFragment addPhotoBottomDialogFragment =
+                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
+                addPhotoBottomDialogFragment.show(((FragmentActivity) view.getContext()).getSupportFragmentManager(),
+                        "add_photo_dialog_fragment");
+            }
+        });
+        holder.img_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Utility.saveMeetingDetailsData(context, item);
                 MeetingDetailsFragment addPhotoBottomDialogFragment =
                         (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();

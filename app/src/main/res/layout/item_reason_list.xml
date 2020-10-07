@@ -10,17 +10,16 @@
     app:cardElevation="1dp"
     android:gravity="center"
     app:cardBackgroundColor="@color/whiteThree"
-    app:cardCornerRadius="@dimen/_5dp"
+    app:cardCornerRadius="@dimen/_10dp"
     android:layout_marginRight="@dimen/_5dp">
 
     <ImageView
         android:id="@+id/image"
-        android:layout_width="50dp"
-        android:src="@drawable/ic_entrepreneur"
+        android:layout_width="match_parent"
+        android:src="@drawable/app_logo"
         android:gravity="center"
-        android:layout_marginTop="-20dp"
         android:layout_gravity="center"
-        android:layout_height="50dp"></ImageView>
+        android:layout_height="match_parent"></ImageView>
 
     <RelativeLayout
         android:id="@+id/layout_select"
@@ -45,6 +44,7 @@
             android:layout_marginRight="@dimen/_10dp"
             android:layout_marginLeft="@dimen/_10dp"
             android:textAlignment="viewEnd"
+            android:visibility="gone"
             android:fontFamily="@font/roboto_regular"
             android:textSize="@dimen/_13dp"
             android:textColor="@color/darkGrey"

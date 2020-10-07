@@ -2,8 +2,8 @@
     <string name="app_name">Thriive</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="label_next_schedule">Your next scheduled</string>
-    <string name="label_requested">You requested</string>
+    <string name="label_next_schedule">Your next scheduled meeting: </string>
+    <string name="label_requested">You\'ve requested: </string>
     <string name="scheduled">Scheduled</string>
     <string name="requested">Requested</string>
     <string name="shortlisting">Shortlisting</string>
@@ -38,7 +38,8 @@
     <string name="meeting_preference">Meeting preference</string>
     <string name="agora_access_token">006ed22bc424c1d49d1af31bcb11d187009IABpItn8QF6UnUVYQrwBFKWkAYOmRCcPFn2TgvO9i9KrbaHYMoUAAAAAEAAShR76xzxsXwEAAQDGPGxf</string>
     <string name="meeting_request_success">Thank you. \n\nYour meeting is now confirmed.</string>
-    <string name="rate_meeting">Please rate your meeting relevancy?</string>
+<!--    <string name="rate_meeting">How relevant was your match with </string>-->
+    <string name="rate_meeting">How relevant was your match </string>
     <string name="rate_meeting1">How happy were you with your match?</string>
     <string name="thankyou">Thank you for your feedback. It helps us improve our platform so we can make sure that every meeting matters.</string>
     <string name="rateapptext">Please rate your experience with Thriive so far?</string>
@@ -50,6 +51,34 @@
     <string name="f_name">First Name</string>
     <string name="l_name">Last Name</string>
     <string name="no_schedule">You don’t have any meetings:</string>
+    <string name="call_message">Your call is going to end in 2 mins.</string>
+    <string name="walk">A quick guided tour to get you started</string>
+    <string name="submitted">Submitted</string>
+    <string name="didnt_get">We didn’t meet</string>
+    <string name="desc_experience">How would you describe your experience?</string>
+    <string name="good_conversion">Good conversation but not relevant to me</string>
+    <string name="not_relevant">Relevant to me but not good conversation</string>
+    <string name="waste_time">A waste of time</string>
+    <string name="great_match">Great match!</string>
+    <string name="tag_expertise">Please select the area of expertise of the Corporate Professional?</string>
+    <string name="tag_domain">Please select the domain of the Corporate Professional?</string>
+    <string name="awaiting">Awaiting Confirmation</string>
+    <string name="tag_camera">New Profile Photo</string>
+    <string name="tag_gallery">Select From Gallery</string>
+    <string name="remove_photo">Remove Profile Photo</string>
+
+    <string name="crop_image_activity_title">Crop Image</string>
+    <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
+    <string name="crop_image_menu_rotate_right">Rotate</string>
+    <string name="crop_image_menu_crop">Crop</string>
+    <string name="crop_image_menu_flip">Flip</string>
+    <string name="crop_image_menu_flip_horizontally">Flip horizontally</string>
+    <string name="crop_image_menu_flip_vertically">Flip vertically</string>
+    <string name="pick_image_intent_chooser_title">Select source</string>
+    <string name="crop_image_activity_no_permissions">Cancelling, required permissions are not granted</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
 
 
 </resources>

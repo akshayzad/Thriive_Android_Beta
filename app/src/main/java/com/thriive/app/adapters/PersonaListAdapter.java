@@ -12,10 +12,12 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.models.PersonaListPOJO;
 import com.thriive.app.models.PersonaListPOJO;
+import com.thriive.app.utilities.Utility;
 
 import java.util.ArrayList;
 
@@ -64,6 +66,11 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
     public void onBindViewHolder(final PersonaListAdapter.RecyclerAdapterHolder holder, int position) {
         PersonaListPOJO item = personaList.get(position);
         holder.txt_reasonName.setText(item.getPersonaName());
+    //    holder.txt_reasonName.setVisibility(View.VISIBLE);
+        Glide.with(context)
+                .load(Utility.UTILITY_URL +"persona_button/"+
+                        item.getRowcode() + ".png" )
+                .into(holder.image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override

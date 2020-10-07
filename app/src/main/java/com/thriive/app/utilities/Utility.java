@@ -27,8 +27,13 @@ import static java.util.Locale.getDefault;
 
 public class Utility {
 
-    public static  int MEETING_REQUEST = 100;
-    public static int MEETING_CANCEL = 200;
+    public static final int MEETING_BOOK = 400 ;
+    public static final int MEETING_REQUEST = 100;
+    public static final int MEETING_CANCEL = 200;
+    public static final int END_CALL_FLAG = 300;
+    public static final int END_CALL_DIALOG = 500;
+
+    public static String UTILITY_URL = "https://niticode.com/";
 
     public static void saveLoginData(Context context, LoginPOJO loginPOJOData){
         SharedPreferences sharedPreferences = context.getSharedPreferences("login_pref", Context.MODE_PRIVATE);
@@ -45,7 +50,18 @@ public class Utility {
         return  gson.fromJson(login, LoginPOJO.class);
     }
 
-
+    public static void clearLogin(Context context){
+        SharedPreferences preferences =context.getSharedPreferences("login_pref",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+    public static void clearMeetingDetails(Context context){
+        SharedPreferences preferences =context.getSharedPreferences("meeting_pref",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 
     public static void saveMeetingDetailsData(Context context, CommonMeetingListPOJO.MeetingListPOJO loginPOJOData){
         SharedPreferences sharedPreferences = context.getSharedPreferences("meeting_pref", Context.MODE_PRIVATE);
@@ -89,7 +105,7 @@ public class Utility {
             String sDate = time_format.format(in_format.parse(date));
             String eDate = time_format.format(in_format.parse(endDate));
             Log.d("samedate",resultDate);
-            dtStart = resultDate + "," + sDate + " - "+ eDate;
+            dtStart = resultDate + ", " + sDate + " - "+ eDate;
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -253,5 +269,50 @@ public class Utility {
 
 
         return simpleDateFormat.format(cal.getTime());
+    }
+
+
+    public static  String ConvertUTCToUserTimezone(String datetime)
+    {
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SimpleDateFormat out_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        out_format.setTimeZone(TimeZone.getDefault());
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "utc "+ parsed);
+        Log.d("UTILITY", "user "+ date);
+
+        return ""+date;
+    }
+
+
+    public static String ConvertUserTimezoneToUTC(String datetime) {
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        in_format.setTimeZone(TimeZone.getDefault());
+
+        SimpleDateFormat out_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        out_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "user "+ parsed);
+        Log.d("UTILITY", "utc "+ date);
+
+        return ""+date;
+
     }
 }

@@ -69,7 +69,7 @@ public class ExpertiseListAdapter extends RecyclerView.Adapter<ExpertiseListAdap
             public void onClick(View view) {
                 currentItem = position;
                 notifyDataSetChanged();
-                ((MeetingRequestFragment) fragment).setExpertise(item.getExpertiseId());
+                ((MeetingRequestFragment) fragment).setExpertise(item.getExpertiseId(), item.getExpertiseName());
 
             }
         });

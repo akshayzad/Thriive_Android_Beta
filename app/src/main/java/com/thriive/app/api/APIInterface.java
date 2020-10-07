@@ -33,7 +33,8 @@ APIInterface {
     @POST("AppLogin/app-login")
     Call<LoginPOJO> login(@Field("primary_login_key") String primary_login_key, @Field("entity_password") String entity_password,
                           @Field("login_method") String login_method, @Field("app_ver") String app_ver, @Field("platform_ver") String platform_ver,
-                          @Field("push_token") String push_token, @Field("voip_token") String voip_token, @Field("app_platform") String app_platform);
+                          @Field("push_token") String push_token, @Field("voip_token") String voip_token,
+                          @Field("app_platform") String app_platform, @Field("time_zone_name") String time_zone_name);
 
 // "requestor_id": 1,
 //         "requestor_name": "Akshay",
@@ -141,7 +142,8 @@ APIInterface {
 
     @FormUrlEncoded
     @POST("Meeting/get-meetings-home")
-    Call<CommonHomePOJO> getMeetingHome(@Header("Authorization") String authorization, @Field("rowcode") String rowcode);
+    Call<CommonHomePOJO> getMeetingHome(@Header("Authorization") String authorization,
+                                        @Field("rowcode") String rowcode, @Field("push_token") String push_token);
 
 
     @FormUrlEncoded
@@ -160,7 +162,49 @@ APIInterface {
     @POST("Meeting/get-meeting")
     Call<CommonMeetingPOJO> getMeetingById(@Header("Authorization") String authorization, @Field("meeting_id") String meeting_id);
 
+//Meeting/meeting-end
 
+    @FormUrlEncoded
+    @POST("Meeting/meeting-end")
+    Call<CommonStartMeetingPOJO> getMeetingEnd(@Header("Authorization") String authorization,
+                                   @Field("meeting_id") String meeting_id,
+                                   @Field("rowcode") String rowcode);
+
+
+    @FormUrlEncoded
+    @POST("Meeting/get-history-meetings")
+    Call<CommonMeetingListPOJO> getMeetingHistory(@Header("Authorization") String authorization,
+                                                                  @Field("rowcode") String rowcode);
+
+
+//
+//        "meeting_id":23,
+//                "rowcode":"23bed6fd",
+//                "response_code":"good_review",
+//                "response_text":"Good but not relevant",
+//                "response_int":3
+
+
+    @FormUrlEncoded
+    @POST("meeting/save-meeting-review")
+    Call<CommonPOJO> getSaveMeetingReview(@Header("Authorization") String authorization,
+                                          @Field("meeting_id") String meeting_id,
+                                          @Field("rowcode") String rowcode,
+                                          @Field("response_code") String response_code,
+                                          @Field("response_text") String response_text,
+                                          @Field("response_int") String response_int);
+
+    @FormUrlEncoded
+    @POST("meeting/save-app-review")
+    Call<CommonPOJO> getSaveAppReview(@Header("Authorization") String authorization,
+                                          @Field("rowcode") String rowcode,
+                                          @Field("response_code") String response_code,
+                                          @Field("response_text") String response_text,
+                                          @Field("response_int") String response_int);
+    @FormUrlEncoded
+    @POST("meeting/save-app-review")
+    Call<CommonPOJO> getLogout(@Header("Authorization") String authorization,
+                               @Field("rowcode") String rowcode);
 }
 
 

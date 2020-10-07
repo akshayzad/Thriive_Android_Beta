@@ -49,9 +49,8 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_10dp"
+            app:cardCornerRadius="@dimen/_5dp"
             app:cardElevation="1dp"
-
             android:layout_marginLeft="@dimen/_20dp"
             android:layout_marginRight="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_10dp"
@@ -60,7 +59,7 @@
                 android:id="@+id/edt_fName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_10dp"
+                android:padding="@dimen/_14dp"
                 android:hint="@string/f_name"
                 android:textColor="@color/darkGrey"
                 android:fontFamily="@font/roboto_regular"
@@ -82,7 +81,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_10dp"
+            app:cardCornerRadius="@dimen/_5dp"
             app:cardElevation="1dp"
             android:layout_marginLeft="@dimen/_20dp"
             android:layout_marginRight="@dimen/_20dp"
@@ -92,7 +91,7 @@
                 android:id="@+id/edt_lName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_10dp"
+                android:padding="@dimen/_14dp"
                 android:hint="@string/l_name"
                 android:textColor="@color/darkGrey"
                 android:textSize="@dimen/_16dp"

@@ -67,65 +67,10 @@ public class RequestedAdapter extends RecyclerView.Adapter<RequestedAdapter.Recy
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());
         arrayList.addAll(item.getSubDomainTags());
+        arrayList.addAll(item.getExpertiseTags());
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout );
         holder.rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
-
-
-//        if (!item.getDomainName().equals("")){
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 5, 5, 5);
-//            valueTV.setLayoutParams(params);
-//            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_regular);
-//            valueTV.setTypeface(typeface);
-//            valueTV.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-//            valueTV.setTextColor(context.getColor(R.color.slateGrey));
-//            valueTV.setBackground(context.getDrawable(R.drawable.outline_circle_gray));
-//            valueTV.setText(item.getDomainName() + "");
-//            valueTV.setTextSize(11);
-//            holder.layout_tags.addView(valueTV);
-//
-//        } else {
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 5, 5, 5);
-//            valueTV.setLayoutParams(params);
-//            holder.layout_tags.addView(valueTV);
-//        }
-//
-//        if (!item.getSubDomainName().equals("")){
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 5, 5, 5);
-//            valueTV.setLayoutParams(params);
-//            Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_regular);
-//            valueTV.setTypeface(typeface);
-//            valueTV.setTextSize(11);
-//            valueTV.setTextColor(context.getColor(R.color.slateGrey));
-//            valueTV.setText(item.getSubDomainName() );
-//            valueTV.setGravity(View.TEXT_ALIGNMENT_CENTER);
-//            valueTV.setBackground(context.getDrawable(R.drawable.outline_circle_gray));
-//            holder.layout_tags.addView(valueTV);
-//        } else {
-//            TextView valueTV = new TextView(context);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(5, 10, 5, 10);
-//            valueTV.setLayoutParams(params);
-//            holder.layout_tags.addView(valueTV);
-//        }
     }
 
     @Override

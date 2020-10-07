@@ -44,7 +44,7 @@ public class PendingMeetingRequestPOJO {
         @SerializedName("sub_domain_tags")
         private List<String> subDomainTags = null;
         @SerializedName("expertise_tags")
-        private List<Object> expertiseTags = null;
+        private List<String> expertiseTags = null;
         @SerializedName("country_tags")
         private List<String> countryTags = null;
         @SerializedName("meeting_request_id")
@@ -73,11 +73,11 @@ public class PendingMeetingRequestPOJO {
             this.subDomainTags = subDomainTags;
         }
 
-        public List<Object> getExpertiseTags() {
+        public List<String> getExpertiseTags() {
             return expertiseTags;
         }
 
-        public void setExpertiseTags(List<Object> expertiseTags) {
+        public void setExpertiseTags(List<String> expertiseTags) {
             this.expertiseTags = expertiseTags;
         }
 

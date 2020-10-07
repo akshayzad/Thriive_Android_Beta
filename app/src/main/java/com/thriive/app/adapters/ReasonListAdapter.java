@@ -5,6 +5,7 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,10 +13,12 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.models.ReasonListPOJO;
 import com.thriive.app.models.ReasonListPOJO;
+import com.thriive.app.utilities.Utility;
 
 import java.util.ArrayList;
 
@@ -31,8 +34,8 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_reasonName)
         TextView txt_reasonName;
-//        @BindView(R.id.layout_select)
-//        LinearLayout layout_select;
+        @BindView(R.id.image)
+        ImageView image;
 
         public RecyclerAdapterHolder(View itemView) {
             super(itemView);
@@ -40,11 +43,6 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
         }
     }
 
-    public ReasonListAdapter(Context context, ArrayList<ReasonListPOJO> reasonList) {
-        this.context = context;
-        this.fragment = fragment;
-        this.reasonList = reasonList;
-    }
 
     public ReasonListAdapter(Context context, Fragment fragment, ArrayList<ReasonListPOJO> reasonList) {
         this.context = context;
@@ -64,7 +62,9 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
     public void onBindViewHolder(final ReasonListAdapter.RecyclerAdapterHolder holder, int position) {
         ReasonListPOJO item = reasonList.get(position);
         holder.txt_reasonName.setText(item.getReasonName());
-
+        Glide.with(context)
+                .load(Utility.UTILITY_URL +"reason_button/"+ item.getRowcode() + ".png")
+                .into(holder.image);
 //        if(currentItem == position){
 //            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_tarcoto));
 //

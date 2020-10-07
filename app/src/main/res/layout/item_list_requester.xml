@@ -7,7 +7,7 @@
     app:cardBackgroundColor="@color/pale48"
     app:cardPreventCornerOverlap="true"
     app:cardElevation="@null"
-    android:outlineSpotShadowColor="@color/paleGrey"
+    android:outlineSpotShadowColor="@color/pale48"
     android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,28 +32,58 @@
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_margin="@dimen/_5dp">
-                <TextView
-                    android:id="@+id/txt_persona"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_14dp"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:padding="1dp"
-                    android:textColor="@color/darkGrey"
-                    android:text="Ashish Ashraful" />
-                <TextView
-                    android:id="@+id/txt_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textSize="@dimen/_12dp"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:padding="1dp"
-                    android:textColor="@color/darkGrey"
-                    android:text="Ashish Ashraful" />
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/txt_persona"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="@dimen/_14dp"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_marginRight="@dimen/_10dp"
+                            android:padding="1dp"
+                            android:textColor="@color/darkGrey"
+                            android:text="Ashish Ashraful" />
+                        <TextView
+                            android:id="@+id/txt_reason"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textSize="@dimen/_12dp"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_marginRight="@dimen/_10dp"
+                            android:padding="1dp"
+                            android:textColor="@color/darkGrey"
+                            android:text="Ashish Ashraful" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/label_shortlisting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:paddingRight="@dimen/_5dp"
+                        android:paddingLeft="@dimen/_5dp"
+                        android:textColor="@color/darkGreyBlue"
+                        android:drawableTint="@color/butterscotch"
+                        android:drawablePadding="@dimen/_3dp"
+                        android:textSize="@dimen/_12dp"
+                        android:gravity="center"
+                        android:drawableLeft="@drawable/ic_watch"
+                        android:fontFamily="@font/roboto_regular"
+                        android:background="@drawable/rectangle_white"
+                        android:text="@string/awaiting"></TextView>
+                </LinearLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -61,24 +91,7 @@
 
 
             </LinearLayout>
-            <TextView
-                android:id="@+id/label_shortlisting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingTop="@dimen/_5dp"
-                android:paddingBottom="@dimen/_5dp"
-                android:paddingRight="@dimen/_10dp"
-                android:paddingLeft="@dimen/_10dp"
-                android:textColor="@color/darkGreyBlue"
-                android:drawableTint="@color/butterscotch"
-                android:drawablePadding="@dimen/_5dp"
-                android:textSize="@dimen/_12dp"
-                android:drawableLeft="@drawable/ic_watch"
-                android:fontFamily="@font/roboto_regular"
-                android:background="@drawable/rectangle_white"
-                android:text="@string/shortlisting"
-                android:layout_gravity="center"></TextView>
+
         </LinearLayout>
 
     </LinearLayout>

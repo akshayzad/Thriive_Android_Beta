@@ -7,7 +7,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -20,24 +28,45 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.thriive.app.api.APIClient;
+import com.thriive.app.api.APIInterface;
+import com.thriive.app.models.CommonMeetingPOJO;
+import com.thriive.app.models.CommonPOJO;
+import com.thriive.app.models.CommonStartMeetingPOJO;
+import com.thriive.app.models.EventBusPOJO;
+import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.utilities.PreciseCountdown;
+import com.thriive.app.utilities.SharedData;
+import com.thriive.app.utilities.Utility;
+import com.thriive.app.utilities.progressdialog.KProgressHUD;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.concurrent.TimeUnit;
 
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.agora.rtc.video.VideoEncoderConfiguration;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MeetingJoinActivity extends AppCompatActivity {
     private static final String TAG = MeetingJoinActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQ_ID = 22;
-
-    // Permission WRITE_EXTERNAL_STORAGE is not mandatory
-    // for Agora RTC SDK, just in case if you wanna save
-    // logs to external sdcard.
     private static final String[] REQUESTED_PERMISSIONS = {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
@@ -57,25 +86,19 @@ public class MeetingJoinActivity extends AppCompatActivity {
     private ImageView mMuteBtn;
     private ImageView mSwitchCameraBtn;
 
-    private String meeting_code, meeting_token, meeting_id,meeting_channel;
-    // Customized logger view
-    //private LoggerRecyclerView mLogView;
+    private String meeting_code, meeting_token, meeting_id,meeting_channel, start_time, end_time;
 
-    /**
-     * Event handler registered into RTC engine for RTC callbacks.
-     * Note that UI operations needs to be in UI thread because RTC
-     * engine deals with the events in a separate thread.
-     */
+    private PreciseCountdown preciseCountdown, endCountDown;
+    private APIInterface apiInterface;
+    private LoginPOJO loginPOJO;
+    private SharedData sharedData;
+    private Handler popupHandler;
+    private Runnable popupRunnable;
+
+
+    private String rating_int = "";
+    private  KProgressHUD progressHUD;
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
-        /**
-         * Occurs when the local user joins a specified channel.
-         * The channel name assignment is based on channelName specified in the joinChannel method.
-         * If the uid is not specified when joinChannel is called, the server automatically assigns a uid.
-         *
-         * @param channel Channel name.
-         * @param uid User ID.
-         * @param elapsed Time elapsed (ms) from the user calling joinChannel until this callback is triggered.
-         */
         @Override
         public void onJoinChannelSuccess(String channel, final int uid, int elapsed) {
             runOnUiThread(new Runnable() {
@@ -85,23 +108,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
                 }
             });
         }
-
-        /**
-         * Occurs when the first remote video frame is received and decoded.
-         * This callback is triggered in either of the following scenarios:
-         *
-         *     The remote user joins the channel and sends the video stream.
-         *     The remote user stops sending the video stream and re-sends it after 15 seconds. Possible reasons include:
-         *         The remote user leaves channel.
-         *         The remote user drops offline.
-         *         The remote user calls the muteLocalVideoStream method.
-         *         The remote user calls the disableVideo method.
-         *
-         * @param uid User ID of the remote user sending the video streams.
-         * @param width Width (pixels) of the video stream.
-         * @param height Height (pixels) of the video stream.
-         * @param elapsed Time elapsed (ms) from the local user calling the joinChannel method until this callback is triggered.
-         */
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
             runOnUiThread(new Runnable() {
@@ -112,29 +118,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
                 }
             });
         }
-
-        /**
-         * Occurs when a remote user (Communication)/host (Live Broadcast) leaves the channel.
-         *
-         * There are two reasons for users to become offline:
-         *
-         *     Leave the channel: When the user/host leaves the channel, the user/host sends a
-         *     goodbye message. When this message is received, the SDK determines that the
-         *     user/host leaves the channel.
-         *
-         *     Drop offline: When no data packet of the user or host is received for a certain
-         *     period of time (20 seconds for the communication profile, and more for the live
-         *     broadcast profile), the SDK assumes that the user/host drops offline. A poor
-         *     network connection may lead to false detections, so we recommend using the
-         *     Agora RTM SDK for reliable offline detection.
-         *
-         * @param uid ID of the user or host who leaves the channel or goes offline.
-         * @param reason Reason why the user goes offline:
-         *
-         *     USER_OFFLINE_QUIT(0): The user left the current channel.
-         *     USER_OFFLINE_DROPPED(1): The SDK timed out and the user dropped offline because no data packet was received within a certain period of time. If a user quits the call and the message is not passed to the SDK (due to an unreliable channel), the SDK assumes the user dropped offline.
-         *     USER_OFFLINE_BECOME_AUDIENCE(2): (Live broadcast only.) The client role switched from the host to the audience.
-         */
         @Override
         public void onUserOffline(final int uid, int reason) {
             runOnUiThread(new Runnable() {
@@ -148,9 +131,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
     };
 
     private void setupRemoteVideo(int uid) {
-        // Only one remote video view is available for this
-        // tutorial. Here we check if there exists a surface
-        // view tagged as this uid.
         int count = mRemoteContainer.getChildCount();
         View view = null;
         for (int i = 0; i < count; i++) {
@@ -163,14 +143,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
         if (view != null) {
             return;
         }
-
-        /*
-          Creates the video renderer view.
-          CreateRendererView returns the SurfaceView type. The operation and layout of the view
-          are managed by the app, and the Agora SDK renders the view provided by the app.
-          The video display view must be created using this method instead of directly
-          calling SurfaceView.
-         */
         mRemoteView = RtcEngine.CreateRendererView(getBaseContext());
         mRemoteContainer.addView(mRemoteView);
         // Initializes the video view of a remote user.
@@ -190,14 +162,27 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mRemoteView = null;
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting_join);
 
+        sharedData  = new SharedData(getApplicationContext());
         meeting_channel =  getIntent().getStringExtra("meeting_channel");
         meeting_token = getIntent().getStringExtra("meeting_token");
+        meeting_id = getIntent().getStringExtra("meeting_id");
+        meeting_token = sharedData.getStringData(SharedData.MEETING_TOKEN);
+        loginPOJO = Utility.getLoginData(getApplicationContext());
+        apiInterface = APIClient.getApiInterface();
+
+        Log.d(TAG, meeting_id + " meeting_token " + meeting_token +  "meeting_channel  " + meeting_channel);
         initUI();
+
+        NotificationManager notificationManager = (NotificationManager) getBaseContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
 
         // Ask for permissions at runtime.
         // This is just an example set of permissions. Other permissions
@@ -208,6 +193,8 @@ public class MeetingJoinActivity extends AppCompatActivity {
                 checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
             initEngineAndJoinChannel();
         }
+        startTimer();
+        preciseCountdown.start();
     }
 
     @SuppressLint("WrongViewCast")
@@ -257,30 +244,71 @@ public class MeetingJoinActivity extends AppCompatActivity {
 //    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
-
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQ_ID) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED ||
-                    grantResults[1] != PackageManager.PERMISSION_GRANTED ||
-                    grantResults[2] != PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initEngineAndJoinChannel();
+            } else {
                 showLongToast("Need permissions " + Manifest.permission.RECORD_AUDIO +
                         "/" + Manifest.permission.CAMERA + "/" + Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                finish();
-                return;
+                ActivityCompat.requestPermissions(MeetingJoinActivity.this,
+                        new String[]{Manifest.permission.RECORD_AUDIO,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_REQ_ID);
             }
-
-            // Here we continue only if all permissions are granted.
-            // The permissions can also be granted in the system settings manually.
-            initEngineAndJoinChannel();
         }
+//
+//        if (requestCode == PERMISSION_REQ_ID) {
+//            if (grantResults[0] != PackageManager.PERMISSION_GRANTED ||
+//                    grantResults[1] != PackageManager.PERMISSION_GRANTED ||
+//                    grantResults[2] != PackageManager.PERMISSION_GRANTED) {
+//                showLongToast("Need permissions " + Manifest.permission.RECORD_AUDIO +
+//                        "/" + Manifest.permission.CAMERA + "/" + Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//                finish();
+//                return;
+//            }
+//
+//            // Here we continue only if all permissions are granted.
+//            // The permissions can also be granted in the system settings manually.
+//            initEngineAndJoinChannel();
+//        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+    }
+
+    private void showCustomToast(final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast=Toast.makeText(getApplicationContext(),msg ,Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL,20,20);
+                View view=toast.getView();
+                TextView view1=(TextView)view.findViewById(android.R.id.message);
+                view1.setPadding(10,10,10,10);
+                view1.setTextColor(Color.BLACK);
+                view.setBackgroundResource(R.drawable.rectangle_white);
+                toast.show();
+
+            }
+        });
     }
 
     private void showLongToast(final String msg) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+               Toast toast =  Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
+               toast.setGravity(Gravity.TOP| Gravity.LEFT, 0, 0);
+               toast.show();
             }
         });
     }
@@ -308,7 +336,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
         // and rendering once at the initialization step.
         // Note: audio recording and playing is enabled by default.
         mRtcEngine.enableVideo();
-
         // Please go to this page for detailed explanation
         // https://docs.agora.io/en/Video/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_rtc_engine.html#af5f4de754e2c1f493096641c5c5c1d8f
         mRtcEngine.setVideoEncoderConfiguration(new VideoEncoderConfiguration(
@@ -379,20 +406,52 @@ public class MeetingJoinActivity extends AppCompatActivity {
     }
 
     public void onCallClicked(View view) {
-        if (mCallEnd) {
-            startCall();
-            mCallEnd = false;
-            mCallBtn.setImageResource(R.drawable.btn_endcall);
-        } else {
-            endCall();
-            mCallEnd = true;
-            mCallBtn.setImageResource(R.drawable.btn_startcall);
-        }
 
-        showButtons(!mCallEnd);
-        endCall();
-        finish();
+//        if (mCallEnd) {
+//            startCall();
+//            mCallEnd = false;
+//            mCallBtn.setImageResource(R.drawable.btn_endcall);
+//        } else {
+//            endCall();
+//            mCallEnd = true;
+//            mCallBtn.setImageResource(R.drawable.btn_startcall);
+//        }
+//
+//        showButtons(!mCallEnd);
+//        getMeetingEnd();
+
+        leaveMeeting();
     }
+
+
+    private void getMeetingEnd() {
+        Log.d(TAG, loginPOJO.getReturnEntity().getActiveToken() +  " \n "+
+                meeting_id + " "+ loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getReturnEntity().getActiveToken(),
+                meeting_id, loginPOJO.getReturnEntity().getRowcode());
+        call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+            @Override
+            public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    CommonStartMeetingPOJO pojo = response.body();
+                    Log.d(TAG,""+pojo.getMessage());
+                    if (pojo.getOK()) {
+                        endCall();
+                        closeActivity();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void startCall() {
         setupLocalVideo();
@@ -418,30 +477,134 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mSwitchCameraBtn.setVisibility(visibility);
     }
 
-    @Override
-    public void onBackPressed() {
-       // ratingDialog();
-        super.onBackPressed();
+    private void startTimer() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                preciseCountdown = new PreciseCountdown(TimeUnit.MINUTES.toMillis(7), 1000, 0) {
+                    @Override
+                    public void onTick(long timeLeft) {
+                        if (TimeUnit.MINUTES.toMillis(2) == timeLeft){
+                            showCustomToast(getResources().getString(R.string.call_message));
+                          //  ratingDialog();
+                            Log.d(TAG, "!1 min");
+                    }
+
+                    }
+                    @Override
+                    public void onFinished() {
+                        Log.d(TAG, "RESTART");
+                        getMeetingEnd();
+                    }
+                };
+            }
+        });
 
     }
-    public void ratingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingJoinActivity.this, R.style.SheetDialog);
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        final View view1 = layoutInflater.inflate(R.layout.dialog_rate_meeting, null);
-        ImageView img_close = view1.findViewById(R.id.img_close);
 
-        //    tv_msg.setText("Session Added Successfully.");
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe()
+    public void onMessageEvent(EventBusPOJO event) {
+        if (event.getEvent() == Utility.END_CALL_FLAG){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    endCall();
+                    closeActivity();
+                   // showMeetingDialog();
+                }
+            });
+
+        }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        leaveMeeting();
+    }
+
+
+    public void leaveMeeting() {
+        //   meetingId = meeting_Id;
+        AlertDialog.Builder builder = new AlertDialog.Builder(MeetingJoinActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater =  getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_leave_meeting, null);
         builder.setView(view1);
         final AlertDialog dialogs = builder.create();
+        builder.setView(view1);
+
+        ImageView img_close = view1.findViewById(R.id.img_close);
+        Button btn_yes = view1.findViewById(R.id.btn_yes);
+        Button btn_no = view1.findViewById(R.id.btn_no);
+
+        btn_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                getMeetingEnd();
+            }
+        });
+
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+
         // dialogs.setCancelable(false);
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 dialogs.dismiss();
-                finish();
             }
         });
+
         dialogs.show();
     }
+
+    private void closeActivity() {
+        if (popupHandler != null) {
+            popupHandler.removeCallbacks(popupRunnable);
+            popupHandler.removeCallbacksAndMessages(null);
+        }
+        if (preciseCountdown != null){
+            preciseCountdown.cancel();
+        }
+
+        sharedData.addStringData(SharedData.MEETING_ID, meeting_id);
+        sharedData.addBooleanData(SharedData.SHOW_DIALOG, true);
+        if (isTaskRoot()) {
+            Intent i = new Intent(MeetingJoinActivity.this, HomeActivity.class);
+            i.putExtra("intent_type", "FLOW");
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, meeting_id));
+            setResult(123, i);
+            finish();
+            //super.onBackPressed();
+        }else {
+            Intent intent = new Intent();
+            EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, meeting_id));
+            setResult(123, intent);
+            finish();
+            // super.onBackPressed();
+        }
+    }
+
 }

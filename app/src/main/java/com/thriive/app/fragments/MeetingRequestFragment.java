@@ -27,10 +27,15 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
 import com.thriive.app.RequestMeetingGuideActivity;
 import com.thriive.app.adapters.DomainAdapter;
@@ -49,6 +54,7 @@ import com.thriive.app.models.CommonReasonPOJO;
 import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CountryListPOJO;
 import com.thriive.app.models.DomainListPOJO;
+import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.ExpertiseListPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PersonaListPOJO;
@@ -58,6 +64,8 @@ import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +83,8 @@ import retrofit2.Response;
 
 public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
-    @BindView(R.id.rv_profession)
-    RecyclerView rv_profession;
+    @BindView(R.id.rv_persona)
+    RecyclerView rv_persona;
     @BindView(R.id.rv_expertise)
     RecyclerView rv_expertise;
     @BindView(R.id.rv_domain)
@@ -86,10 +94,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     @BindView(R.id.rv_region)
     RecyclerView rv_region;
 
-    @BindView(R.id.layout_meeting_request)
-    LinearLayout layout_meeting_request;
-    @BindView(R.id.layout_meeting)
-    LinearLayout layout_meeting;
+    @BindView(R.id.layout_reason)
+    LinearLayout layout_reason;
+    @BindView(R.id.layout_persona)
+    LinearLayout layout_persona;
+
     @BindView(R.id.layout_meeting_preference)
     LinearLayout layout_meeting_preference;
     @BindView(R.id.layout_expertise)
@@ -129,18 +138,26 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     TextView txt_reason;
     @BindView(R.id.txt_persona)
     TextView txt_persona;
-    @BindView(R.id.layout_reason)
-    LinearLayout layout_reason;
-    @BindView(R.id.layout_persona)
-    LinearLayout layout_persona;
+    @BindView(R.id.layout_lreason)
+    LinearLayout layout_lreason;
+    @BindView(R.id.layout_lpersona)
+    LinearLayout layout_lpersona;
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
     @BindView(R.id.txt_domains)
     TextView txt_domains;
-    @BindView(R.id.layout_domains)
-    LinearLayout layout_domains;
+    @BindView(R.id.label_domain)
+    TextView label_domain;
+    @BindView(R.id.label_expertise)
+    TextView label_expertise;
+    @BindView(R.id.layout_ldomain)
+    LinearLayout layout_ldomain;
+    @BindView(R.id.layout_lexpertise)
+    LinearLayout layout_lexpertise;
     @BindView(R.id.rv_reason)
     RecyclerView rv_reason;
+    @BindView(R.id.txt_expertise)
+    TextView txt_expertise;
     private DomainAdapter domainAdapter;
 
 
@@ -239,7 +256,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
 
-    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_persona, R.id.layout_reason, R.id.layout_domains})
+    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_request_meeting:
@@ -252,19 +269,23 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 //onCancel();
                 break;
 
-            case R.id.layout_reason:
+            case R.id.layout_lreason:
                 init();
                 getReason();
                 break;
 
-            case R.id.layout_persona:
+            case R.id.layout_lpersona:
                 getPersona(reasonId,reasonName);
                 break;
 
-            case R.id.layout_domains:
+            case R.id.layout_ldomain:
 
                 getMeta(personaId, personaName);
 
+                break;
+
+            case R.id.layout_lexpertise:
+                getMeta(personaId, personaName);
                 break;
 
         }
@@ -335,12 +356,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     Log.d(TAG, response.toString());
                     CommonPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
-                   // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                    Log.d(TAG,""+reasonPOJO.getMessage());
                     if (reasonPOJO.getOK()) {
                         successDialog();
                       //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                     //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
 
@@ -356,12 +377,32 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void init(){
-        layout_meeting_request.setVisibility(View.VISIBLE);
-        layout_meeting.setVisibility(View.GONE);
+        //selected tag
+        layout_lreason.setVisibility(View.GONE);
+        layout_lpersona.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.GONE);
+        layout_lexpertise.setVisibility(View.GONE);
+
+        //labels
+        layout_reason.setVisibility(View.VISIBLE);
+        layout_persona.setVisibility(View.GONE);
+        label_expertise.setVisibility(View.GONE);
+        label_domain.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
+
         layout_domain.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
         layout_subdomain.setVisibility(View.GONE);
         layout_region.setVisibility(View.GONE);
+
+        //rv
+        rv_reason.setVisibility(View.VISIBLE);
+        rv_persona.setVisibility(View.GONE);
+        rv_expertise.setVisibility(View.GONE);
+        rv_domain.setVisibility(View.GONE);
+        rv_region.setVisibility(View.GONE);
+
+        layout_subdomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.GONE);
     }
 
@@ -392,10 +433,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     rv_reason.setAdapter(new ReasonListAdapter(getActivity(), MeetingRequestFragment.this,
                             (ArrayList<ReasonListPOJO>) reasonPOJO.getMrParams().getReasonList()));
 
+                    FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
+                    manager.setFlexWrap(FlexWrap.WRAP);
+                    manager.setJustifyContent(JustifyContent.FLEX_START);
+                    rv_region.setLayoutManager(manager );
 
-
-
-                    rv_region.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
+                //    rv_region.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
                     rv_region.setAdapter(new RegionAdapter(getActivity(), MeetingRequestFragment.this,
                             (ArrayList<CountryListPOJO>) reasonPOJO.getMrParams().getCountryList()));
 
@@ -436,14 +479,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                      //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
-
-
-                    rv_profession.setVisibility(View.VISIBLE);
-                    rv_profession.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-                    rv_profession.setAdapter(new PersonaListAdapter(getActivity(), MeetingRequestFragment.this,
+                    rv_persona.setVisibility(View.VISIBLE);
+                    rv_persona.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+                    rv_persona.setAdapter(new PersonaListAdapter(getActivity(), MeetingRequestFragment.this,
                             (ArrayList<PersonaListPOJO>) reasonPOJO.getMrParams().getPersonaList()));
                     txt_reason.setText(""+reason_name);
-                    layout_reason.setVisibility(View.VISIBLE);
                     setPersona();
 
                 }
@@ -455,6 +495,39 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             }
         });
     }
+    private void setPersona() {
+
+        //selected tag
+        layout_lreason.setVisibility(View.VISIBLE);
+        layout_lpersona.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.GONE);
+        layout_lexpertise.setVisibility(View.GONE);
+
+        //labels
+        layout_reason.setVisibility(View.GONE);
+        layout_persona.setVisibility(View.VISIBLE);
+        label_expertise.setVisibility(View.GONE);
+        label_domain.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
+
+
+
+        layout_domain.setVisibility(View.GONE);
+        layout_expertise.setVisibility(View.GONE);
+        layout_subdomain.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
+        //rv
+        rv_reason.setVisibility(View.GONE);
+        rv_persona.setVisibility(View.VISIBLE);
+        rv_expertise.setVisibility(View.GONE);
+        rv_domain.setVisibility(View.GONE);
+        rv_region.setVisibility(View.GONE);
+
+
+        layout_meeting_preference.setVisibility(View.GONE);
+
+    }
+
 
     public void getMeta(String persona_id, String persona_name) {
         edt_domain.setText("");
@@ -492,11 +565,13 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     if (reasonPOJO.getMrParams().getFlagDomain()){
                         layout_domain.setVisibility(View.VISIBLE);
                         rv_domain.setVisibility(View.VISIBLE);
+                        label_domain.setVisibility(View.VISIBLE);
                         domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
                                 (ArrayList<DomainListPOJO>) reasonPOJO.getMrParams().getDomainList());
                         rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
                         rv_domain.setAdapter(domainAdapter);
                     } else {
+                        label_domain.setVisibility(View.GONE);
                         layout_domain.setVisibility(View.GONE);
                     }
 
@@ -507,20 +582,22 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     if (reasonPOJO.getMrParams().getFlagExpertise()){
                         layout_expertise.setVisibility(View.VISIBLE);
                         rv_expertise.setVisibility(View.VISIBLE);
-                        if (reasonPOJO.getMrParams().getExpertiseList().size() > 3){
-                            rv_expertise.setLayoutManager(new GridLayoutManager(getActivity(), 2, GridLayoutManager.HORIZONTAL, false));
-                        } else {
-                            rv_expertise.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
-                        }
-                         rv_expertise.setAdapter(new ExpertiseListAdapter(getActivity(),
+                        label_expertise.setVisibility(View.VISIBLE);
+                        FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
+                        manager.setFlexWrap(FlexWrap.WRAP);
+                        manager.setJustifyContent(JustifyContent.FLEX_START);
+                        rv_expertise.setLayoutManager(manager );
+                        rv_expertise.setAdapter(new ExpertiseListAdapter(getActivity(),
                                  MeetingRequestFragment.this, (ArrayList<ExpertiseListPOJO>) reasonPOJO.getMrParams().getExpertiseList()));
 
                     } else {
                         layout_expertise.setVisibility(View.GONE);
+                        label_expertise.setVisibility(View.GONE);
                     }
 
                     if (!reasonPOJO.getMrParams().getFlagDomain() && !reasonPOJO.getMrParams().getFlagExpertise())
                     {
+                        label_domain.setVisibility(View.VISIBLE);
                         layout_domain.setVisibility(View.VISIBLE);
                         rv_domain.setVisibility(View.VISIBLE);
 
@@ -539,59 +616,46 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     private void setMeta() {
-        layout_reason.setVisibility(View.VISIBLE);
-        layout_persona.setVisibility(View.VISIBLE);
-      //  layout_meeting_request.setVisibility(View.GONE);
-        layout_meeting_request.setVisibility(View.VISIBLE);
-        rv_reason.setVisibility(View.GONE);
-        rv_profession.setVisibility(View.GONE);
-        layout_meeting.setVisibility(View.VISIBLE);
-      //  layout_expertise.setVisibility(View.GONE);
-        layout_subdomain.setVisibility(View.GONE);
-        layout_region.setVisibility(View.VISIBLE);
-        layout_domains.setVisibility(View.GONE);
-      //  layout_meeting_preference.setVisibility(View.VISIBLE);
-    }
 
-    private void setPersona() {
-        layout_reason.setVisibility(View.VISIBLE);
+        layout_lreason.setVisibility(View.VISIBLE);
+        layout_lpersona.setVisibility(View.VISIBLE);
+        layout_ldomain.setVisibility(View.GONE);
+        layout_lexpertise.setVisibility(View.GONE);
+
+//        layout_domain.setVisibility(View.GONE);
+//        layout_expertise.setVisibility(View.GONE);
+//        layout_subdomain.setVisibility(View.GONE);
+//        layout_region.setVisibility(View.GONE);
+
+        //labels
+        layout_reason.setVisibility(View.GONE);
         layout_persona.setVisibility(View.GONE);
-        layout_meeting_request.setVisibility(View.VISIBLE);
-        rv_reason.setVisibility(View.GONE);
-        layout_meeting.setVisibility(View.VISIBLE);
-        layout_domain.setVisibility(View.GONE);
-        layout_expertise.setVisibility(View.GONE);
-        layout_subdomain.setVisibility(View.GONE);
-        layout_domains.setVisibility(View.GONE);
-        layout_region.setVisibility(View.GONE);
-        layout_meeting_preference.setVisibility(View.GONE);
-    }
-
-
-    public void meetingRequestExpertise(){
-        layout_meeting_request.setVisibility(View.GONE);
-        layout_meeting.setVisibility(View.VISIBLE);
-        layout_domain.setVisibility(View.VISIBLE);
-        layout_expertise.setVisibility(View.VISIBLE);
-        layout_subdomain.setVisibility(View.GONE);
+//        label_expertise.setVisibility(View.GONE);
+//        label_domain.setVisibility(View.GONE);
         layout_region.setVisibility(View.VISIBLE);
-        layout_meeting_preference.setVisibility(View.VISIBLE);
+
+        //rv
+//        rv_reason.setVisibility(View.GONE);
+        rv_persona.setVisibility(View.GONE);
+//        rv_expertise.setVisibility(View.GONE);
+//        rv_domain.setVisibility(View.GONE);
+        rv_region.setVisibility(View.VISIBLE);
+
+        layout_subdomain.setVisibility(View.GONE);
+        layout_meeting_preference.setVisibility(View.GONE);
+
     }
 
-    public void refreshList() {
-        layout_meeting_preference.setVisibility(View.VISIBLE);
 
-        domainAdapter.notifyDataSetChanged();
-    }
 
     public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
        // scrollView.scrollTo(0,scrollView.getBottom());
         subDomainId = ""+s_id;
         domainId = ""+d_id;
         sdomainName = subDomainName;
-        layout_domains.setVisibility(View.VISIBLE);
         txt_domains.setText(subDomainName);
         layout_domain.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.VISIBLE);
         layout_meeting_preference.setVisibility(View.VISIBLE);
     }
 
@@ -599,8 +663,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         regionId = "" + countryId;
     }
 
-    public void setExpertise(Integer expertise_id) {
+    public void setExpertise(Integer expertise_id, String expertiseName) {
+        txt_expertise.setText(""+expertiseName);
+        layout_expertise.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.VISIBLE);
+        layout_lexpertise.setVisibility(View.VISIBLE);
         expertiseId = ""+expertise_id;
     }
 
@@ -618,10 +685,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         label_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_BOOK));
                 dialogs.dismiss();
-                Intent intent = new Intent(getActivity(), RequestMeetingGuideActivity.class);
                 dismiss();
-                startActivity(intent);
             }
         });
         dialogs.show();

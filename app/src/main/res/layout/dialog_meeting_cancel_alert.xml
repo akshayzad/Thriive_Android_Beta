@@ -123,6 +123,7 @@
                 android:gravity="center"
                 android:textColor="#9A9A9A"
                 android:layout_margin="@dimen/_10dp"
+                android:visibility="gone"
                 android:text="Remember - only one cancellation is allowed each month." />
 
 

@@ -15,7 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.utilities.SharedData;
+import com.thriive.app.utilities.Utility;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,6 +33,9 @@ public class RequestMeetingGuideActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.layoutDots)
     LinearLayout dotsLayout;
+
+    @BindView(R.id.txt_close)
+    TextView txt_close;
 
     private TextView[] dots;
     private int currentPage = 0;
@@ -49,23 +56,42 @@ public class RequestMeetingGuideActivity extends AppCompatActivity {
 
         languageArray = new int[]{
                 R.layout.meeting_request_guide1,
-                R.layout.meeting_request_guide2,
+//                R.layout.meeting_request_guide2,
                 R.layout.meeting_request_guide3,
                 R.layout.meeting_request_guide4};
         myViewPagerAdapter = new MyViewPagerAdapter();
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        sharedData = new SharedData(getApplicationContext());
+        sharedData.addBooleanData(SharedData.isMeetingRequestVisit, true);
         addBottomDots(0);
 
 
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
             public void run() {
-                if (currentPage == languageArray.length - 0) {
-                    currentPage = 0;
+//                if (currentPage == languageArray.length - 0) {
+//                    currentPage = 0;
+//                }
+                if (currentPage == languageArray.length - 0)
+                {
+                    txt_close.setVisibility(View.VISIBLE);
+                    timer.cancel();
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_BOOK));
+                            finish();
+                        }
+                    },3000);
+
+                } else {
+                    viewPager.setCurrentItem(currentPage++, true);
+                    txt_close.setVisibility(View.GONE);
                 }
-                viewPager.setCurrentItem(currentPage++, true);
+
             }
         };
 
@@ -164,5 +190,9 @@ public class RequestMeetingGuideActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_BOOK));
+        super.onBackPressed();
+    }
 }

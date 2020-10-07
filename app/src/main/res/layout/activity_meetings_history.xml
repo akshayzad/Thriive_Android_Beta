@@ -47,5 +47,18 @@
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         ></androidx.recyclerview.widget.RecyclerView>
-
+    <TextView
+        android:id="@+id/txt_noHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_18dp"
+        android:layout_gravity="center"
+        android:padding="@dimen/_25dp"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/_10dp"
+        android:layout_marginRight="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:textColor="@color/slateGrey"
+        android:text="No History Available" />
 </LinearLayout>

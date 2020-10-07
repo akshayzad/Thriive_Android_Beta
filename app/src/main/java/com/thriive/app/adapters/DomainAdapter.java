@@ -11,6 +11,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
+import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.models.DomainListPOJO;
@@ -67,11 +71,18 @@ private SubDomainListAdapter adapter;
     public void onBindViewHolder(final DomainAdapter.RecyclerAdapterHolder holder, int position) {
         DomainListPOJO item = domainList.get(position);
         holder.txt_name.setText(item.getDomainName());
-        if (domainList.size() > 3){
-            holder.rv_list.setLayoutManager(new GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false));
-        } else {
-            holder.rv_list.setLayoutManager(new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false));
-        }
+
+        FlexboxLayoutManager manager = new FlexboxLayoutManager(context);
+        manager.setFlexWrap(FlexWrap.WRAP);
+        manager.setJustifyContent(JustifyContent.FLEX_START);
+        holder.rv_list.setLayoutManager(manager );
+
+
+//        if (domainList.size() > 3){
+//            holder.rv_list.setLayoutManager(new GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false));
+//        } else {
+//            holder.rv_list.setLayoutManager(new GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false));
+//        }
         adapter = new SubDomainListAdapter(context, fragment, (ArrayList<SubDomainListPOJO>) item.getSubDomainList(), domainList);
         holder.rv_list.setAdapter(adapter);
 

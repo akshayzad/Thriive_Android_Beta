@@ -6,7 +6,7 @@
     app:cardCornerRadius="@dimen/_10dp"
     app:cardElevation="@null"
     app:cardPreventCornerOverlap="true"
-    app:cardBackgroundColor="@color/paleGrey85"
+    app:cardBackgroundColor="@color/paleGrey60"
     android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"

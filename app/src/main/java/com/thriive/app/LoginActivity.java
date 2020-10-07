@@ -2,6 +2,7 @@ package com.thriive.app;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.multidex.BuildConfig;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -12,6 +13,8 @@ import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +53,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +91,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     private APIInterface apiInterface;
 
     private SharedData sharedData;
+    private  String UUID = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +104,10 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
         getOneSignalToken();
 
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+
+        Log.d(TAG, " UUID "+ UUID);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -110,6 +119,51 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
         linkedInRequestManager = new LinkedInRequestManager(LoginActivity.this, this,
                 CLIENT_ID, CLIENT_SECRET, REDIRECTION_URL, true);
+
+        edt_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (edt_password.getText().length() > 0 && edt_email.getText().length() > 0){
+                    btn_login.setBackground(getResources().getDrawable(R.drawable.filled_circle_terracota));
+                } else {
+                    btn_login.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+        edt_email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (edt_password.getText().length() > 0 && edt_email.getText().length() > 0){
+                    btn_login.setBackground(getResources().getDrawable(R.drawable.filled_circle_terracota));
+                } else {
+                    btn_login.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
     }
 
@@ -209,13 +263,21 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
     }
     private void getLogin() {
+        TimeZone timeZone = TimeZone.getDefault();
+        Log.d(TAG, "time zone "+ timeZone.getID());
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+        if (UUID  == null) {
+            UUID = "";
+        }
+
         progressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
         Call<LoginPOJO> call = apiInterface.login(email, password, login_method, BuildConfig.VERSION_NAME,
-                ""+android.os.Build.VERSION.SDK_INT, token, token, "android");
+                ""+android.os.Build.VERSION.SDK_INT, UUID,
+                UUID, "android",  ""+timeZone.getID());
         call.enqueue(new Callback<LoginPOJO>() {
             @Override
             public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {

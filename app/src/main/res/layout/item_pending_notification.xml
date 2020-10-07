@@ -67,6 +67,7 @@
                         android:layout_weight="0">
 
                         <com.thriive.app.utilities.CircularSeekBar
+                            android:id="@+id/circular_seekbar"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
                             android:layout_gravity="center_horizontal"

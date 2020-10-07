@@ -8,6 +8,11 @@ public class SharedData {
 
 
     public static final String USER_ID = "USER_ID";
+    public static final String MEETING_TOKEN = "MEETING_TOKEN";
+    public static final String SHOW_DIALOG = "SHOW_DIALOG";
+    public static final String MEETING_ID = "MEETING_ID";
+    public static final String PUSH_TOKEN = "PUSH_TOKEN";
+    public static final String CALLING_NAME = "CALLING_NAME";
     Context context;
     SharedPreferences prefs;
     public static String first_time_open = "first_time_open";
@@ -16,7 +21,7 @@ public class SharedData {
     public static String subDomainId ="subDomainId";
     public static String isLogged = "isLogged";
     public static String isFirstVisit = "isFirstVisit";
-
+    public static String isMeetingRequestVisit = "isMeetingRequestVisit";
     public static String requestMeetingBook = "isFirstVisit";
 
     public static String PREFS_2 = "PREFS_2";
@@ -48,7 +53,7 @@ public class SharedData {
         editor.putBoolean(key,value);
         editor.apply();
     }
-    public  void clearPref(Context context) {
+    public void clearPref(Context context) {
         this.context = context;
         SharedPreferences preferences = context.getSharedPreferences(PREFS_2, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

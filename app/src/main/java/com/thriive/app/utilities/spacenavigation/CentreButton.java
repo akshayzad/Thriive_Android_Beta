@@ -20,7 +20,7 @@ public class CentreButton extends FloatingActionButton {
     public boolean onTouchEvent(MotionEvent ev) {
         boolean result = super.onTouchEvent(ev);
         if (!result) {
-            if(ev.getAction() == MotionEvent.ACTION_UP) {
+            if(ev.getAction() == MotionEvent.ACTION_MOVE) {
                 cancelLongPress();
             }
             setPressed(false);

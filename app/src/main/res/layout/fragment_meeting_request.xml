@@ -50,7 +50,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/_20dp">
                 <LinearLayout
-                    android:id="@+id/layout_meeting_request"
+                    android:id="@+id/layout_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -71,25 +71,14 @@
                         android:layout_margin="1dp"
                         android:text="Thriive connects you with the right people for your business or your professional development."></TextView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5dp"
-                        android:layout_marginBottom="@dimen/_10dp"
-                        android:orientation="vertical">
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_reason"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-                    </LinearLayout>
 
                 </LinearLayout>
 
-
                 <LinearLayout
-                    android:id="@+id/layout_meeting"
+                    android:id="@+id/layout_persona"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="match_parent"
@@ -97,7 +86,7 @@
                         android:fontFamily="@font/roboto_medium"
                         android:textColor="@color/darkGreyBlue"
                         android:textSize="@dimen/_16dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_margin="1dp"
                         android:text="@string/label_meeting_request"></TextView>
                     <TextView
@@ -106,133 +95,195 @@
                         android:fontFamily="@font/roboto_regular"
                         android:textColor="@color/darkGreyBlue"
                         android:textSize="@dimen/_14dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_margin="1dp"
                         android:text="@string/label_meeting_request1"></TextView>
 
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/label_expertise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@color/darkGreyBlue"
+                    android:textSize="@dimen/_17dp"
+                    android:layout_margin="1dp"
+                    android:visibility="gone"
+                    android:text="@string/tag_expertise"></TextView>
+
+                <TextView
+                    android:id="@+id/label_domain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@color/darkGreyBlue"
+                    android:textSize="@dimen/_17dp"
+                    android:layout_margin="1dp"
+                    android:visibility="gone"
+                    android:text="@string/tag_domain"></TextView>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_20dp"
+                    app:flexWrap="wrap"
+                    app:alignContent="stretch"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:orientation="vertical">
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:id="@+id/layout_lreason"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_5dp"
+                        android:layout_marginRight="@dimen/_5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:background="@drawable/circle_white"
                         android:orientation="horizontal">
-                        <LinearLayout
-                            android:id="@+id/layout_reason"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/txt_reason"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:paddingBottom="@dimen/_5dp"
-                            android:paddingTop="@dimen/_5dp"
-                            android:paddingLeft="@dimen/_10dp"
-                            android:paddingRight="@dimen/_10dp"
-                            android:layout_marginTop="@dimen/_5dp"
-                            android:layout_marginRight="@dimen/_5dp"
-                            android:layout_marginBottom="@dimen/_5dp"
-                            android:background="@drawable/circle_white"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:id="@+id/txt_reason"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_medium"
-                                android:textColor="@color/terracota"
-                                android:textSize="@dimen/_13dp"
-                                android:textAlignment="center"
-                                android:layout_marginLeft="@dimen/_5dp"
-                                android:layout_marginRight="@dimen/_5dp"
-                                android:layout_weight="1"
-                                android:text="@string/consulting"></TextView>
-                            <ImageView
-                                android:layout_width="@dimen/_12dp"
-                                android:layout_height="@dimen/_12dp"
-                                android:layout_weight="0"
-                                android:layout_marginLeft="2dp"
-                                android:src="@drawable/ic_edit"></ImageView>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layout_persona"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_weight="1"
-                            android:paddingBottom="@dimen/_5dp"
-                            android:paddingTop="@dimen/_5dp"
-                            android:paddingLeft="@dimen/_10dp"
-                            android:paddingRight="@dimen/_10dp"
-                            android:layout_marginRight="@dimen/_5dp"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/terracota"
+                            android:textSize="@dimen/_12dp"
+                            android:textAlignment="center"
                             android:layout_marginLeft="@dimen/_5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="@dimen/_5dp"
-                            android:background="@drawable/circle_white"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:id="@+id/txt_persona"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_medium"
-                                android:textColor="@color/terracota"
-                                android:textSize="@dimen/_13dp"
-                                android:layout_weight="01"
-                                android:textAlignment="center"
-                                android:layout_marginLeft="@dimen/_5dp"
-                                android:layout_marginRight="@dimen/_5dp"
-                                android:text="string consulting    jdhfjgdjfg fjgfj "></TextView>
-                            <ImageView
-                                android:layout_width="@dimen/_12dp"
-                                android:layout_height="@dimen/_12dp"
-                                android:layout_weight="0"
-                                android:layout_marginRight="2dp"
-                                android:src="@drawable/ic_edit"></ImageView>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layout_domains"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
+                            android:layout_marginRight="@dimen/_2dp"
                             android:layout_weight="1"
-                            android:paddingBottom="@dimen/_5dp"
-                            android:paddingTop="@dimen/_5dp"
-                            android:paddingLeft="@dimen/_10dp"
-                            android:paddingRight="@dimen/_10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="@dimen/_5dp"
-                            android:background="@drawable/circle_white"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:id="@+id/txt_domains"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_medium"
-                                android:textColor="@color/terracota"
-                                android:textSize="@dimen/_13dp"
-                                android:layout_weight="01"
-                                android:textAlignment="center"
-                                android:layout_marginLeft="@dimen/_5dp"
-                                android:layout_marginRight="@dimen/_5dp"
-                                android:text="string consulting"></TextView>
-                            <ImageView
-                                android:layout_width="@dimen/_12dp"
-                                android:layout_height="@dimen/_12dp"
-                                android:layout_weight="0"
-                                android:layout_marginRight="2dp"
-                                android:src="@drawable/ic_edit"></ImageView>
-                        </LinearLayout>
+                            android:text=""></TextView>
+                        <ImageView
+                            android:layout_width="@dimen/_12dp"
+                            android:layout_height="@dimen/_12dp"
+                            android:layout_weight="0"
+                            android:layout_marginLeft="2dp"
+                            android:src="@drawable/ic_edit"></ImageView>
                     </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_profession"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+                    <LinearLayout
+                        android:id="@+id/layout_lpersona"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:background="@drawable/circle_white"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/txt_persona"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/terracota"
+                            android:textSize="@dimen/_12dp"
+                            android:layout_weight="01"
+                            android:textAlignment="center"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginRight="@dimen/_2dp"
+                            android:text=""></TextView>
+                        <ImageView
+                            android:layout_width="@dimen/_12dp"
+                            android:layout_height="@dimen/_12dp"
+                            android:layout_weight="0"
+                            android:layout_marginRight="2dp"
+                            android:src="@drawable/ic_edit"></ImageView>
+                    </LinearLayout>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/layout_ldomain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:background="@drawable/circle_white"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/txt_domains"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/terracota"
+                            android:textSize="@dimen/_12dp"
+                            android:layout_weight="01"
+                            android:textAlignment="center"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginRight="@dimen/_2dp"
+                            android:text=""></TextView>
+                        <ImageView
+                            android:layout_width="@dimen/_12dp"
+                            android:layout_height="@dimen/_12dp"
+                            android:layout_weight="0"
+                            android:layout_marginRight="2dp"
+                            android:src="@drawable/ic_edit"></ImageView>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/layout_lexpertise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingLeft="@dimen/_10dp"
+                        android:paddingRight="@dimen/_10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:background="@drawable/circle_white"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/txt_expertise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textColor="@color/terracota"
+                            android:textSize="@dimen/_12dp"
+                            android:layout_weight="01"
+                            android:textAlignment="center"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginRight="@dimen/_2dp"
+                            android:text=""></TextView>
+                        <ImageView
+                            android:layout_width="@dimen/_12dp"
+                            android:layout_height="@dimen/_12dp"
+                            android:layout_weight="0"
+                            android:layout_marginRight="2dp"
+                            android:src="@drawable/ic_edit"></ImageView>
+                    </LinearLayout>
 
+                </com.google.android.flexbox.FlexboxLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_persona"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
                 <LinearLayout
                     android:id="@+id/layout_expertise"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/_2dp"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -241,7 +292,7 @@
                         android:layout_marginBottom="@dimen/_10dp"
                         android:orientation="horizontal">
                         <TextView
-                            android:id="@+id/label_expertise"
+                            android:id="@+id/label_expertise1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
@@ -255,6 +306,7 @@
                             android:layout_height="@dimen/_25dp"
                             android:layout_marginLeft="@dimen/_10dp"
                             android:layout_gravity="center"
+                            android:visibility="gone"
                             android:src="@drawable/ic_search"></ImageView>
                         <EditText
                             android:layout_width="200dp"
@@ -279,6 +331,7 @@
                     android:id="@+id/layout_domain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/_20dp"
                     android:orientation="vertical">
                     <LinearLayout
@@ -288,7 +341,7 @@
                         android:layout_marginBottom="3dp"
                         android:orientation="horizontal">
                         <TextView
-                            android:id="@+id/label_domain"
+                            android:id="@+id/label_domain1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
@@ -313,7 +366,7 @@
                             android:layout_gravity="center"
                             android:backgroundTint="#CCFFFFFF"
                             android:background="@drawable/rectangle_white"
-                            android:layout_marginLeft="@dimen/_5dp"></EditText>
+                            android:layout_marginLeft="@dimen/_0dp"></EditText>
 
                         <Switch
                             android:layout_width="wrap_content"
@@ -335,6 +388,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20dp"
+                    android:visibility="gone"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -366,6 +420,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20dp"
+                    android:visibility="gone"
+                    android:layout_marginLeft="2dp"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -393,6 +449,7 @@
                         android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/layout_meeting_preference"
                     android:layout_width="match_parent"
@@ -470,6 +527,7 @@
                         android:textSize="@dimen/_13dp"
                         android:textAlignment="center"
                         android:text="1/2"
+                        android:visibility="gone"
                         android:layout_marginTop="@dimen/_10dp"
                         android:textColor="@color/darkGrey"></TextView>
                     <TextView
@@ -477,6 +535,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
                         android:textSize="@dimen/_13dp"
+                        android:visibility="gone"
                         android:layout_marginBottom="@dimen/_20dp"
                         android:textAlignment="center"
                         android:text="You can request only two meetings a week"

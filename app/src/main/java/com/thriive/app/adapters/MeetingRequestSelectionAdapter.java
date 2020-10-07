@@ -77,8 +77,8 @@ public class MeetingRequestSelectionAdapter extends RecyclerView.Adapter<Meeting
 
                 currentItem = position;
                 notifyDataSetChanged();
-                ((MeetingRequestFragment) fragment ).meetingRequestExpertise();
-
+              //  ((MeetingRequestFragment) fragment ).meetingRequestExpertise();
+//
             }
         });
 
