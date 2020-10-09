@@ -133,7 +133,7 @@
                                             android:id="@+id/btn_linkedin"
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
-                                            android:background="@drawable/ic_linklined_white"
+                                            android:background="@drawable/ic_linklined"
                                             android:layout_marginRight="@dimen/_10dp"
                                             android:layout_weight="0"></Button>
                                         <Button
@@ -141,13 +141,13 @@
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
                                             android:layout_marginRight="@dimen/_10dp"
-                                            android:background="@drawable/ic_mail_white"
+                                            android:background="@drawable/ic_mail"
                                             android:layout_weight="0"></Button>
                                         <Button
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
                                             android:visibility="gone"
-                                            android:background="@drawable/ic_browser_white"
+                                            android:background="@drawable/ic_browser"
                                             android:layout_marginRight="@dimen/_10dp"
                                             android:layout_weight="0"></Button>
                                     </LinearLayout>

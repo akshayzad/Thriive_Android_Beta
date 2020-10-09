@@ -686,7 +686,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 //        Hey Samir, Thriive is now at work to find you the right business guru.
 //
 //                Expect a notification for your match within 48 hrs."
-        label_title.setText("Hey "+ loginPOJO.getFirstName() + ", " + getResources().getString(R.string.label_success_meeting));
+        label_title.setText("Hey "+ loginPOJO.getFirstName() + ", " + getResources().getString(R.string.label_success_meeting) + " "
+        + personaName + " "+ getResources().getString(R.string.label_success_meeting1));
         //    tv_msg.setText("Session Added Successfully.");
         builder.setView(view1);
         final AlertDialog dialogs = builder.create();

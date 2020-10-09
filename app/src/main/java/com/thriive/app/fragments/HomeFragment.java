@@ -186,7 +186,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onResume() {
         super.onResume();
-        refreshView.setRefreshing(true);
+        if (refreshView != null){
+            refreshView.setRefreshing(true);
+        }
+
         getMeetingHome();
     }
 
@@ -209,33 +212,36 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
              //       progressHUD.dismiss();
                     CommonHomePOJO pojo = response.body();
                     Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        if (pojo.getMeetingScheduledList() != null){
-                            scheduleListAdapter = new ScheduleListAdapter(getActivity(), (ArrayList<CommonMeetingListPOJO.MeetingListPOJO>) pojo.getMeetingScheduledList());
-                            recyclerSchedule.setAdapter(scheduleListAdapter);
-                        }
+                    if (pojo != null){
+                        if (pojo.getOK()) {
+                            if (pojo.getMeetingScheduledList() != null){
+                                scheduleListAdapter = new ScheduleListAdapter(getActivity(), (ArrayList<CommonMeetingListPOJO.MeetingListPOJO>) pojo.getMeetingScheduledList());
+                                recyclerSchedule.setAdapter(scheduleListAdapter);
+                            }
 
-                        if (pojo.getMeetingRequestList() != null)
-                        {
-                            requesterListAdapter = new RequesterListAdapter(getActivity(), (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                            recyclerRequester.setAdapter(requesterListAdapter);
-                        }
+                            if (pojo.getMeetingRequestList() != null)
+                            {
+                                requesterListAdapter = new RequesterListAdapter(getActivity(), (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
+                                recyclerRequester.setAdapter(requesterListAdapter);
+                            }
 
-                        if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
+                            if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
 
-                            layout_data.setVisibility(View.VISIBLE);
-                            layout_noMeeting.setVisibility(View.GONE);
+                                layout_data.setVisibility(View.VISIBLE);
+                                layout_noMeeting.setVisibility(View.GONE);
+                            } else {
+                                layout_data.setVisibility(View.VISIBLE);
+                                layout_noMeeting.setVisibility(View.GONE);
+                            }
+                            ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
+                            // recycler_requested.setAdapter(requestedAdapter);
+                            Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+
                         } else {
-                            layout_data.setVisibility(View.VISIBLE);
-                            layout_noMeeting.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                        ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
-                        // recycler_requested.setAdapter(requestedAdapter);
-                        Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+
 
                     if(refreshView != null) {
                         refreshView.setRefreshing(false);
@@ -245,45 +251,6 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onFailure(Call<CommonHomePOJO> call, Throwable t) {
              //   progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-
-    private void getMeetingRequest() {
-        progressHUD = KProgressHUD.create(getContext())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
-            @Override
-            public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    PendingMeetingRequestPOJO pojo = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        requesterListAdapter = new RequesterListAdapter(getActivity(), (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                        recyclerRequester.setAdapter(requesterListAdapter);
-                        // recycler_requested.setAdapter(requestedAdapter);
-                        Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-
-                }
-            }
-            @Override
-            public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
-                progressHUD.dismiss();
                 Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
             }
         });

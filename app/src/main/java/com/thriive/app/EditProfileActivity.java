@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.multidex.BuildConfig;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -199,7 +200,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             case R.id.ib_photo:
 
-               // editProfilePhoto();
+               editProfilePhoto();
 
                 break;
 
@@ -229,8 +230,17 @@ public class EditProfileActivity extends AppCompatActivity {
                     CropImage.ActivityResult result = CropImage.getActivityResult(data);
                     final Uri imgResult = result.getUri();
                     String path = imgResult.getPath();
-                    File compressedImageFile = new File(SiliCompressor.with(this).compress(path,
+                    File imgFile = new File(SiliCompressor.with(this).compress(path,
                             new File("/storage/emulated/0/Thriive/.nomedia"), true));
+
+                   // File imgFile = new File(path);
+                    if (imgFile.exists() && imgFile.length() > 0) {
+                        Bitmap bm = BitmapFactory.decodeFile(String.valueOf(imgFile));
+                        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.JPEG, 100, bOut);
+                        String base64Image = Base64.encodeToString(bOut.toByteArray(), Base64.DEFAULT);
+                    }
+
 
                     getEntityPhoto(getBase64FromFile(path));
                     break;
@@ -270,7 +280,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
                         setData();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 }

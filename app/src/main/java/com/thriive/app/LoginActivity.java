@@ -316,18 +316,21 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         Log.d(TAG, response.toString());
                         LoginPOJO loginPOJO = response.body();
                         progressHUD.dismiss();
-                        if (loginPOJO.getOK()) {
-                            Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
-                            Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                            sharedData.addBooleanData(SharedData.isLogged, true);
-                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                            intent.putExtra("intent_type", "FLOW");
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (loginPOJO != null){
+                            if (loginPOJO.getOK()) {
+                                if (loginPOJO.getReturnEntity() != null){
+                                    Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+                                    Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    sharedData.addBooleanData(SharedData.isLogged, true);
+                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                    intent.putExtra("intent_type", "FLOW");
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            } else {
+                                Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-
                     }
                 }
                 @Override
@@ -374,12 +377,12 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         progressHUD.dismiss();
      //   GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
-            String personName = acct.getDisplayName();
-            String personGivenName = acct.getGivenName();
-            String personFamilyName = acct.getFamilyName();
+//            String personName = acct.getDisplayName();
+//            String personGivenName = acct.getGivenName();
+//            String personFamilyName = acct.getFamilyName();
             email = acct.getEmail();
-            String personId = acct.getId();
-            Uri personPhoto = acct.getPhotoUrl();
+//            String personId = acct.getId();
+//            Uri personPhoto = acct.getPhotoUrl();
             getLogin();
 
         }

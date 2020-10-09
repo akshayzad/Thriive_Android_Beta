@@ -30,7 +30,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-        ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+       // ndk.abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,15 +52,15 @@ android {
 //        }
 //    }
 
-    sourceSets {
-        main {
-            res {
-                srcDirs 'src/main/res', 'src/main/res/menu', 'src/main/res/font'
-            }
-            jniLibs.srcDirs = ['libs']
-            assets.srcDirs = ['src/main/assets', 'src/main/assets/raw']
-        }
-    }
+//    sourceSets {
+//        main {
+//            res {
+//                srcDirs 'src/main/res', 'src/main/res/menu', 'src/main/res/font'
+//            }
+//            jniLibs.srcDirs = ['libs']
+//            assets.srcDirs = ['src/main/assets', 'src/main/assets/raw']
+//        }
+//    }
 
 }
 
@@ -102,4 +102,6 @@ dependencies {
     implementation 'com.onesignal:OneSignal:3.15.3'
     implementation 'org.greenrobot:eventbus:3.1.1'
     // 'me.tankery.lib:circularSeekBar:1.3.0'
+
+    implementation 'io.agora.rtc:full-sdk:3.0.0'
 }

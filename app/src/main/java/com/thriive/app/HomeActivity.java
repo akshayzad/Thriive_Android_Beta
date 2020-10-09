@@ -95,7 +95,10 @@ public class HomeActivity extends AppCompatActivity {
 
         sharedData = new SharedData(getApplicationContext());
         loginPOJO  = Utility.getLoginData(getApplicationContext());
-        sharedData.addIntData(SharedData.USER_ID, loginPOJO.getEntityId());
+        if (loginPOJO != null){
+            sharedData.addIntData(SharedData.USER_ID, loginPOJO.getEntityId());
+        }
+
 
         String mydate = "2020-10-06T16:30:00";
         String utc = "2020-10-06T16:30:00";
@@ -339,20 +342,11 @@ public class HomeActivity extends AppCompatActivity {
         txt_didntMeet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
-                txt_didntMeet.setTextColor(getResources().getColor(R.color.terracota));
-
-                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+                selectedReason(txt_didntMeet);
+                setUnSelectedReason(txt_reason1);
+                setUnSelectedReason(txt_reason2);
+                setUnSelectedReason(txt_reason3);
+                setUnSelectedReason(txt_reason4);
 
                 dialogs.dismiss();
                 String reason = txt_didntMeet.getText().toString();
@@ -363,20 +357,11 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txt_reason1.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
-                txt_reason1.setTextColor(getResources().getColor(R.color.terracota));
-
-                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+                selectedReason(txt_reason1);
+                setUnSelectedReason(txt_reason4);
+                setUnSelectedReason(txt_reason2);
+                setUnSelectedReason(txt_reason3);
+                setUnSelectedReason(txt_didntMeet);
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
@@ -392,20 +377,11 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txt_reason2.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
-                txt_reason2.setTextColor(getResources().getColor(R.color.terracota));
-
-                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+                selectedReason(txt_reason2);
+                setUnSelectedReason(txt_reason1);
+                setUnSelectedReason(txt_reason4);
+                setUnSelectedReason(txt_reason3);
+                setUnSelectedReason(txt_didntMeet);
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
@@ -419,20 +395,11 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txt_reason3.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
-                txt_reason3.setTextColor(getResources().getColor(R.color.terracota));
-
-                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+                selectedReason(txt_reason3);
+                setUnSelectedReason(txt_reason1);
+                setUnSelectedReason(txt_reason2);
+                setUnSelectedReason(txt_reason4);
+                setUnSelectedReason(txt_didntMeet);
 
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
@@ -447,20 +414,11 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                txt_reason4.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
-                txt_reason4.setTextColor(getResources().getColor(R.color.terracota));
-
-                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
-
-                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
-                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
+                selectedReason(txt_reason4);
+                setUnSelectedReason(txt_reason1);
+                setUnSelectedReason(txt_reason2);
+                setUnSelectedReason(txt_reason3);
+                setUnSelectedReason(txt_didntMeet);
 
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
@@ -484,6 +442,18 @@ public class HomeActivity extends AppCompatActivity {
         dialogs.show();
 
 
+
+    }
+
+    private  void selectedReason(TextView textView){
+        textView.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+        textView.setTextColor(getResources().getColor(R.color.terracota));
+    }
+
+    private void setUnSelectedReason(TextView textView)
+    {
+        textView.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+        textView.setTextColor(getResources().getColor(R.color.darkGrey));
 
     }
 

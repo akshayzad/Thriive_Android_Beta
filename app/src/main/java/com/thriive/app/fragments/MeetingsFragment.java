@@ -68,11 +68,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private RequestedAdapter requestedAdapter;
-    private ScheduledAdapter scheduledAdapter;
-
-    private ArrayList<CommonRequesterPOJO> requesterPOJOArrayList = new ArrayList<>();
-
 
     @BindView(R.id.txt_noRequest)
     TextView txt_noRequest;
@@ -85,29 +80,31 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     @BindView(R.id.refresh_view)
     SwipeRefreshLayout refreshView;
     Unbinder unbinder;
-
-    private LinearLayoutManager layoutManagerSchedule;
-
-
-//    @BindView(R.id.txt_name)
-//    TextView txt_name;
-
     @BindView(R.id.txt_schedule)
     TextView txt_schedule;
     @BindView(R.id.txt_request)
     TextView txt_request;
 
-    APIInterface apiInterface;
+    private LinearLayoutManager layoutManagerSchedule;
+    private LinearLayoutManager layoutManagerRequested;
+    private ScrollingPagerIndicator recyclerIndicator, recyclerIndicator1;
+//    @BindView(R.id.txt_name)
+//    TextView txt_name;
+
+
+    private RequestedAdapter requestedAdapter;
+    private ScheduledAdapter scheduledAdapter;
+
+    private APIInterface apiInterface;
     private LoginPOJO.ReturnEntity loginPOJO;
     private SharedData sharedData;
 
     public static String TAG = MeetingsFragment.class.getName();
     private  String startTime, endTime, meetingCode, selectedDate;
 
-    private ScrollingPagerIndicator recyclerIndicator, recyclerIndicator1;
-    private  KProgressHUD progressHUD;
+    private KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
-    private LinearLayoutManager layoutManagerRequested;
+
     private String schedule_date = "", request_date = "";
     public MeetingsFragment() {
         // Required empty public constructor
@@ -158,28 +155,23 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         View view =  inflater.inflate(R.layout.fragment_meeetings, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        loginPOJO = Utility.getLoginData(getContext());
+        loginPOJO = Utility.getLoginData(getActivity());
         apiInterface = APIClient.getApiInterface();
+        sharedData = new SharedData(getActivity());
 
-        sharedData = new SharedData(getContext());
-        requesterPOJOArrayList.add(new CommonRequesterPOJO());
-        requesterPOJOArrayList.add(new CommonRequesterPOJO());
-        requesterPOJOArrayList.add(new CommonRequesterPOJO());
+        Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
 
         //txt_name.setText("Welcome, " + loginPOJO.getFirstName());
         recyclerIndicator = view.findViewById(R.id.indicator_requster);
         recyclerIndicator1 = view.findViewById(R.id.indicator_schedule);
-     //   getMeetingRequest();
-       // getPendingRequest();
+
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
-        // cAdapter.removeAll();
         refreshView.setRefreshing(false);
 
-        Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
 
         layoutManagerSchedule = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false);
@@ -227,10 +219,16 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         getMeetingRequest();
     }
 
+    @Override
+    public void onRefresh() {
+        if (refreshView != null){
+            refreshView.setRefreshing(true);
+        }
 
+        onResume();
+    }
 
     private void getScheduledMeeting() {
-
         Call<CommonMeetingListPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
@@ -241,37 +239,91 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                   //  progressHUD.dismiss();
                     CommonMeetingListPOJO pojo = response.body();
                     Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        if (pojo.getMeetingList() != null){
-                            scheduledAdapter = new ScheduledAdapter(getActivity(),MeetingsFragment.this,pojo.getMeetingList());
-                            recycler_scheduled.setLayoutManager(layoutManagerSchedule);
-                            recycler_scheduled.setAdapter(scheduledAdapter);
-                            recyclerIndicator1.attachToRecyclerView(recycler_scheduled);
-                            if (pojo.getMeetingList().size() == 0){
-                                txt_noSchedule.setVisibility(View.VISIBLE);
-                                txt_schedule.setText("");
-                            }else {
-                                txt_noSchedule.setVisibility(View.GONE);
-                                schedule_date = scheduledAdapter.getDate(0);
-                                txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+                    if (pojo != null){
+                        if (pojo.getOK()) {
+                            if (pojo.getMeetingList() != null){
+                                scheduledAdapter = new ScheduledAdapter(getActivity(),MeetingsFragment.this,pojo.getMeetingList());
+                                recycler_scheduled.setLayoutManager(layoutManagerSchedule);
+                                recycler_scheduled.setAdapter(scheduledAdapter);
+                                recyclerIndicator1.attachToRecyclerView(recycler_scheduled);
+                                if (pojo.getMeetingList().size() == 0){
+                                    txt_noSchedule.setVisibility(View.VISIBLE);
+                                    txt_schedule.setText("");
+                                }else {
+                                    txt_noSchedule.setVisibility(View.GONE);
+                                    schedule_date = scheduledAdapter.getDate(0);
+                                    txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+
+                                }
 
                             }
+                            Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        }
+                        }  // recycler_requested.setAdapter(requestedAdapter);
 
-                        // recycler_requested.setAdapter(requestedAdapter);
-                        Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
             }
             @Override
             public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
               //  progressHUD.dismiss();
+                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    private void getMeetingRequest() {
+        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
+        call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
+            @Override
+            public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    // progressHUD.dismiss();
+                    PendingMeetingRequestPOJO pojo = response.body();
+                    Log.d(TAG,""+pojo.getMessage());
+                    if (pojo != null){
+                        if (pojo.getOK()) {
+                            if (pojo.getMeetingRequestList() != null){
+                                requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
+                                        (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
+                                recycler_requested.setLayoutManager(layoutManagerRequested);
+                                recycler_requested.setAdapter(requestedAdapter);
+                                recyclerIndicator.attachToRecyclerView(recycler_requested);
+                            }
+                        } else {
+                            Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (pojo.getMeetingRequestList() == null){
+                            txt_noRequest.setVisibility(View.VISIBLE);
+                            txt_request.setText("");
+                        } else {
+                            if (pojo.getMeetingRequestList().size() == 0)
+                            {
+                                txt_noRequest.setVisibility(View.VISIBLE);
+                                txt_request.setText("");
+                            } else {
+                                txt_noRequest.setVisibility(View.GONE);
+                                request_date = requestedAdapter.getDate(0);
+                                txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+
+                            }
+                        }
+                    }
+                    if (refreshView != null) {
+                        refreshView.setRefreshing(false);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
+                //progressHUD.dismiss();
                 Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -294,18 +346,17 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     CommonStartMeetingPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
                      Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        meetingDataPOJO = reasonPOJO.getMeetingData();
-                        sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
-                        callMeeting();
-                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                          Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                          EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
-                    }
-
-
-
+                     if (reasonPOJO != null){
+                         if (reasonPOJO.getOK()) {
+                             meetingDataPOJO = reasonPOJO.getMeetingData();
+                             sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+                             callMeeting();
+                             Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                         } else {
+                             Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                             EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                         }
+                     }
                 }
             }
             @Override
@@ -335,61 +386,6 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    private void getMeetingRequest() {
-//        progressHUD = KProgressHUD.create(getContext())
-//                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-//                .setLabel("Please wait")
-//                .setCancellable(false)
-//                .show();
-        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
-            @Override
-            public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                   // progressHUD.dismiss();
-                    PendingMeetingRequestPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
-                                (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                        recycler_requested.setLayoutManager(layoutManagerRequested);
-                        recycler_requested.setAdapter(requestedAdapter);
-
-                        recyclerIndicator.attachToRecyclerView(recycler_requested);
-                       // recycler_requested.setAdapter(requestedAdapter);
-//                        Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    if (pojo.getMeetingRequestList().size() == 0)
-                    {
-                        txt_noRequest.setVisibility(View.VISIBLE);
-                        txt_request.setText("");
-                    } else {
-                        txt_noRequest.setVisibility(View.GONE);
-                        request_date = requestedAdapter.getDate(0);
-                        txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
-
-                    }
-                    if (refreshView != null)
-                    {
-                        refreshView.setRefreshing(false);
-                    }
-
-                }
-            }
-            @Override
-            public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
-                //progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
     public void getMeetingSlot(String m) {
         meetingCode = ""+m;
@@ -398,24 +394,25 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
+        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(""+loginPOJO.getActiveToken(), ""+loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
             @SuppressLint("NewApi")
             @Override
             public void onResponse(Call<CommonEntitySlotsPOJO> call, Response<CommonEntitySlotsPOJO> response) {
                 if(response.isSuccessful()) {
                     Log.d(TAG, response.toString());
-                    CommonEntitySlotsPOJO reasonPOJO = response.body();
+                    CommonEntitySlotsPOJO pojo = response.body();
                     progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,""+pojo.getMessage());
+                    if (pojo != null){
+                        if (pojo.getOK()) {
+                            //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            meetingAvailability(pojo.getEntitySlotList());
 
+                        } else {
+                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
 
-                        meetingAvailability(reasonPOJO.getEntitySlotList());
-
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
 
@@ -442,8 +439,6 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
         LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
 
-
-
         ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
         ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
         ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
@@ -462,55 +457,55 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         layout2.setVisibility(View.GONE);
         layout3.setVisibility(View.GONE);
 
-        if (entitySlotList.size() == 0) {
-            edit.setVisibility(View.GONE);
-        } else if (entitySlotList.size() == 1){
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++)
-            {
-
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                layout2.setVisibility(View.VISIBLE);
-                txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                        Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-//                startTime = slotList.getPlanStartTime();
-//                endTime = slotList.getPlanEndTime();
-            }
-        } else {
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++)
-            {
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                if(i == 0){
-                    layout1.setVisibility(View.VISIBLE);
-                    txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                } else  if(i == 1){
+        if (entitySlotList != null){
+            if (entitySlotList.size() == 0) {
+                edit.setVisibility(View.GONE);
+            } else if (entitySlotList.size() == 1){
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++) {
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
                     layout2.setVisibility(View.VISIBLE);
                     txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
                     txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
                             Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
                     startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
+//                startTime = slotList.getPlanStartTime();
+//                endTime = slotList.getPlanEndTime();
+                }
+            } else {
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++) {
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
+                    if(i == 0){
+                        layout1.setVisibility(View.VISIBLE);
+                        txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                    } else if(i == 1){
+                        layout2.setVisibility(View.VISIBLE);
+                        txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                        startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
 //                    startTime = slotList.getPlanStartTime();
 //                    endTime = slotList.getPlanEndTime();
-                    //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                        //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
-                } else  if(i == 2){
-                    layout3.setVisibility(View.VISIBLE);
-                    txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                    } else if(i == 2){
+                        layout3.setVisibility(View.VISIBLE);
+                        txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
-                    // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                        // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
+                    }
                 }
             }
         }
+
 
         layout1.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NewApi")
@@ -520,26 +515,9 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
 //                startTime = entitySlotList.get(0).getPlanStartTime();
 //                endTime = entitySlotList.get(0).getPlanEndTime();
-                layout1.setBackground(getActivity().getDrawable(R.drawable.rectangle_tarccoto_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.rectangle_grey_half_outline));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_date2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_time2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
+                setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                selectDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -559,28 +537,10 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
                 }
-            //    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
-             //   endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
-                layout1.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.half_outline_tarracco));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
 
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date2.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_date3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time2.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_time3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
+                setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -594,26 +554,9 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 //                endTime = entitySlotList.get(2).getPlanEndTime();
                 startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
                 endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
-                layout1.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.rectangle_grey_half_outline));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.rectangle_tarccoto_outline));
-
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date3.setTextColor(getActivity().getColor(R.color.terracota));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time3.setTextColor(getActivity().getColor(R.color.terracota));
+                selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -652,6 +595,23 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
+    private void selectDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
+        textDate.setTextColor(getActivity().getResources().getColor(R.color.terracota));
+        textTime.setTextColor(getActivity().getResources().getColor(R.color.terracota));
+        imageDate.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_calender_t));
+        imageTime.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_time_t));
+        linearLayout.setBackground(getActivity().getResources().getDrawable(R.drawable.rectangle_tarccoto_outline));
+
+    }
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setUnSelectedDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
+        textDate.setTextColor(getActivity().getResources().getColor(R.color.darkGreyBlue));
+        textTime.setTextColor(getActivity().getResources().getColor(R.color.darkGreyBlue));
+        imageDate.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
+        imageTime.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
+        linearLayout.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
+
+    }
 
     public void meetingEditDate() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
@@ -777,10 +737,5 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    @Override
-    public void onRefresh() {
-        refreshView.setRefreshing(true);
-        onResume();
 
-    }
 }

@@ -89,7 +89,9 @@
         Go ahead and request a meeting to find the right person.\n\n as text with font weight light
         and font size the same as the date on the page</string>
     <string name="no_request">No meetings requested</string>
-    <string name="label_success_meeting">Thriive is now at work to find you the right business guru.\n\nExpect a notification for your match within 48 hrs.</string>
+    <string name="label_success_meeting">Thriive is now at work to find you the right</string>
+
+    <string name="label_success_meeting1">\n\nExpect a notification for your match within 48 hrs.</string>
     <string name="no_domain">Sorry, we couldn\'t find what you were looking for.\nTry with a different keyword.</string>
 
 

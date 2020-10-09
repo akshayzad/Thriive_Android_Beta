@@ -345,12 +345,6 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dismiss();
-    }
-
     private void getToLinkedin() {
         if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
             if (meetingListPOJO.getGiverLinkedinUrl().equals("")){
@@ -580,26 +574,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
 //                startTime = entitySlotList.get(0).getPlanStartTime();
 //                endTime = entitySlotList.get(0).getPlanEndTime();
-                layout1.setBackground(getActivity().getDrawable(R.drawable.rectangle_tarccoto_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.rectangle_grey_half_outline));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_date2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_time2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
+                setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
+                selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
+                setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -620,26 +597,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
 //                startTime = entitySlotList.get(1).getPlanStartTime();
 //                endTime = entitySlotList.get(1).getPlanEndTime();
-                layout1.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.half_outline_tarracco));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date2.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_date3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time2.setTextColor(getActivity().getColor(R.color.terracota));
-                txt_time3.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
+                setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -653,26 +613,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
 //                startTime = entitySlotList.get(2).getPlanStartTime();
 //                endTime = entitySlotList.get(2).getPlanEndTime();
-                layout1.setBackground(getActivity().getDrawable(R.drawable.reactangle_grey_outline));
-                layout2.setBackground(getActivity().getDrawable(R.drawable.rectangle_grey_half_outline));
-                layout3.setBackground(getActivity().getDrawable(R.drawable.rectangle_tarccoto_outline));
-
-                img_date1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender));
-                img_date3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_calender_t));
-
-                img_time1.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time2.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time));
-                img_time3.setImageDrawable(getActivity().getDrawable(R.drawable.ic_time_t));
-
-                txt_date1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_date3.setTextColor(getActivity().getColor(R.color.terracota));
-
-
-                txt_time1.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time2.setTextColor(getActivity().getColor(R.color.darkGreyBlue));
-                txt_time3.setTextColor(getActivity().getColor(R.color.terracota));
+                selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
             }
         });
@@ -708,6 +651,23 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
     }
 
+    private void selectDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
+        textDate.setTextColor(getActivity().getResources().getColor(R.color.terracota));
+        textTime.setTextColor(getActivity().getResources().getColor(R.color.terracota));
+        imageDate.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_calender_t));
+        imageTime.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_time_t));
+        linearLayout.setBackground(getActivity().getResources().getDrawable(R.drawable.rectangle_tarccoto_outline));
+
+    }
+
+    private void setUnSelectedDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
+        textDate.setTextColor(getActivity().getResources().getColor(R.color.darkGreyBlue));
+        textTime.setTextColor(getActivity().getResources().getColor(R.color.darkGreyBlue));
+        imageDate.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_calender));
+        imageTime.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_time));
+        linearLayout.setBackground(getActivity().getResources().getDrawable(R.drawable.reactangle_grey_outline));
+
+    }
 
     public void meetingEditDate() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
