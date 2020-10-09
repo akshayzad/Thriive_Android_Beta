@@ -284,7 +284,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
             if (UUID  == null) {
                 UUID = "";
-            }progressHUD = KProgressHUD.create(this)
+            }
+            progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
                     .setCancellable(false)
@@ -299,7 +300,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         Log.d(TAG, response.toString());
                         LoginPOJO loginPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG, loginPOJO.getMessage());
+                        Log.d(TAG, ""+loginPOJO.getMessage());
                         if (loginPOJO != null){
                             if (loginPOJO.getOK()) {
                                 if (loginPOJO.getReturnEntity() != null){
@@ -328,7 +329,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                 @Override
                 public void onFailure(Call<LoginPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                       Toast.makeText(LoginActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    //Log.d
+                    Toast.makeText(LoginActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){

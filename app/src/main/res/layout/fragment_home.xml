@@ -108,9 +108,14 @@
         android:id="@+id/layout_noMeeting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/home_idle"
         android:visibility="invisible"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-70dp"
+            android:src="@drawable/home_idle"></ImageView>
 <!--        <LinearLayout-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->

@@ -481,7 +481,7 @@ public class LoginPOJO {
         @SerializedName("flag_requestor_persona")
         private Boolean flagRequestorPersona;
         @SerializedName("v_exp_years")
-        private Double vExpYears;
+        private String vExpYears;
         @SerializedName("v_funds_raised")
         private Double vFundsRaised;
         @SerializedName("v_company_size")
@@ -571,11 +571,11 @@ public class LoginPOJO {
             this.flagRequestorPersona = flagRequestorPersona;
         }
 
-        public Double getvExpYears() {
+        public String getvExpYears() {
             return vExpYears;
         }
 
-        public void setvExpYears(Double vExpYears) {
+        public void setvExpYears(String vExpYears) {
             this.vExpYears = vExpYears;
         }
 

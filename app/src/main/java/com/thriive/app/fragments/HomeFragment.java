@@ -231,8 +231,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                             if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
 
-                                layout_data.setVisibility(View.GONE);
-                                layout_noMeeting.setVisibility(View.VISIBLE);
+                                layout_data.setVisibility(View.VISIBLE);
+                                layout_noMeeting.setVisibility(View.GONE);
                             } else {
                                 layout_data.setVisibility(View.VISIBLE);
                                 layout_noMeeting.setVisibility(View.GONE);
