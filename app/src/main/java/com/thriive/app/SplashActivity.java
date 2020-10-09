@@ -50,10 +50,17 @@ public class SplashActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             public void run() {
                 if (sharedData.getBooleanData(SharedData.isLogged)){
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.putExtra("intent_type", "FLOW");
-                    startActivity(intent);
-                    finishAffinity();
+                    if (sharedData.getBooleanData(SharedData.isFirstVisit)){
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.putExtra("intent_type", "FLOW");
+                        startActivity(intent);
+                        finishAffinity();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
+                        intent.putExtra("intent_type", "FLOW");
+                        startActivity(intent);
+                        finishAffinity();
+                    }
 
                 } else {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

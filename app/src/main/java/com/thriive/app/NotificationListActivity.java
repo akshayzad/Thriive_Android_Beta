@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -368,8 +369,15 @@ public class NotificationListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        //EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, "20"));
+        if (isTaskRoot()) {
+            Intent i = new Intent(NotificationListActivity.this, HomeActivity.class);
+            i.putExtra("intent_type", "FLOW");
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            super.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void getMeetingSlote() {

@@ -6,27 +6,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.multidex.BuildConfig;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
+
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
@@ -38,7 +29,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.onesignal.OneSignal;
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken;
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress;
@@ -48,21 +38,11 @@ import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonPOJO;
-import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.Validation;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -85,8 +65,13 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     private static final int GOOGLE_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
 
-    private String CLIENT_ID = "7884jv1r7np0qe";
-    private String CLIENT_SECRET = "gaWSVUjMqPu3GU09";
+//    86oqo8213yzpzp
+//            clientid
+//    clientsecret
+//0GfLX8S6YeciFU8x
+
+    private String CLIENT_ID = "86oqo8213yzpzp";
+    private String CLIENT_SECRET = "0GfLX8S6YeciFU8x";
 //
 //    Client Secret: gaWSVUjMqPu3GU09
     //String REDIRECTION_URL = "http://localhost:4200/";
@@ -126,17 +111,22 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
         mGoogleSignInClient.signOut();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            try{
-                time_stamp =""+ Utility.getTimeStamp();
-            } catch (Exception e){
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                try{
+                    time_stamp =""+ Utility.getTimeStamp();
+                } catch (Exception e){
 
+                }
+            } else {
+                TimeZone timeZone = TimeZone.getDefault();
+                Log.d(TAG, "time zone "+ timeZone.getID());
+                time_stamp = timeZone.getID();
             }
-        } else {
-            TimeZone timeZone = TimeZone.getDefault();
-            Log.d(TAG, "time zone "+ timeZone.getID());
-            time_stamp = timeZone.getID();
+        } catch(Exception e){
+            e.getMessage();
         }
+
 
 
 
@@ -257,24 +247,21 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 100 && data != null) {
             if (resultCode == RESULT_OK) {
                 //Successfully signed in
                 LinkedInUser user = data.getParcelableExtra("social_login");
-
+                login_method = "linkedin";
                 //acessing user info
-                Log.i("LinkedInLogin", user.getFirstName());
+                Log.d(TAG,"LinkedInLogin" + user.getFirstName());
+                Log.d(TAG,"LinkedInLogin" + user.getEmail());
                 email = user.getEmail();
                 getLogin();
 
             } else {
-
                 if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_USER_DENIED) {
                     //Handle : user denied access to account
-
                 } else if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_FAILED) {
-
                     //Handle : Error in API : see logcat output for details
                     Log.e("LINKEDIN ERROR", data.getStringExtra("err_message"));
                 }
@@ -297,11 +284,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
             if (UUID  == null) {
                 UUID = "";
-            }
-
-
-
-            progressHUD = KProgressHUD.create(this)
+            }progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
                     .setCancellable(false)
@@ -316,13 +299,14 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         Log.d(TAG, response.toString());
                         LoginPOJO loginPOJO = response.body();
                         progressHUD.dismiss();
+                        Log.d(TAG, loginPOJO.getMessage());
                         if (loginPOJO != null){
                             if (loginPOJO.getOK()) {
                                 if (loginPOJO.getReturnEntity() != null){
                                     Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
                                     Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                     sharedData.addBooleanData(SharedData.isLogged, true);
-                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
                                     intent.putExtra("intent_type", "FLOW");
                                     startActivity(intent);
                                     finish();
@@ -331,12 +315,20 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                                 Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
+                        else {
+                            Log.d(TAG,  " FAIL" +  response.toString());
+                            Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d(TAG,  " FAIL" +  response.toString());
+                        Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
                     }
+
                 }
                 @Override
                 public void onFailure(Call<LoginPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                       Toast.makeText(LoginActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -388,53 +380,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         }
     }
 
-    @Override
-    public void onGetAccessTokenFailed() {
 
-    }
-
-    @Override
-    public void onGetAccessTokenSuccess(LinkedInAccessToken linkedInAccessToken) {
-
-    }
-
-    @Override
-    public void onGetCodeFailed() {
-
-    }
-
-    @Override
-    public void onGetCodeSuccess(String code) {
-
-    }
-
-    @Override
-    public void onGetProfileDataFailed() {
-
-    }
-
-    @Override
-    public void onGetProfileDataSuccess(LinkedInUserProfile linkedInUserProfile) {
-        linkedInUserProfile.getImageURL(); // user's Image URL
-        linkedInUserProfile.getUserName().getFirstName().getLocalized().getEn_US(); // User's first name
-        linkedInUserProfile.getUserName().getLastName().getLocalized().getEn_US(); // User's last name
-        linkedInUserProfile.getUserName().getId(); // User's profile ID
-        Toast.makeText(this, ""+linkedInUserProfile.getUserName(), Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
-    public void onGetEmailAddressFailed() {
-
-    }
-
-    @Override
-    public void onGetEmailAddressSuccess(LinkedInEmailAddress linkedInEmailAddress) {
-        email = linkedInEmailAddress.getEmailAddress();
-        getLogin();
-        Toast.makeText(this, ""+linkedInEmailAddress.getEmailAddress(), Toast.LENGTH_SHORT).show();
-
-    }
 
     public void dialogForgetPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.SheetDialog);
@@ -516,4 +462,43 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     }
 
 
+    @Override
+    public void onGetAccessTokenFailed() {
+
+    }
+
+    @Override
+    public void onGetAccessTokenSuccess(LinkedInAccessToken linkedInAccessToken) {
+
+    }
+
+    @Override
+    public void onGetCodeFailed() {
+
+    }
+
+    @Override
+    public void onGetCodeSuccess(String code) {
+
+    }
+
+    @Override
+    public void onGetProfileDataFailed() {
+
+    }
+
+    @Override
+    public void onGetProfileDataSuccess(LinkedInUserProfile linkedInUserProfile) {
+
+    }
+
+    @Override
+    public void onGetEmailAddressFailed() {
+
+    }
+
+    @Override
+    public void onGetEmailAddressSuccess(LinkedInEmailAddress linkedInEmailAddress) {
+
+    }
 }

@@ -107,23 +107,24 @@
     <RelativeLayout
         android:id="@+id/layout_noMeeting"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/home_idle"
         android:visibility="invisible"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/layout1"
-            android:layout_above="@id/layout3"
-            android:layout_weight="1">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:id="@+id/layout1"-->
+<!--            android:layout_above="@id/layout3"-->
+<!--            android:layout_weight="1">-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_10dp"
                 android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="@dimen/_40dp"
+                android:padding="15dp"
+                android:layout_marginTop="70dp"
                 android:layout_marginBottom="@dimen/_10dp"
                 android:orientation="horizontal">
                 <TextView
@@ -145,86 +146,86 @@
                     android:textColor="@color/darkGrey"
                     android:text="Samir" />
             </LinearLayout>
-            <TextView
-                android:id="@+id/txt_12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_16dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:layout_marginTop="@dimen/_10dp"
-                android:textColor="@color/darkGrey"
-                android:text="@string/no_schedule" />
+<!--            <TextView-->
+<!--                android:id="@+id/txt_12"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/roboto_bold"-->
+<!--                android:textSize="@dimen/_16dp"-->
+<!--                android:layout_marginLeft="@dimen/_10dp"-->
+<!--                android:layout_marginRight="@dimen/_10dp"-->
+<!--                android:layout_marginTop="@dimen/_10dp"-->
+<!--                android:textColor="@color/darkGrey"-->
+<!--                android:text="@string/no_schedule" />-->
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/_5dp"
-                android:layout_marginLeft="@dimen/_5dp"
-                android:layout_marginTop="-60dp"
-                android:src="@drawable/no_meetings"></ImageView>
+<!--            <ImageView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginRight="@dimen/_5dp"-->
+<!--                android:layout_marginLeft="@dimen/_5dp"-->
+<!--                android:layout_marginTop="-60dp"-->
+<!--                android:src="@drawable/no_meetings"></ImageView>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
 
 
-        <RelativeLayout
-            android:id="@+id/layout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_5dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true">
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/layout3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="@dimen/_5dp"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_alignParentBottom="true">-->
 
-            <RelativeLayout
-                android:id="@+id/layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/layout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical"-->
+<!--                android:layout_marginLeft="@dimen/_10dp"-->
+<!--                android:layout_marginRight="@dimen/_10dp"-->
 
-                android:background="@drawable/background_reactangle_gradient"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/txt_13"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:textColor="@color/darkGrey"
-                    android:padding="1dp"
-                    android:text="Now get going" />
-                <TextView
-                    android:id="@+id/txt_14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_14dp"
-                    android:padding="1dp"
-                    android:layout_below="@+id/txt_13"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:layout_marginBottom="@dimen/_10dp"
-                    android:textColor="@color/darkGrey"
-                    android:text="Request a meeting here." />
+<!--                android:background="@drawable/background_reactangle_gradient"-->
+<!--                android:layout_weight="1">-->
+<!--                <TextView-->
+<!--                    android:id="@+id/txt_13"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/roboto_bold"-->
+<!--                    android:textSize="@dimen/_16dp"-->
+<!--                    android:layout_marginLeft="@dimen/_10dp"-->
+<!--                    android:layout_marginRight="@dimen/_10dp"-->
+<!--                    android:layout_marginTop="@dimen/_10dp"-->
+<!--                    android:textColor="@color/darkGrey"-->
+<!--                    android:padding="1dp"-->
+<!--                    android:text="Now get going" />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/txt_14"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/roboto_medium"-->
+<!--                    android:textSize="@dimen/_14dp"-->
+<!--                    android:padding="1dp"-->
+<!--                    android:layout_below="@+id/txt_13"-->
+<!--                    android:layout_marginLeft="@dimen/_10dp"-->
+<!--                    android:layout_marginRight="@dimen/_10dp"-->
+<!--                    android:layout_marginBottom="@dimen/_10dp"-->
+<!--                    android:textColor="@color/darkGrey"-->
+<!--                    android:text="Request a meeting here." />-->
 
-            </RelativeLayout>
-            <ImageView
-                android:layout_width="121dp"
-                android:layout_height="157dp"
-                android:layout_marginTop="35dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="60dp"
-                android:src="@drawable/arrow_meetings">
+<!--            </RelativeLayout>-->
+<!--            <ImageView-->
+<!--                android:layout_width="121dp"-->
+<!--                android:layout_height="157dp"-->
+<!--                android:layout_marginTop="35dp"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_marginRight="60dp"-->
+<!--                android:src="@drawable/arrow_meetings">-->
 
-            </ImageView>
+<!--            </ImageView>-->
 
-        </RelativeLayout>
+<!--        </RelativeLayout>-->
 
 
     </RelativeLayout>

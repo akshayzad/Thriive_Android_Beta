@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FAF8F5"
+    android:background="#EFDEDA"
     tools:context="com.thriive.app.NotificationListActivity">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
         android:paddingLeft="@dimen/_10dp"
         android:layout_marginRight="@dimen/_10dp"
         android:layout_marginTop="@dimen/_10dp"
-        android:text="Pending My Confirmation" />
+        android:text="Pending Confirmation" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_notification"

@@ -110,16 +110,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
       //  getPendingRequest();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            try{
-                time_stamp =""+ Utility.getTimeStamp();
-            } catch (Exception e){
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                try{
+                    time_stamp =""+ Utility.getTimeStamp();
+                } catch (Exception e){
 
+                }
+            } else {
+                TimeZone timeZone = TimeZone.getDefault();
+                Log.d(TAG, "time zone "+ timeZone.getID());
+                time_stamp = timeZone.getID();
             }
-        } else {
-            TimeZone timeZone = TimeZone.getDefault();
-            Log.d(TAG, "time zone "+ timeZone.getID());
-            time_stamp = timeZone.getID();
+        } catch(Exception e){
+            e.getMessage();
         }
 
 
@@ -227,8 +231,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                             if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
 
-                                layout_data.setVisibility(View.VISIBLE);
-                                layout_noMeeting.setVisibility(View.GONE);
+                                layout_data.setVisibility(View.GONE);
+                                layout_noMeeting.setVisibility(View.VISIBLE);
                             } else {
                                 layout_data.setVisibility(View.VISIBLE);
                                 layout_noMeeting.setVisibility(View.GONE);

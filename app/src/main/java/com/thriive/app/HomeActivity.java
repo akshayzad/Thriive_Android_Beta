@@ -74,6 +74,10 @@ public class HomeActivity extends AppCompatActivity {
     ImageView img_logo;
     @BindView(R.id.txt_notification)
     TextView txt_notification;
+
+    @BindView(R.id.space1)
+    SpaceNavigationView spaceNavigationView1;
+
     private ViewPagerAdapter viewPagerAdapter;
     private SharedData sharedData;
 
@@ -113,6 +117,10 @@ public class HomeActivity extends AppCompatActivity {
         String UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
         Log.d(TAG, " UUID "+ UUID);
+
+        spaceNavigationView1.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
+        spaceNavigationView1.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));
+        spaceNavigationView1.setCentreButtonIconColorFilterEnabled(false);
 
         spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
         spaceNavigationView.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));

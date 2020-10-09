@@ -145,18 +145,21 @@ public class Utility {
         return  dtStart;
 
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public  static String getTimeStamp()
     {
         String time_stamp = "";
         try {
-            ZonedDateTime now = ZonedDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
-                    .withZone(ZoneId.systemDefault());
-            System.out
-                    .println(ZonedDateTime.parse(now.format(formatter), formatter));
-            time_stamp = ""+ZonedDateTime.parse(now.format(formatter), formatter);
-            Log.d("time_stamp", time_stamp);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                ZonedDateTime now = null;
+                now = ZonedDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+                        .withZone(ZoneId.systemDefault());
+                System.out
+                        .println(ZonedDateTime.parse(now.format(formatter), formatter));
+                time_stamp = "" + ZonedDateTime.parse(now.format(formatter), formatter);
+                Log.d("time_stamp", time_stamp);
+            }
         } catch (Exception e){
             e.getMessage();
         }

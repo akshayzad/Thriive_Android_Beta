@@ -60,7 +60,6 @@ public class RequestMeetingGuideActivity extends AppCompatActivity {
                 R.layout.meeting_request_guide3,
                 R.layout.meeting_request_guide4};
         myViewPagerAdapter = new MyViewPagerAdapter();
-        myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         sharedData = new SharedData(getApplicationContext());

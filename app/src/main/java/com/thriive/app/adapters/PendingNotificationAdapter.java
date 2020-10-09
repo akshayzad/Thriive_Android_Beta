@@ -50,17 +50,12 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
         public RecyclerView rv_tags;
         @BindView(R.id.rv_experience)
         public RecyclerView rv_experience;
-        @BindView(R.id.rv_objective)
-        public RecyclerView rv_objective;
-
         @BindView(R.id.btn_meeting_decline)
         public ImageButton btn_meeting_decline;
         @BindView(R.id.btn_meeting_accept)
         public ImageButton btn_meeting_accept;
         @BindView(R.id.txt_persona)
         TextView txt_persona;
-        @BindView(R.id.progress)
-        ProgressBar progress;
         @BindView(R.id.txt_objective)
         TextView txt_objective;
         @BindView(R.id.txt_reason)
@@ -103,7 +98,7 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout);
         holder.rv_tags.setAdapter(new TagListAdapter(context, arrayList));
-        holder.txt_reason.setText(item.getMeetingReason());
+        holder.txt_reason.setText("Meeting for "+item.getMeetingReason());
         // setProgress();
         ArrayList<String> ex_array = new ArrayList<>();
 //        if (item.getRequestorDesignationTags() != null) {

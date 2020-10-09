@@ -22,7 +22,6 @@
             android:layout_marginBottom="@dimen/_10dp">
             <include layout="@layout/layout_light_toolbar"></include>
 
-
         </LinearLayout>
 
         <com.thriive.app.utilities.NonSwipeableViewPager
@@ -36,24 +35,36 @@
     </LinearLayout>
 
 
-    <RelativeLayout
-        android:id="@+id/meeting"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:layout_margin="@dimen/_20dp"
-        android:layout_above="@id/space"></RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <com.thriive.app.utilities.spacenavigation.SpaceNavigationView
+            android:id="@+id/space1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:elevation="@dimen/_10dp"
+            android:layout_marginBottom="0.6dp"
+            android:background="@color/colorPrimary"
+            android:outlineSpotShadowColor="@color/battleshipGrey"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            app:active_centre_button_icon_color="@null"
+            app:inactive_centre_button_icon_color="@null"
+            app:active_item_color="@color/whiteTwo"
+            app:centre_button_color="@color/whiteTwo"
+            app:space_background_color="@color/pinkishGreyTwo"
+            app:centre_button_icon="@drawable/logo"
+            app:inactive_item_color="@color/pinkishGrey"
+            app:space_item_icon_size="@dimen/_22dp"
+            android:outlineAmbientShadowColor="@color/battleshipGrey"
+            app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
+            app:space_item_text_size="@dimen/_11dp" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/uu"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:layout_centerInParent="true"
-        android:layout_alignParentBottom="true"
-        android:layout_weight="0"
-        android:layout_margin="@dimen/_20dp"
-        android:layout_height="wrap_content"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </LinearLayout>
+
+
 
     <com.thriive.app.utilities.spacenavigation.SpaceNavigationView
         android:id="@+id/space"
@@ -62,20 +73,19 @@
         android:layout_weight="0"
         android:elevation="@dimen/_10dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/kprogresshud_spinner"
-        android:outlineSpotShadowColor="@color/battleshipGrey"
+        android:outlineSpotShadowColor="@color/slateGrey"
         android:layout_gravity="bottom"
         android:gravity="bottom"
         app:active_centre_button_icon_color="@null"
         app:inactive_centre_button_icon_color="@null"
         app:active_item_color="@color/terracota"
-
         app:centre_button_color="@color/whiteTwo"
         app:space_background_color="@color/space_white"
         app:centre_button_icon="@drawable/logo"
         app:inactive_item_color="@color/pinkishGrey"
         app:space_item_icon_size="@dimen/_22dp"
-        android:outlineAmbientShadowColor="@color/battleshipGrey"
+        android:outlineAmbientShadowColor="@color/slateGrey"
         app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
         app:space_item_text_size="@dimen/_11dp" />
+
 </RelativeLayout>
