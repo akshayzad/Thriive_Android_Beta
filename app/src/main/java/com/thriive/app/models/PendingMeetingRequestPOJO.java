@@ -55,6 +55,8 @@ public class PendingMeetingRequestPOJO {
         private String giverPersonaName;
         @SerializedName("requestor_id")
         private Integer requestorId;
+        @SerializedName("request_date")
+        String requestDate;
 
 
         public List<String> getDomainTags() {
@@ -121,9 +123,12 @@ public class PendingMeetingRequestPOJO {
             this.requestorId = requestorId;
         }
 
+        public String getRequestDate() {
+            return requestDate;
+        }
 
-
-
-
+        public void setRequestDate(String requestDate) {
+            this.requestDate = requestDate;
+        }
     }
 }

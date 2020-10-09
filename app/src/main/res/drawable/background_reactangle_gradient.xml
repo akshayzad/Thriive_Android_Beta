@@ -7,6 +7,7 @@
         android:bottomRightRadius="@dimen/_10dp"
         />
 
+    <stroke android:color="@color/pinkishGrey" android:width="0.5dp"></stroke>
     <solid android:color="@color/whiteTwo"></solid>
 
 

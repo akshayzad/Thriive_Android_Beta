@@ -2,12 +2,20 @@ package com.thriive.app.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.format.DateFormat;
@@ -53,6 +61,7 @@ import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
+import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -93,12 +102,16 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     TextView txt_time;
     @BindView(R.id.txt_reason)
     TextView txt_reason;
+    @BindView(R.id.btn_linkedin)
+    Button btn_linkedin;
+    @BindView(R.id.btn_email)
+    Button btn_email;
 
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
     private CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO;
     private SharedData sharedData;
     private KProgressHUD progressHUD;
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private APIInterface apiInterface;
     private String cancelReason = "";
 
@@ -147,7 +160,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                         dialog.findViewById(R.id.design_bottom_sheet);
                 BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+               // behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
             }
         });
        // arrayList.add(new CommonReOJO());
@@ -166,9 +179,40 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     private void setData() {
         if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))){
             txt_name.setText(meetingListPOJO.getGiverName());
-            Glide.with(getActivity())
-                    .load(meetingListPOJO.getGiverPicUrl())
-                    .into(img_user);
+            if (meetingListPOJO.getGiverPicUrl().equals("")){
+//                TextDrawable drawable = TextDrawable.builder()
+//                        .beginConfig()
+//                        .withBorder(4) /* thickness in px */
+//                        .endConfig()
+//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
+
+                Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(getResources().getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(60) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(140)  // width in px
+                        .height(140) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(meetingListPOJO.getGiverName()) , getResources().getColor(R.color.whiteTwo));
+
+//                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
+//                        .height(60)
+//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
+                img_user.setImageDrawable(drawable);
+            } else {
+                img_user.setMinimumWidth(120);
+                img_user.setMaxHeight(120);
+                img_user.setMinimumHeight(120);
+                img_user.setMaxWidth(120);
+                Glide.with(getActivity())
+                        .load(meetingListPOJO.getGiverPicUrl())
+                        .into(img_user);
+            }
+
             if (meetingListPOJO.getGiverDesignationTags().size() > 0){
                 txt_profession.setText(meetingListPOJO.getGiverDesignationTags().get(0));
             } else {
@@ -198,9 +242,34 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
         } else {
             txt_name.setText(meetingListPOJO.getRequestorName());
-            Glide.with(getActivity())
-                    .load(meetingListPOJO.getRequestorPicUrl())
-                    .into(img_user);
+            if (meetingListPOJO.getRequestorPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(getResources().getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(60) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(140)  // width in px
+                        .height(140) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(meetingListPOJO.getRequestorName()) ,getResources().getColor(R.color.whiteTwo));
+
+//                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
+//                        .height(60)
+//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
+                img_user.setImageDrawable(drawable);
+            } else {
+                img_user.setMinimumWidth(120);
+                img_user.setMaxHeight(120);
+                img_user.setMinimumHeight(120);
+                img_user.setMaxWidth(120);
+                Glide.with(getActivity())
+                        .load(meetingListPOJO.getRequestorPicUrl())
+                        .into(img_user);
+            }
+
             if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
                 txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
             } else {
@@ -231,12 +300,13 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         }
 
         txt_reason.setText(meetingListPOJO.getMeetingReason());
-        txt_date.setText(Utility.getMeetingDate(meetingListPOJO.getPlanStartTime()));
-        txt_time.setText(Utility.getMeetingTime(meetingListPOJO.getPlanStartTime(), meetingListPOJO.getPlanEndTime()));
+        txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())));
+        txt_time.setText(Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
+                Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime())));
 
     }
 
-    @OnClick({R.id.txt_cancel, R.id.join_meeting, R.id.img_close, R.id.layout_avail})
+    @OnClick({R.id.txt_cancel, R.id.join_meeting, R.id.img_close, R.id.layout_avail, R.id.btn_email, R.id.btn_linkedin})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_cancel:
@@ -260,9 +330,124 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 getMeetingSlot(meetingListPOJO.getMeetingCode());
 
                 break;
+
+            case R.id.btn_email:
+
+                getToEmail();
+
+                break;
+
+            case R.id.btn_linkedin:
+                getToLinkedin();
+
+                break;
+
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        dismiss();
+    }
+
+    private void getToLinkedin() {
+        if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+            if (meetingListPOJO.getGiverLinkedinUrl().equals("")){
+                Toast.makeText(getActivity(), "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+            } else {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl()));
+                    intent.setPackage("com.linkedin.android");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                } catch (Exception e) {
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl())));
+                }
+
+            }
+
+        } else {
+            if (meetingListPOJO.getRequestorLinkedinUrl().equals("")){
+                Toast.makeText(getActivity(), "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+            } else {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getRequestorLinkedinUrl()));
+                    intent.setPackage("com.linkedin.android");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getActivity().startActivity(intent);
+                } catch (Exception e) {
+                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getRequestorLinkedinUrl())));
+                }
+            }
+        }
+    }
+
+    private void getToEmail() {
+        if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+            if (meetingListPOJO.getGiverEmailId().equals("")){
+                Toast.makeText(getActivity(), "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ meetingListPOJO.getGiverEmailId()});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                final PackageManager pm = getActivity().getPackageManager();
+                final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                ResolveInfo best = null;
+                for(final ResolveInfo info : matches)
+                    if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                        best = info;
+                if (best != null)
+                    emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                getActivity().startActivity(emailIntent);
+
+//                Intent intent = new Intent(Intent.ACTION_SEND);
+//                intent.setType("*/*");
+//                intent.putExtra(Intent.EXTRA_EMAIL,new String[]{ meetingListPOJO.getGiverEmailId()});
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                    getActivity().startActivity(intent);
+//                }
+            }
+
+        } else {
+            if (meetingListPOJO.getRequestorEmailId().equals("")){
+                Toast.makeText(getActivity(), "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ meetingListPOJO.getRequestorEmailId()});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                final PackageManager pm = getActivity().getPackageManager();
+                final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                ResolveInfo best = null;
+                for(final ResolveInfo info : matches)
+                    if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                        best = info;
+                if (best != null)
+                    emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                getActivity().startActivity(emailIntent);
+
+//                Intent intent = new Intent(Intent.ACTION_SEND);
+//                intent.setType("*/*");
+//                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{meetingListPOJO.getRequestorEmailId()});
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                    getActivity().startActivity(intent);
+//                }
+            }
+        }
+    }
 
 
     public void getMeetingSlot(String m) {
@@ -272,7 +457,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getReturnEntity().getActiveToken(), loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
             @SuppressLint("NewApi")
             @Override
@@ -614,15 +799,16 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
 
     private void getResheduledMeeting() {
-
+        startTime = Utility.ConvertUserTimezoneToUTC(startTime);
+        endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
         Log.d(TAG, startTime + "  " + endTime);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingListPOJO.getMeetingCode(), loginPOJO.getReturnEntity().getRowcode(), startTime,endTime);
+        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
+                meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), startTime,endTime);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
@@ -682,8 +868,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingListPOJO.getMeetingId(), true, loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonStartMeetingPOJO>() {
             @Override
             public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
@@ -702,7 +888,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
                         //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                           Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                           dismiss();
+                            EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
                     }
 
 
@@ -727,6 +915,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         intent.putExtra("meeting_code", meetingDataPOJO.getMeetingCode());
         intent.putExtra("start_time", meetingDataPOJO.getPlanStartTime());
         intent.putExtra("end_time", meetingDataPOJO.getPlanEndTime());
+        intent.putExtra("intent_type", "FLOW");
 
         Log.d(TAG,  meetingDataPOJO.getPlanStartTime() + " "+  meetingDataPOJO.getPlanEndTime());
         Log.d(TAG,  meetingDataPOJO.getActualStartTime() + " "+  meetingDataPOJO.getAcutalEndTime());
@@ -824,8 +1013,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getCancelMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingListPOJO.getMeetingCode(), loginPOJO.getReturnEntity().getRowcode(), cancelReason);
+        Call<CommonPOJO> call = apiInterface.getCancelMeeting(loginPOJO.getActiveToken(),
+                meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), cancelReason);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

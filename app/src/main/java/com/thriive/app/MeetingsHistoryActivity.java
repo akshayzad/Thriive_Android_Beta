@@ -42,7 +42,7 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
 
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
-    private LoginPOJO  loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private static String TAG = MeetingsHistoryActivity.class.getName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +63,8 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingListPOJO> call = apiInterface.getMeetingHistory(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonMeetingListPOJO> call = apiInterface.getMeetingHistory(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
             @Override
             public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {

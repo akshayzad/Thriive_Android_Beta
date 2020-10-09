@@ -1,6 +1,8 @@
 package com.thriive.app;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.multidex.BuildConfig;
 
@@ -14,12 +16,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +47,7 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse;
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
+import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.SharedData;
@@ -53,6 +60,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -87,11 +97,12 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     private KProgressHUD progressHUD;
 
 
-    private String email = "", password = "", login_method = "", app_ver = "", platform_ver= "", token = "";
+    private String email = "", password = "", login_method = "", app_ver = "", platform_ver= "", token = "", time_stamp;
     private APIInterface apiInterface;
 
     private SharedData sharedData;
     private  String UUID = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,6 +125,18 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
         mGoogleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
         mGoogleSignInClient.signOut();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            try{
+                time_stamp =""+ Utility.getTimeStamp();
+            } catch (Exception e){
+
+            }
+        } else {
+            TimeZone timeZone = TimeZone.getDefault();
+            Log.d(TAG, "time zone "+ timeZone.getID());
+            time_stamp = timeZone.getID();
+        }
 
 
 
@@ -175,9 +198,13 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     }
 
 
-    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linklined})
+
+    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linklined, R.id.txt_forgetPassword})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.txt_forgetPassword:
+                dialogForgetPassword();
+                break;
             case R.id.btn_login:
                 if (isValidateLogin()){
                     login_method = "custom";
@@ -262,49 +289,57 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             }
 
     }
+
     private void getLogin() {
-        TimeZone timeZone = TimeZone.getDefault();
-        Log.d(TAG, "time zone "+ timeZone.getID());
-        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
-        if (UUID  == null) {
-            UUID = "";
+        try {
+            TimeZone timeZone = TimeZone.getDefault();
+            Log.d(TAG, "time zone "+ timeZone.getID());
+            UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+            if (UUID  == null) {
+                UUID = "";
+            }
+
+
+
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<LoginPOJO> call = apiInterface.login(email, password, login_method, BuildConfig.VERSION_NAME,
+                    ""+android.os.Build.VERSION.SDK_INT, UUID,
+                    UUID, "android",  ""+timeZone.getID(), time_stamp);
+            call.enqueue(new Callback<LoginPOJO>() {
+                @Override
+                public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        LoginPOJO loginPOJO = response.body();
+                        progressHUD.dismiss();
+                        if (loginPOJO.getOK()) {
+                            Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+                            Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            sharedData.addBooleanData(SharedData.isLogged, true);
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            intent.putExtra("intent_type", "FLOW");
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
+                @Override
+                public void onFailure(Call<LoginPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
         }
 
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<LoginPOJO> call = apiInterface.login(email, password, login_method, BuildConfig.VERSION_NAME,
-                ""+android.os.Build.VERSION.SDK_INT, UUID,
-                UUID, "android",  ""+timeZone.getID());
-        call.enqueue(new Callback<LoginPOJO>() {
-            @Override
-            public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    LoginPOJO loginPOJO = response.body();
-                    progressHUD.dismiss();
-                    if (loginPOJO.getOK()) {
-                        Utility.saveLoginData(LoginActivity.this, loginPOJO);
-                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        sharedData.addBooleanData(SharedData.isLogged, true);
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        intent.putExtra("intent_type", "FLOW");
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            }
-            @Override
-            public void onFailure(Call<LoginPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-             //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void signInWithGoogle() {
@@ -397,4 +432,85 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         Toast.makeText(this, ""+linkedInEmailAddress.getEmailAddress(), Toast.LENGTH_SHORT).show();
 
     }
+
+    public void dialogForgetPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater =  this.getLayoutInflater();
+        // final View dialogView = inflater.inflate(R.layout.popup_pending_meeting, null);
+
+        final View view1 = layoutInflater.inflate(R.layout.dialog_forget_password, null);
+        builder.setView(view1);
+
+        final AlertDialog dialogs = builder.create();
+        builder.setView(view1);
+        dialogs.setCancelable(false);
+
+        ImageView img_close = view1.findViewById(R.id.img_close);
+        Button   button = view1.findViewById(R.id.btn_submit);
+        EditText editText = view1.findViewById(R.id.edt_email);
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Validation.validEmail(editText)){
+                    dialogs.dismiss();
+                    getForgetPassword(editText.getText().toString());
+                } else {
+                   // Toast.makeText(LoginActivity.this, "Enter valid email", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+
+        dialogs.show();
+
+
+
+    }
+
+    private void getForgetPassword(String email_id){
+        progressHUD = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        Call<CommonPOJO> call = apiInterface.getForgetPassword(email_id);
+        call.enqueue(new Callback<CommonPOJO>() {
+            @Override
+            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    CommonPOJO loginPOJO = response.body();
+                    progressHUD.dismiss();
+                    if (loginPOJO.getOK()) {
+                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+
 }

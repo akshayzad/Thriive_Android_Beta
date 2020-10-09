@@ -88,7 +88,7 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
                     case "giver_meeting_request":
                         meeting_id = data.getString("meeting_id");
-                        EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_REQUEST, meeting_id));
+                      //  EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_REQUEST, meeting_id));
                         NotificationIntentNotification(title, message, meeting_id);
                         break;
 
@@ -129,8 +129,8 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
                         meeting_code = jsonObject.getString("meeting_code");
                         start_time = jsonObject.getString("plan_start_time");
                         end_time = jsonObject.getString("plan_end_time");
-                        giver_name = jsonObject.getString("giver_name");
-                        sharedData.addStringData(SharedData.CALLING_NAME, giver_name);
+                     //   giver_name = jsonObject.getString("giver_name");
+                       // sharedData.addStringData(SharedData.CALLING_NAME, giver_name);
                         meetingJoinNotification(title, message, meeting_id);
 
                         break;
@@ -155,24 +155,25 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
 
     private void meetingJoinNotification( String title, String message, String meeting_id) {
-
-        Intent intent = new Intent(context, MeetingJoinActivity.class);
-        intent.putExtra("meeting_id", ""+meeting_id);
-        intent.putExtra("meeting_channel", meeting_channel);
-        intent.putExtra("meeting_token", meeting_token);
-        intent.putExtra("meeting_code", meeting_code);
-        intent.putExtra("start_time", start_time);
-        intent.putExtra("end_time", end_time);
-
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupChannels(notificationManager);
         }
+        Intent intent = new Intent(context, MeetingJoinActivity.class);
+        intent.setAction(meeting_id+""+notificationID);
+        intent.putExtra("meeting_id", ""+meeting_id);
+        intent.putExtra("meeting_channel", meeting_channel);
+        intent.putExtra("meeting_token", meeting_token);
+        intent.putExtra("meeting_code", meeting_code);
+        intent.putExtra("start_time", start_time);
+        intent.putExtra("end_time", end_time);
+        intent.putExtra("intent_type", "NOTI");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
@@ -201,9 +202,7 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
     private void NotificationIntentNotification( String title,String message, String meeting_id ) {
         String ADMIN_CHANNEL_ID ="Thriive_APP";
-        Intent intent = new Intent(context, NotificationListActivity.class);
-        intent.putExtra("intent_type", "NOTI");
-        intent.putExtra("meeting_id", meeting_id);
+
 
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -211,8 +210,14 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupChannels(notificationManager);
         }
-
+        Intent intent = new Intent(context, NotificationListActivity.class);
+        intent.setAction(meeting_id+""+notificationID);
+        intent.putExtra("intent_type", "NOTI");
+        intent.putExtra("meeting_id", meeting_id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),R.drawable.app_logo);
@@ -242,10 +247,6 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
     private void CustomIntentNotification( String title,String message ) {
         String ADMIN_CHANNEL_ID ="Thriive_APP";
-        Intent intent = new Intent(context, HomeActivity.class);
-        intent.putExtra("intent_type", "FLOW");
-
-
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
 
@@ -253,7 +254,13 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
             setupChannels(notificationManager);
         }
 
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.setAction(meeting_id+""+notificationID);
+        intent.putExtra("intent_type", "FLOW");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),R.drawable.app_logo);
@@ -282,9 +289,7 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
     private void HomeIntentNotification( String title,String message, String meeting_id ) {
         String ADMIN_CHANNEL_ID ="Thriive_APP";
-        Intent intent = new Intent(context, HomeActivity.class);
-        intent.putExtra("intent_type", "NOTI");
-        intent.putExtra("meeting_id", meeting_id);
+
 
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
@@ -292,7 +297,10 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupChannels(notificationManager);
         }
-
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.setAction(meeting_id+""+notificationID);
+        intent.putExtra("intent_type", "NOTI");
+        intent.putExtra("meeting_id", meeting_id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);

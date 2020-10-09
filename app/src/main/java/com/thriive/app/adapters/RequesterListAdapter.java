@@ -60,7 +60,7 @@ public class RequesterListAdapter extends RecyclerView.Adapter<RequesterListAdap
     @Override
     public void onBindViewHolder(final RecyclerAdapterHolder holder,int position) {
         PendingMeetingRequestPOJO.MeetingRequestList item  = requesterPOJOArrayList.get(position);
-        holder.txt_reason.setText(item.getReasonName());
+        holder.txt_reason.setText("Meeting for "+item.getReasonName());
         holder.txt_persona.setText(item.getGiverPersonaName());
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());

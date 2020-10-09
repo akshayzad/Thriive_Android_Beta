@@ -10,18 +10,25 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
+import com.bumptech.glide.Glide;
 import com.thriive.app.R;
 import com.thriive.app.utilities.SharedData;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
     private String CLIENT_ID = "7884jv1r7np0qe";
     private String CLIENT_SECRET = "gaWSVUjMqPu3GU09";
+    @BindView(R.id.imageView)
+    ImageView imageView;
 //
 //    Client Secret: gaWSVUjMqPu3GU09
     //String REDIRECTION_URL = "http://localhost:4200/";
@@ -32,7 +39,13 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
         sharedData = new SharedData(getApplicationContext());
+
+
+        Glide.with(this)
+                .load(R.raw.thriive_ani)
+                .into(imageView);
         Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() {
             public void run() {
@@ -49,7 +62,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
             }
-        }, 2000);
+        }, 5000);
 
 
 

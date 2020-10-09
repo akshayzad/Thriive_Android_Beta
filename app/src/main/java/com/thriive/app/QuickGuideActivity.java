@@ -61,7 +61,7 @@ public class QuickGuideActivity extends AppCompatActivity {
     private int[] scree_list;
     private SharedData sharedData;
 
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +82,7 @@ public class QuickGuideActivity extends AppCompatActivity {
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
-        txt_name.setText(loginPOJO.getReturnEntity().getFirstName());
+        txt_name.setText(loginPOJO.getFirstName());
 
 
     }

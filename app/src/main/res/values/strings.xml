@@ -9,7 +9,7 @@
     <string name="shortlisting">Shortlisting</string>
     <string name="cancel">Cancel</string>
     <string name="join">Join</string>
-    <string name="label_meeting_request">Who do you want to meet?</string>
+    <string name="label_meeting_request">Who do you want to meet </string>
     <string name="label_meeting_request1">The business match you\'ve been waiting for is just a click away.</string>
     <string name="request_meeting">Request a Meeting</string>
     <string name="close">Close</string>
@@ -38,12 +38,13 @@
     <string name="meeting_preference">Meeting preference</string>
     <string name="agora_access_token">006ed22bc424c1d49d1af31bcb11d187009IABpItn8QF6UnUVYQrwBFKWkAYOmRCcPFn2TgvO9i9KrbaHYMoUAAAAAEAAShR76xzxsXwEAAQDGPGxf</string>
     <string name="meeting_request_success">Thank you. \n\nYour meeting is now confirmed.</string>
-<!--    <string name="rate_meeting">How relevant was your match with </string>-->
-    <string name="rate_meeting">How relevant was your match </string>
+    <!--    <string name="rate_meeting">How relevant was your match with </string>-->
+    <string name="rate_meeting">How was your meeting? </string>
+<!--    <string name="rate_meeting">How relevant was your match </string>-->
     <string name="rate_meeting1">How happy were you with your match?</string>
     <string name="thankyou">Thank you for your feedback. It helps us improve our platform so we can make sure that every meeting matters.</string>
     <string name="rateapptext">Please rate your experience with Thriive so far?</string>
-    <string name="meeting_request">Your meeting request has been submitted.\nBusiness-changing meetings start here.</string>
+    <string name="meeting_request">Your meeting request has been submitted.\n\nBusiness-changing meetings start here.</string>
     <string name="mr_quide1">Thriive platform received your request</string>
     <string name="mr_quide2">Thriive AI-based people conector is doing the heavy lifting and finding you the best match</string>
     <string name="mr_guide4">"Thriive sets up a 1:1 match of highly releveant professionals. You should receive a notification soon "</string>
@@ -60,8 +61,8 @@
     <string name="not_relevant">Relevant to me but not good conversation</string>
     <string name="waste_time">A waste of time</string>
     <string name="great_match">Great match!</string>
-    <string name="tag_expertise">Please select the area of expertise of the Corporate Professional?</string>
-    <string name="tag_domain">Please select the domain of the Corporate Professional?</string>
+    <string name="tag_expertise">Please select the area of expertise of the </string>
+    <string name="tag_domain">Please select the domain of the </string>
     <string name="awaiting">Awaiting Confirmation</string>
     <string name="tag_camera">New Profile Photo</string>
     <string name="tag_gallery">Select From Gallery</string>
@@ -79,6 +80,17 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="tag_region">Please select the region of the </string>
+    <string name="no_meeting">No meetings scheduled.</string>
+    <string name="label_no_meeting">Thriive is working hard to find you the right match.
+        You should receive a notification within 48 hrs.\n\n
+        as text with font weight light and font size the same as the date on the page"</string>
+    <string name="label_no_request">There are business-changing possibilities at Thriive.
+        Go ahead and request a meeting to find the right person.\n\n as text with font weight light
+        and font size the same as the date on the page</string>
+    <string name="no_request">No meetings requested</string>
+    <string name="label_success_meeting">Thriive is now at work to find you the right business guru.\n\nExpect a notification for your match within 48 hrs.</string>
+    <string name="no_domain">Sorry, we couldn\'t find what you were looking for.\nTry with a different keyword.</string>
 
 
 </resources>

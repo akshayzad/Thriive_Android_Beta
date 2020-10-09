@@ -86,11 +86,19 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     SwipeRefreshLayout refreshView;
     Unbinder unbinder;
 
+    private LinearLayoutManager layoutManagerSchedule;
+
+
+//    @BindView(R.id.txt_name)
+//    TextView txt_name;
+
     @BindView(R.id.txt_schedule)
     TextView txt_schedule;
+    @BindView(R.id.txt_request)
+    TextView txt_request;
 
     APIInterface apiInterface;
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private SharedData sharedData;
 
     public static String TAG = MeetingsFragment.class.getName();
@@ -99,8 +107,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     private ScrollingPagerIndicator recyclerIndicator, recyclerIndicator1;
     private  KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
-
-    private String schedule_date = "";
+    private LinearLayoutManager layoutManagerRequested;
+    private String schedule_date = "", request_date = "";
     public MeetingsFragment() {
         // Required empty public constructor
     }
@@ -123,10 +131,14 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Subscribe()
     public void onMessageEvent(EventBusPOJO event) {
         if (event.getEvent() == Utility.MEETING_CANCEL){
-
             onResume();
           //  ((MeetingsFragment()).onResume();
         }
+        if (event.getEvent() == Utility.MEETING_BOOK){
+            onResume();
+            //  ((MeetingsFragment()).onResume();
+        }
+
 
     }
 
@@ -137,6 +149,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+    @SuppressLint("NewApi")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -153,6 +166,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         requesterPOJOArrayList.add(new CommonRequesterPOJO());
         requesterPOJOArrayList.add(new CommonRequesterPOJO());
 
+        //txt_name.setText("Welcome, " + loginPOJO.getFirstName());
         recyclerIndicator = view.findViewById(R.id.indicator_requster);
         recyclerIndicator1 = view.findViewById(R.id.indicator_schedule);
      //   getMeetingRequest();
@@ -165,29 +179,43 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         // cAdapter.removeAll();
         refreshView.setRefreshing(false);
 
-        Log.d(TAG, loginPOJO.getReturnEntity().getActiveToken()   + "  " + loginPOJO.getReturnEntity().getRowcode());
+        Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
 
+        layoutManagerSchedule = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
+        layoutManagerRequested = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false);
 
-
-//        scheduledAdapter = new ScheduledAdapter(getActivity(),MeetingsFragment.this,arrayList);
-//        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getActivity(),
-//                LinearLayoutManager.HORIZONTAL, false);
-//        recycler_scheduled.setLayoutManager(layoutManager1);
-//        recycler_scheduled.setAdapter(scheduledAdapter);
-//        recyclerIndicator1.attachToRecyclerView(recycler_scheduled);
-
-        recyclerIndicator.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @SuppressLint("NewApi")
+        recycler_scheduled.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (schedule_date.equals(scheduledAdapter.getDate(i))){
-
-                } else {
-
-                    Toast.makeText(getContext(), ""+scheduledAdapter.getDate(i), Toast.LENGTH_SHORT).show();
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState != RecyclerView.SCROLL_STATE_IDLE || newState != RecyclerView.SCROLL_STATE_DRAGGING) {
+                    int position = layoutManagerSchedule.findFirstVisibleItemPosition();
+                    schedule_date = scheduledAdapter.getDate(position);
+                    txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+                  // return;
                 }
+              //  Toast.makeText(getContext(), ""+layoutManagerSchedule.getPosition(), Toast.LENGTH_SHORT).show();
+
             }
         });
+
+
+
+        recycler_requested.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState != RecyclerView.SCROLL_STATE_IDLE || newState != RecyclerView.SCROLL_STATE_DRAGGING) {
+                    int position = layoutManagerRequested.findFirstVisibleItemPosition();
+                    request_date = requestedAdapter.getDate(position);
+                    txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+                    return;
+                }
+                if (recycler_requested == null) {
+                    return;
+                }
+            }
+            });
 
         return view;
     }
@@ -200,9 +228,11 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
+
     private void getScheduledMeeting() {
-        Call<CommonMeetingListPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+
+        Call<CommonMeetingListPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
             @Override
             public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {
@@ -214,16 +244,17 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo.getOK()) {
                         if (pojo.getMeetingList() != null){
                             scheduledAdapter = new ScheduledAdapter(getActivity(),MeetingsFragment.this,pojo.getMeetingList());
-                            RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(getActivity(),
-                                    LinearLayoutManager.HORIZONTAL, false);
-                            recycler_scheduled.setLayoutManager(layoutManager1);
+                            recycler_scheduled.setLayoutManager(layoutManagerSchedule);
                             recycler_scheduled.setAdapter(scheduledAdapter);
                             recyclerIndicator1.attachToRecyclerView(recycler_scheduled);
                             if (pojo.getMeetingList().size() == 0){
                                 txt_noSchedule.setVisibility(View.VISIBLE);
+                                txt_schedule.setText("");
                             }else {
                                 txt_noSchedule.setVisibility(View.GONE);
                                 schedule_date = scheduledAdapter.getDate(0);
+                                txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+
                             }
 
                         }
@@ -253,8 +284,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getReturnEntity().getActiveToken(),
-                meeting_id, true, loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                meeting_id, true, loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonStartMeetingPOJO>() {
             @Override
             public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
@@ -269,7 +300,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                         callMeeting();
                         Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                          Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                          EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
                     }
 
 
@@ -295,6 +327,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         intent.putExtra("meeting_code", meetingDataPOJO.getMeetingCode());
         intent.putExtra("start_time", meetingDataPOJO.getPlanStartTime());
         intent.putExtra("end_time", meetingDataPOJO.getPlanEndTime());
+        intent.putExtra("intent_type", "FLOW");
 
         Log.d(TAG,  meetingDataPOJO.getPlanStartTime() + " "+  meetingDataPOJO.getPlanEndTime());
         Log.d(TAG,  meetingDataPOJO.getActualStartTime() + " "+  meetingDataPOJO.getAcutalEndTime());
@@ -308,8 +341,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 //                .setLabel("Please wait")
 //                .setCancellable(false)
 //                .show();
-        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
             @Override
             public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
@@ -321,9 +354,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo.getOK()) {
                         requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
                                 (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),
-                                LinearLayoutManager.HORIZONTAL, false);
-                        recycler_requested.setLayoutManager(layoutManager);
+                        recycler_requested.setLayoutManager(layoutManagerRequested);
                         recycler_requested.setAdapter(requestedAdapter);
 
                         recyclerIndicator.attachToRecyclerView(recycler_requested);
@@ -337,8 +368,12 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo.getMeetingRequestList().size() == 0)
                     {
                         txt_noRequest.setVisibility(View.VISIBLE);
+                        txt_request.setText("");
                     } else {
                         txt_noRequest.setVisibility(View.GONE);
+                        request_date = requestedAdapter.getDate(0);
+                        txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+
                     }
                     if (refreshView != null)
                     {
@@ -363,7 +398,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getReturnEntity().getActiveToken(), loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
             @SuppressLint("NewApi")
             @Override
@@ -711,8 +746,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingCode, loginPOJO.getReturnEntity().getRowcode(), startTime,endTime);
+        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
+                meetingCode, loginPOJO.getRowcode(), startTime,endTime);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

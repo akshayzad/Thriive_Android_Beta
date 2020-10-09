@@ -13,7 +13,6 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:scrollbars="none">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,22 +43,44 @@
                     android:layout_marginRight="@dimen/_10dp"
                     android:layout_marginTop="1dp"
                     android:textColor="@color/slateGrey"
-                    android:text="Today, Sept 13" />
-
-                <TextView
-                    android:id="@+id/txt_noSchedule"
-                    android:layout_width="wrap_content"
+                    android:text="" />
+                <LinearLayout
+                    android:id="@+id/layout_noSchedule"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_18dp"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/_25dp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:textColor="@color/slateGrey"
-                    android:text="No Meetings Available" />
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/_5dp">
+                    <TextView
+                        android:id="@+id/txt_noSchedule"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_18dp"
+                        android:padding="@dimen/_25dp"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:textColor="@color/slateGrey"
+                        android:text="@string/no_meeting" />
+                    <TextView
+                        android:id="@+id/label_noMeeting"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="@dimen/_12dp"
+                        android:visibility="gone"
+                        android:padding="5dp"
+                        android:textAlignment="center"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:textColor="@color/darkGrey"
+                        android:text="@string/label_no_meeting" />
+
+                </LinearLayout>
+
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_scheduled"
@@ -72,19 +93,20 @@
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
+
                 <TextView
                     android:id="@+id/txt_03"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_18dp"
                     android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
                     android:layout_marginTop="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="@string/requested"
                     android:textColor="@color/darkGrey"
-                    android:text="@string/requested" />
+                    android:textSize="@dimen/_18dp" />
                 <TextView
-                    android:id="@+id/txt_06"
+                    android:id="@+id/txt_request"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_bold"
@@ -93,23 +115,47 @@
                     android:layout_marginRight="@dimen/_10dp"
                     android:layout_marginTop="1dp"
                     android:textColor="@color/slateGrey"
-                    android:text="Tuesday, Sept 3" />
+                    android:text="" />
 
-
-                <TextView
-                    android:id="@+id/txt_noRequest"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layout_noRequest"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
-                    android:textSize="@dimen/_18dp"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/_25dp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    android:layout_marginTop="@dimen/_10dp"
-                    android:textColor="@color/slateGrey"
-                    android:text="No Request" />
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/_5dp">
+
+                    <TextView
+                        android:id="@+id/txt_noRequest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:padding="@dimen/_25dp"
+                        android:visibility="gone"
+                        android:text="@string/no_request"
+                        android:textColor="@color/slateGrey"
+                        android:textSize="@dimen/_18dp" />
+                    <TextView
+                        android:id="@+id/label_noRequest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="@dimen/_12dp"
+                        android:padding="5dp"
+                        android:visibility="gone"
+                        android:textAlignment="center"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:textColor="@color/darkGrey"
+                        android:text="@string/label_no_request" />
+
+                </LinearLayout>
+
+
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_requested"
                     android:layout_width="match_parent"

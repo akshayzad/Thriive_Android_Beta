@@ -42,9 +42,13 @@ public class CommonMeetingListPOJO {
     public class MeetingListPOJO {
 
 
+
         @SerializedName("meeting_id")
         @Expose
         private Integer meetingId;
+        @SerializedName("meeting_token")
+        @Expose
+        private String meetingToken;
         @SerializedName("meeting_request_id")
         @Expose
         private Integer meetingRequestId;
@@ -65,7 +69,7 @@ public class CommonMeetingListPOJO {
         private String meetingSubDomain;
         @SerializedName("meeting_expertise")
         @Expose
-        private String meetingExpertise;
+        private Object meetingExpertise;
         @SerializedName("plan_start_time")
         @Expose
         private String planStartTime;
@@ -84,6 +88,9 @@ public class CommonMeetingListPOJO {
         @SerializedName("giver_email_id")
         @Expose
         private String giverEmailId;
+        @SerializedName("giver_linkedin_url")
+        @Expose
+        private String giverLinkedinUrl;
         @SerializedName("date_match")
         @Expose
         private String dateMatch;
@@ -108,6 +115,9 @@ public class CommonMeetingListPOJO {
         @SerializedName("giver_expertise_tags")
         @Expose
         private List<String> giverExpertiseTags = null;
+        @SerializedName("giver_response_int")
+        @Expose
+        private Integer giverResponseInt;
         @SerializedName("requestor_id")
         @Expose
         private Integer requestorId;
@@ -120,12 +130,33 @@ public class CommonMeetingListPOJO {
         @SerializedName("requestor_email_id")
         @Expose
         private String requestorEmailId;
+        @SerializedName("requestor_linkedin_url")
+        @Expose
+        private String requestorLinkedinUrl;
         @SerializedName("requestor_persona_tags")
         @Expose
         private List<String> requestorPersonaTags = null;
         @SerializedName("requestor_objective_tags")
         @Expose
         private List<String> requestorObjectiveTags = null;
+        @SerializedName("requestor_experience_tags")
+        @Expose
+        private List<String> requestorExperienceTags = null;
+        @SerializedName("requestor_domain_tags")
+        @Expose
+        private List<String> requestorDomainTags = null;
+        @SerializedName("requestor_sub_domain_tags")
+        @Expose
+        private List<String> requestorSubDomainTags = null;
+        @SerializedName("requestor_designation_tags")
+        @Expose
+        private List<String> requestorDesignationTags = null;
+        @SerializedName("requestor_expertise_tags")
+        @Expose
+        private List<String> requestorExpertiseTags = null;
+        @SerializedName("requestor_response_int")
+        @Expose
+        private Integer requestorResponseInt;
 
         public Integer getMeetingId() {
             return meetingId;
@@ -133,6 +164,14 @@ public class CommonMeetingListPOJO {
 
         public void setMeetingId(Integer meetingId) {
             this.meetingId = meetingId;
+        }
+
+        public String getMeetingToken() {
+            return meetingToken;
+        }
+
+        public void setMeetingToken(String meetingToken) {
+            this.meetingToken = meetingToken;
         }
 
         public Integer getMeetingRequestId() {
@@ -183,11 +222,11 @@ public class CommonMeetingListPOJO {
             this.meetingSubDomain = meetingSubDomain;
         }
 
-        public String getMeetingExpertise() {
+        public Object getMeetingExpertise() {
             return meetingExpertise;
         }
 
-        public void setMeetingExpertise(String meetingExpertise) {
+        public void setMeetingExpertise(Object meetingExpertise) {
             this.meetingExpertise = meetingExpertise;
         }
 
@@ -237,6 +276,14 @@ public class CommonMeetingListPOJO {
 
         public void setGiverEmailId(String giverEmailId) {
             this.giverEmailId = giverEmailId;
+        }
+
+        public String getGiverLinkedinUrl() {
+            return giverLinkedinUrl;
+        }
+
+        public void setGiverLinkedinUrl(String giverLinkedinUrl) {
+            this.giverLinkedinUrl = giverLinkedinUrl;
         }
 
         public String getDateMatch() {
@@ -303,6 +350,14 @@ public class CommonMeetingListPOJO {
             this.giverExpertiseTags = giverExpertiseTags;
         }
 
+        public Integer getGiverResponseInt() {
+            return giverResponseInt;
+        }
+
+        public void setGiverResponseInt(Integer giverResponseInt) {
+            this.giverResponseInt = giverResponseInt;
+        }
+
         public Integer getRequestorId() {
             return requestorId;
         }
@@ -333,6 +388,14 @@ public class CommonMeetingListPOJO {
 
         public void setRequestorEmailId(String requestorEmailId) {
             this.requestorEmailId = requestorEmailId;
+        }
+
+        public String getRequestorLinkedinUrl() {
+            return requestorLinkedinUrl;
+        }
+
+        public void setRequestorLinkedinUrl(String requestorLinkedinUrl) {
+            this.requestorLinkedinUrl = requestorLinkedinUrl;
         }
 
         public List<String> getRequestorPersonaTags() {
@@ -391,25 +454,12 @@ public class CommonMeetingListPOJO {
             this.requestorExpertiseTags = requestorExpertiseTags;
         }
 
-        @SerializedName("requestor_experience_tags")
-        @Expose
-        private List<String> requestorExperienceTags = null;
-        @SerializedName("requestor_domain_tags")
-        @Expose
-        private List<String> requestorDomainTags = null;
-        @SerializedName("requestor_sub_domain_tags")
-        @Expose
-        private List<String> requestorSubDomainTags = null;
-        @SerializedName("requestor_designation_tags")
-        @Expose
-        private List<String> requestorDesignationTags = null;
-        @SerializedName("requestor_expertise_tags")
-        @Expose
-        private List<String> requestorExpertiseTags = null;
+        public Integer getRequestorResponseInt() {
+            return requestorResponseInt;
+        }
 
-
-
-
-
+        public void setRequestorResponseInt(Integer requestorResponseInt) {
+            this.requestorResponseInt = requestorResponseInt;
+        }
     }
 }

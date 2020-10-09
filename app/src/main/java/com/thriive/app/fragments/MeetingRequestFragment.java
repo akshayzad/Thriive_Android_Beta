@@ -3,9 +3,11 @@ package com.thriive.app.fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -66,6 +69,7 @@ import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +113,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     LinearLayout layout_subdomain;
     @BindView(R.id.layout_region)
     LinearLayout layout_region;
+    @BindView(R.id.txt_lpersona)
+    TextView txt_lpersona;
 
 
     @BindView(R.id.edt_domain)
@@ -122,7 +128,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
     private ArrayList<CommonRequesterPOJO> arrayList = new ArrayList<>();
     Unbinder unbinder;
-    private  LoginPOJO  loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
 
 //    "requestor_id":3,
 //            "reason_id":1,
@@ -158,6 +164,10 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     RecyclerView rv_reason;
     @BindView(R.id.txt_expertise)
     TextView txt_expertise;
+    @BindView(R.id.label_region)
+    TextView label_region;
+    @BindView(R.id.label_noDomain)
+    TextView label_noDomain;
     private DomainAdapter domainAdapter;
 
 
@@ -168,7 +178,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     public static MeetingRequestFragment newInstance() {
         return new MeetingRequestFragment();
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -193,11 +202,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                         dialog.findViewById(R.id.design_bottom_sheet);
                 BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+          //      behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
             }
         });
-
-
 
         init();
         getReason();
@@ -210,14 +217,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
                 getSearchDomain(charSequence.toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
 
             }
         });
@@ -225,36 +229,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style. AppBottomSheetDialogTheme);
     }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-
-//        // Add back button listener
-//        dialog.setOnKeyListener(new Dialog.OnKeyListener() {
-//            @Override
-//            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
-//                // getAction to make sure this doesn't double fire
-//                if (keyCode == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_UP) {
-//                    // Your code here
-//                    if (!progressHUD.isShowing()){
-//
-//                    }
-//                    return true; // Capture onKey
-//                }
-//                return false; // Don't capture
-//            }
-//        });
-//
-        return dialog;
-    }
-
 
     @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
     public void onViewClicked(View view) {
@@ -299,7 +278,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 //                .show();
         sharedData.addIntData(SharedData.domainId, 0);
         sharedData.addIntData(SharedData.subDomainId, 0);
-        Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(loginPOJO.getReturnEntity().getActiveToken(),s,"10", "0");
+        Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(loginPOJO.getActiveToken(),s,"10", "0");
         call.enqueue(new Callback<CommonDomainPOJO>() {
             @Override
             public void onResponse(Call<CommonDomainPOJO> call, Response<CommonDomainPOJO> response) {
@@ -313,6 +292,16 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     } else {
                         // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                    if (reasonPOJO.getDomainList() != null){
+                        if (reasonPOJO.getDomainList().size() == 0 ){
+                            label_noDomain.setVisibility(View.VISIBLE);
+                        } else {
+                            label_noDomain.setVisibility(View.GONE);
+                        }
+
+                    } else {
+                        label_noDomain.setVisibility(View.VISIBLE);
+                    }
 
 //                    txt_persona.setText(""+persona_name);
 //                    if (reasonPOJO.getMrParams().getFlagExpertise()){
@@ -325,6 +314,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                             (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
                     rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
                     rv_domain.setAdapter(domainAdapter);
+
+
 
 
 
@@ -346,8 +337,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getEntityId()
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
+                loginPOJO.getEntityId()
                 ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
@@ -383,13 +374,15 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_ldomain.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
 
+
         //labels
         layout_reason.setVisibility(View.VISIBLE);
         layout_persona.setVisibility(View.GONE);
         label_expertise.setVisibility(View.GONE);
         label_domain.setVisibility(View.GONE);
         layout_region.setVisibility(View.GONE);
-
+        label_region.setVisibility(View.GONE);
+        label_noDomain.setVisibility(View.GONE);
         layout_domain.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
         layout_subdomain.setVisibility(View.GONE);
@@ -412,9 +405,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonReasonPOJO> call = apiInterface.getReason(loginPOJO.getReturnEntity().getActiveToken(),""+loginPOJO.getReturnEntity().getEntityId(),
-                loginPOJO.getReturnEntity().getEntityName(), +loginPOJO.getReturnEntity().getReqPersonaId(),
-                loginPOJO.getReturnEntity().getReqPersonaName());
+        Call<CommonReasonPOJO> call = apiInterface.getReason(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
+                loginPOJO.getEntityName(), +loginPOJO.getReqPersonaId(),
+                loginPOJO.getReqPersonaName());
         call.enqueue(new Callback<CommonReasonPOJO>() {
             @Override
             public void onResponse(Call<CommonReasonPOJO> call, Response<CommonReasonPOJO> response) {
@@ -455,6 +448,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void getPersona(String reason_id, String reason_name) {
+        txt_reason.setText(""+reason_name);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
@@ -462,9 +456,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .show();
         reasonId = reason_id;
         reasonName = reason_name;
-        Call<CommonPersonaPOJO> call = apiInterface.getPersona(loginPOJO.getReturnEntity().getActiveToken(),""+loginPOJO.getReturnEntity().getEntityId(),
-                loginPOJO.getReturnEntity().getEntityName(), ""+loginPOJO.getReturnEntity().getReqPersonaId(),
-                loginPOJO.getReturnEntity().getReqPersonaName(), reason_id);
+        Call<CommonPersonaPOJO> call = apiInterface.getPersona(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
+                loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
+                loginPOJO.getReqPersonaName(), reason_id);
         call.enqueue(new Callback<CommonPersonaPOJO>() {
             @Override
             public void onResponse(Call<CommonPersonaPOJO> call, Response<CommonPersonaPOJO> response) {
@@ -483,7 +477,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     rv_persona.setLayoutManager(new GridLayoutManager(getActivity(), 3));
                     rv_persona.setAdapter(new PersonaListAdapter(getActivity(), MeetingRequestFragment.this,
                             (ArrayList<PersonaListPOJO>) reasonPOJO.getMrParams().getPersonaList()));
-                    txt_reason.setText(""+reason_name);
+
                     setPersona();
 
                 }
@@ -496,20 +490,21 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         });
     }
     private void setPersona() {
+        txt_lpersona.setText(getResources().getString(R.string.label_meeting_request) + " for "+ reasonName + "?");
 
         //selected tag
         layout_lreason.setVisibility(View.VISIBLE);
         layout_lpersona.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
-
+        label_noDomain.setVisibility(View.GONE);
         //labels
         layout_reason.setVisibility(View.GONE);
         layout_persona.setVisibility(View.VISIBLE);
         label_expertise.setVisibility(View.GONE);
         label_domain.setVisibility(View.GONE);
         layout_region.setVisibility(View.GONE);
-
+        label_region.setVisibility(View.GONE);
 
 
         layout_domain.setVisibility(View.GONE);
@@ -530,6 +525,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void getMeta(String persona_id, String persona_name) {
+        // ddapter.re();omainA
+        txt_persona.setText(""+persona_name);
         edt_domain.setText("");
         sharedData.addIntData(SharedData.domainId, 0);
         sharedData.addIntData(SharedData.subDomainId, 0);
@@ -543,9 +540,10 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         if (domainAdapter != null){
             domainAdapter.clearData();
         }
-        Call<CommonMetaPOJO> call = apiInterface.getMeta(loginPOJO.getReturnEntity().getActiveToken(), ""+loginPOJO.getReturnEntity().getEntityId(),
-                loginPOJO.getReturnEntity().getEntityName(), ""+loginPOJO.getReturnEntity().getReqPersonaId(),
-                loginPOJO.getReturnEntity().getReqPersonaName(), reasonId, persona_id);
+
+        Call<CommonMetaPOJO> call = apiInterface.getMeta(loginPOJO.getActiveToken(), ""+loginPOJO.getEntityId(),
+                loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
+                loginPOJO.getReqPersonaName(), reasonId, persona_id);
         call.enqueue(new Callback<CommonMetaPOJO>() {
             @Override
             public void onResponse(Call<CommonMetaPOJO> call, Response<CommonMetaPOJO> response) {
@@ -560,9 +558,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                       //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
-                   // ddapter.re();omainA
-                    txt_persona.setText(""+persona_name);
+
                     if (reasonPOJO.getMrParams().getFlagDomain()){
+                        label_domain.setText(getResources().getText(R.string.tag_domain) + " "+ persona_name + "?");
                         layout_domain.setVisibility(View.VISIBLE);
                         rv_domain.setVisibility(View.VISIBLE);
                         label_domain.setVisibility(View.VISIBLE);
@@ -580,9 +578,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     }
 
                     if (reasonPOJO.getMrParams().getFlagExpertise()){
+                        label_expertise.setText(getResources().getText(R.string.tag_expertise) + " "+ persona_name + "?");
                         layout_expertise.setVisibility(View.VISIBLE);
                         rv_expertise.setVisibility(View.VISIBLE);
                         label_expertise.setVisibility(View.VISIBLE);
+                        layout_region.setVisibility(View.VISIBLE);
+                        rv_region.setVisibility(View.VISIBLE);
                         FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
                         manager.setFlexWrap(FlexWrap.WRAP);
                         manager.setJustifyContent(JustifyContent.FLEX_START);
@@ -597,12 +598,13 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
                     if (!reasonPOJO.getMrParams().getFlagDomain() && !reasonPOJO.getMrParams().getFlagExpertise())
                     {
+                        label_domain.setText(getResources().getText(R.string.tag_domain) + " " + persona_name + "?");
                         label_domain.setVisibility(View.VISIBLE);
                         layout_domain.setVisibility(View.VISIBLE);
                         rv_domain.setVisibility(View.VISIBLE);
 
                     }
-
+                    label_noDomain.setVisibility(View.GONE);
                     setMeta();
 
                 }
@@ -616,30 +618,20 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     private void setMeta() {
-
         layout_lreason.setVisibility(View.VISIBLE);
         layout_lpersona.setVisibility(View.VISIBLE);
         layout_ldomain.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
-
-//        layout_domain.setVisibility(View.GONE);
-//        layout_expertise.setVisibility(View.GONE);
-//        layout_subdomain.setVisibility(View.GONE);
-//        layout_region.setVisibility(View.GONE);
-
+       // label_noDomain.setVisibility(View.GONE);
         //labels
         layout_reason.setVisibility(View.GONE);
         layout_persona.setVisibility(View.GONE);
 //        label_expertise.setVisibility(View.GONE);
-//        label_domain.setVisibility(View.GONE);
-        layout_region.setVisibility(View.VISIBLE);
+        label_region.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
 
-        //rv
-//        rv_reason.setVisibility(View.GONE);
         rv_persona.setVisibility(View.GONE);
-//        rv_expertise.setVisibility(View.GONE);
-//        rv_domain.setVisibility(View.GONE);
-        rv_region.setVisibility(View.VISIBLE);
+        rv_region.setVisibility(View.GONE);
 
         layout_subdomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.GONE);
@@ -649,13 +641,21 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
+        Utility.hideKeyboard(getActivity());
        // scrollView.scrollTo(0,scrollView.getBottom());
         subDomainId = ""+s_id;
         domainId = ""+d_id;
         sdomainName = subDomainName;
         txt_domains.setText(subDomainName);
+        label_domain.setVisibility(View.GONE);
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName);
         layout_domain.setVisibility(View.GONE);
+        rv_persona.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.VISIBLE);
+        layout_region.setVisibility(View.VISIBLE);
+        rv_region.setVisibility(View.VISIBLE);
+        label_region.setVisibility(View.VISIBLE);
+        label_noDomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.VISIBLE);
     }
 
@@ -664,10 +664,15 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void setExpertise(Integer expertise_id, String expertiseName) {
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName);
         txt_expertise.setText(""+expertiseName);
+        label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
+        layout_region.setVisibility(View.VISIBLE);
+        rv_region.setVisibility(View.VISIBLE);
         layout_meeting_preference.setVisibility(View.VISIBLE);
         layout_lexpertise.setVisibility(View.VISIBLE);
+        label_region.setVisibility(View.VISIBLE);
         expertiseId = ""+expertise_id;
     }
 
@@ -677,7 +682,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         LayoutInflater layoutInflater = this.getLayoutInflater();
         final View view1 = layoutInflater.inflate(R.layout.dialog_request_meeting_success, null);
         TextView label_close = view1.findViewById(R.id.label_close);
-
+        TextView label_title = view1.findViewById(R.id.label_title);
+//        Hey Samir, Thriive is now at work to find you the right business guru.
+//
+//                Expect a notification for your match within 48 hrs."
+        label_title.setText("Hey "+ loginPOJO.getFirstName() + ", " + getResources().getString(R.string.label_success_meeting));
         //    tv_msg.setText("Session Added Successfully.");
         builder.setView(view1);
         final AlertDialog dialogs = builder.create();
@@ -685,6 +694,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         label_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sharedData.addBooleanData(SharedData.MEETING_BOOKED, true);
                 EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_BOOK));
                 dialogs.dismiss();
                 dismiss();

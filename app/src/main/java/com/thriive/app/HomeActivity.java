@@ -80,10 +80,10 @@ public class HomeActivity extends AppCompatActivity {
     private   String meetingId = "";
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private static String TAG = HomeActivity.class.getName();
 
-    private     String rating_int = "0";
+    private int rating_int = 0;
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class HomeActivity extends AppCompatActivity {
 
         sharedData = new SharedData(getApplicationContext());
         loginPOJO  = Utility.getLoginData(getApplicationContext());
-        sharedData.addIntData(SharedData.USER_ID, loginPOJO.getReturnEntity().getEntityId());
+        sharedData.addIntData(SharedData.USER_ID, loginPOJO.getEntityId());
 
         String mydate = "2020-10-06T16:30:00";
         String utc = "2020-10-06T16:30:00";
@@ -117,10 +117,6 @@ public class HomeActivity extends AppCompatActivity {
         spaceNavigationView.setFont(typeface);
         spaceNavigationView.setCentreButtonIconColorFilterEnabled(false);
         setupViewPager(viewPager);
-       // showMeetingDialog();
-
-      //  showMeetingDialog();
-
 
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
@@ -148,7 +144,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getPendingMeeting() {
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getReturnEntity().getActiveToken(), meetingId);
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(), meetingId);
         call.enqueue(new Callback<CommonMeetingPOJO>() {
             @Override
             public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
@@ -174,6 +170,29 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    public void getLogoutApp() {
+        progressHUD = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        sharedData.addBooleanData(SharedData.isFirstVisit, false);
+        sharedData.addBooleanData(SharedData.isLogged, false);
+        sharedData.clearPref(getApplicationContext());
+        Utility.clearLogin(getApplicationContext());
+        Utility.clearMeetingDetails(getApplicationContext());
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressHUD.dismiss();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+        }, 2000);
+
+    }
 
     private void getMeetingById() {
         progressHUD = KProgressHUD.create(this)
@@ -181,7 +200,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getReturnEntity().getActiveToken(),
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
                 getIntent().getStringExtra("meeting_id"));
         call.enqueue(new Callback<CommonMeetingPOJO>() {
             @Override
@@ -267,14 +286,14 @@ public class HomeActivity extends AppCompatActivity {
             meetingId = event.getMeeting_id();
          //   getPendingMeeting();
             // popupMeetingRequest(pojo.getMeetingObject());
-            //  ((MeetingsFragment()).onResume();
+
         } else if (event.getEvent() == Utility.MEETING_BOOK){
             setMeetingFragment();
         } else if (event.getEvent() == Utility.END_CALL_DIALOG){
-            Toast.makeText(this, "ended", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "event  " +  event.getMeeting_id());
-            meetingId = event.getMeeting_id();
-            showMeetingDialog(meetingId);
+//            Toast.makeText(this, "ended", Toast.LENGTH_SHORT).show();
+//            Log.d(TAG, "event  " +  event.getMeeting_id());
+//            meetingId = event.getMeeting_id();
+//            showMeetingDialog(meetingId);
         }
 
     }
@@ -306,33 +325,63 @@ public class HomeActivity extends AppCompatActivity {
         TextView txt_didntMeet = view1.findViewById(R.id.txt_didntMeet);
         RatingBar rating = view1.findViewById(R.id.rating);
         final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
         sharedData.addBooleanData(SharedData.SHOW_DIALOG, false);
         txt_name.setText(Html.fromHtml((getResources().getString(R.string.rate_meeting))+
-                " <font color='#108568'>" + "</font>" + "?"));
+                " <font color='#108568'>" + "</font>" + ""));
         builder.setView(view1);
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                rating_int = ""+ratingBar.getRating();
+                rating_int = (int) ratingBar.getRating();
             }
         });
         txt_didntMeet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+                txt_didntMeet.setTextColor(getResources().getColor(R.color.terracota));
+
+                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+
                 dialogs.dismiss();
                 String reason = txt_didntMeet.getText().toString();
-                getSaveMeetingReview(reason, "0");
+                getSaveMeetingReview(reason, 0);
             }
         });
 
         txt_reason1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_reason1.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+                txt_reason1.setTextColor(getResources().getColor(R.color.terracota));
+
+                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
                     dialogs.dismiss();
-                    rating_int = ""+rating.getRating();
+                    rating_int = (int) rating.getRating();
                     String reason = txt_reason1.getText().toString();
                     getSaveMeetingReview(reason, rating_int);
                 }
@@ -343,11 +392,25 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_reason2.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+                txt_reason2.setTextColor(getResources().getColor(R.color.terracota));
+
+                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
                     dialogs.dismiss();
-                    rating_int = "" + rating.getRating();
+                    rating_int = (int) rating.getRating();
                     String reason = txt_reason2.getText().toString();
                     getSaveMeetingReview(reason, rating_int);
                 }
@@ -356,11 +419,26 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_reason3.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+                txt_reason3.setTextColor(getResources().getColor(R.color.terracota));
+
+                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason4.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason4.setTextColor(getResources().getColor(R.color.darkGrey));
+
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
                     dialogs.dismiss();
-                    rating_int = "" + rating.getRating();
+                    rating_int = (int) rating.getRating();
                     String reason = txt_reason3.getText().toString();
                     getSaveMeetingReview(reason, rating_int);
                 }
@@ -369,12 +447,27 @@ public class HomeActivity extends AppCompatActivity {
         txt_reason4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_reason4.setBackground(getResources().getDrawable(R.drawable.bg_dark_rate));
+                txt_reason4.setTextColor(getResources().getColor(R.color.terracota));
+
+                txt_reason1.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason1.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason2.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason2.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_reason3.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_reason3.setTextColor(getResources().getColor(R.color.darkGrey));
+
+                txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_background_rate));
+                txt_didntMeet.setTextColor(getResources().getColor(R.color.darkGrey));
+
                 if (rating.getRating() == 0.0){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
                     dialogs.dismiss();
-                    rating_int = "" + rating.getRating();
-                    Log.d(TAG, rating_int);
+                    rating_int = (int) rating.getRating();
+                    Log.d(TAG,""+ rating_int);
                     String reason = txt_reason4.getText().toString();
                     getSaveMeetingReview(reason, rating_int);
                 }
@@ -394,14 +487,15 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void getSaveMeetingReview(String review_text, String review_int) {
+    public void getSaveMeetingReview(String review_text, int review_int) {
+        Log.d(TAG, "review int " + review_int);
         progressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingReview(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingId, loginPOJO.getReturnEntity().getRowcode(),review_text ,review_text, review_int);
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingReview(loginPOJO.getActiveToken(),
+                meetingId, loginPOJO.getRowcode(),review_text ,review_text, review_int);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

@@ -1,6 +1,7 @@
 package com.thriive.app.api;
 
 import com.thriive.app.models.CommonDomainPOJO;
+import com.thriive.app.models.CommonEntityPOJO;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonHomePOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
@@ -14,6 +15,7 @@ import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 
+import butterknife.BindView;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -34,7 +36,8 @@ APIInterface {
     Call<LoginPOJO> login(@Field("primary_login_key") String primary_login_key, @Field("entity_password") String entity_password,
                           @Field("login_method") String login_method, @Field("app_ver") String app_ver, @Field("platform_ver") String platform_ver,
                           @Field("push_token") String push_token, @Field("voip_token") String voip_token,
-                          @Field("app_platform") String app_platform, @Field("time_zone_name") String time_zone_name);
+                          @Field("app_platform") String app_platform, @Field("time_zone_name") String time_zone_name,
+                          @Field("time_stamp") String time_stamp);
 
 // "requestor_id": 1,
 //         "requestor_name": "Akshay",
@@ -143,7 +146,8 @@ APIInterface {
     @FormUrlEncoded
     @POST("Meeting/get-meetings-home")
     Call<CommonHomePOJO> getMeetingHome(@Header("Authorization") String authorization,
-                                        @Field("rowcode") String rowcode, @Field("push_token") String push_token);
+                                        @Field("rowcode") String rowcode, @Field("push_token") String push_token,
+                                        @Field("time_zone_name") String time_zone_name, @Field("time_stamp") String time_stamp);
 
 
     @FormUrlEncoded
@@ -184,6 +188,14 @@ APIInterface {
 //                "response_text":"Good but not relevant",
 //                "response_int":3
 
+//
+//    {
+//        "meeting_id":23,
+//            "rowcode":"23bed6fd",
+//            "response_code":"good_review",
+//            "response_text":"Good but not relevant",
+//            "response_int":3
+//    }
 
     @FormUrlEncoded
     @POST("meeting/save-meeting-review")
@@ -192,7 +204,7 @@ APIInterface {
                                           @Field("rowcode") String rowcode,
                                           @Field("response_code") String response_code,
                                           @Field("response_text") String response_text,
-                                          @Field("response_int") String response_int);
+                                          @Field("response_int") int response_int);
 
     @FormUrlEncoded
     @POST("meeting/save-app-review")
@@ -200,11 +212,46 @@ APIInterface {
                                           @Field("rowcode") String rowcode,
                                           @Field("response_code") String response_code,
                                           @Field("response_text") String response_text,
-                                          @Field("response_int") String response_int);
+                                          @Field("response_int") int response_int);
     @FormUrlEncoded
     @POST("meeting/save-app-review")
     Call<CommonPOJO> getLogout(@Header("Authorization") String authorization,
                                @Field("rowcode") String rowcode);
+
+    @FormUrlEncoded
+    @POST("AppLogin/forgot-password")
+    Call<CommonPOJO> getForgetPassword(@Field("email_id") String email_id);
+
+    @FormUrlEncoded
+    @POST("AppLogin/change-password")
+    Call<CommonPOJO> getChangePassword(@Field("primary_login_key") String primary_login_key, @Field("entity_password") String entity_password);
+
+//    {
+//        "rowcode" : "ASF364",
+//            "first_name": "Akshay",
+//            "last_name": "Zadgaonkar"
+
+    @FormUrlEncoded
+    @POST("Entity/save-entity-name")
+    Call<CommonEntityPOJO> getSaveEntityName(@Header("Authorization") String authorization,
+                                             @Field("rowcode") String rowcode,
+                                             @Field("first_name") String first_name,
+                                             @Field("last_name") String last_name);
+
+    @FormUrlEncoded
+    @POST("Entity/save-entity-designation")
+    Call<CommonEntityPOJO> getSaveEntityDesignation(@Header("Authorization") String authorization,
+                                             @Field("rowcode") String rowcode,
+                                             @Field("designation_name") String designation_name);
+
+
+//    "pic_base64_string" : "asdf32423zs!@#" }
+    @FormUrlEncoded
+    @POST("onboarding/upload-entity-photo")
+    Call<CommonEntityPOJO> getUploadEntityPhoto(@Header("Authorization") String authorization,
+                                      @Field("rowcode") String rowcode,
+                                      @Field("pic_base64_string") String pic_base64_string);
+
 }
 
 

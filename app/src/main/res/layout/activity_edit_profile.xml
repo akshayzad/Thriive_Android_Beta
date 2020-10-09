@@ -104,8 +104,8 @@
                     android:layout_weight="1"></TextView>
                 <ImageView
                     android:id="@+id/img_edit_profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
                     android:layout_margin="@dimen/_5dp">
@@ -138,8 +138,8 @@
                     android:textSize="15dp"
                     android:layout_weight="1"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
                     android:layout_margin="@dimen/_5dp">
@@ -171,8 +171,8 @@
                     android:textSize="15dp"
                     android:layout_weight="1"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
                     android:layout_margin="@dimen/_5dp">
@@ -183,6 +183,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
+                android:visibility="gone"
                 android:layout_margin="@dimen/_5dp">
                 <TextView
                     android:layout_width="match_parent"
@@ -239,8 +240,8 @@
                     android:layout_weight="1"></TextView>
                 <ImageView
                     android:id="@+id/iv_changePassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
                     android:layout_margin="@dimen/_5dp">
@@ -272,8 +273,8 @@
                     android:textSize="15dp"
                     android:layout_weight="1"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
                     android:layout_margin="@dimen/_5dp">
@@ -284,6 +285,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
+                android:visibility="gone"
                 android:layout_margin="@dimen/_5dp">
                 <TextView
                     android:layout_width="match_parent"
@@ -319,6 +321,7 @@
                 android:orientation="horizontal"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:visibility="gone"
                 android:layout_margin="@dimen/_5dp">
                 <TextView
                     android:layout_width="match_parent"
@@ -412,6 +415,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
+                android:visibility="gone"
                 android:layout_margin="@dimen/_5dp">
                 <TextView
                     android:layout_width="match_parent"

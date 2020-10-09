@@ -188,7 +188,7 @@
             android:text="Log IN"></Button>
 
         <TextView
-            android:id="@+id/txt_09"
+            android:id="@+id/txt_forgetPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"

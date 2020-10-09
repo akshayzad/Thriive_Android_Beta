@@ -1,11 +1,15 @@
 package com.thriive.app.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +21,7 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
+import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,22 +62,65 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
         return new ScheduleListAdapter.RecyclerAdapterHolder(itemView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(final ScheduleListAdapter.RecyclerAdapterHolder holder,int position) {
         CommonMeetingListPOJO.MeetingListPOJO item  = requesterPOJOArrayList.get(position);
-        holder.txt_reason.setText(item.getMeetingReason());
+        holder.txt_reason.setText("Meeting for " + item.getMeetingReason());
         if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID)))
         {
             holder.labelName.setText(item.getGiverName());
-            Glide.with(context)
-                    .load(item.getGiverPicUrl())
-                    .into(holder.img_user);
+            if (item.getGiverPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(55) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
+                holder.img_user.setImageDrawable(drawable);
+            } else {
+                holder.img_user.setMaxWidth(80);
+                holder.img_user.setMaxHeight(80);
+                Glide.with(context)
+                        .load(item.getGiverPicUrl())
+                        .into(holder.img_user);
+            }
+//            Glide.with(context)
+//                    .load(item.getGiverPicUrl())
+//                    .into(holder.img_user);
 
         } else {
             holder.labelName.setText(item.getRequestorName());
-            Glide.with(context)
-                    .load(item.getRequestorPicUrl())
-                    .into(holder.img_user);
+            if (item.getRequestorPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(50) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.whiteTwo));
+                holder.img_user.setImageDrawable(drawable);
+            } else {
+                holder.img_user.setMaxWidth(80);
+                holder.img_user.setMaxHeight(80);
+                Glide.with(context)
+                        .load(item.getRequestorPicUrl())
+                        .into(holder.img_user);
+            }
+//            Glide.with(context)
+//                    .load(item.getRequestorPicUrl())
+//                    .into(holder.img_user);
         }
         holder.labelDate.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
                 Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));

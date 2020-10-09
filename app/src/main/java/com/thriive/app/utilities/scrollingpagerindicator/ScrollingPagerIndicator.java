@@ -39,6 +39,7 @@ public class ScrollingPagerIndicator extends View {
     private int visibleDotThreshold;
     private int orientation;
 
+    private int currentPosition;
     private float visibleFramePosition;
     private float visibleFrameWidth;
 
@@ -396,7 +397,15 @@ public class ScrollingPagerIndicator extends View {
         }
         adjustFramePosition(0, position);
         updateScaleInIdleState(position);
+        currentPosition = position;
     }
+
+
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

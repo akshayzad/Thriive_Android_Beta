@@ -46,26 +46,23 @@
             android:textColor="@color/darkGrey"
             android:layout_marginRight="@dimen/_20dp"
             android:layout_marginLeft="@dimen/_25dp"></TextView>
-        <androidx.cardview.widget.CardView
+
+
+        <EditText
+            android:id="@+id/edt_fName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_5dp"
-            app:cardElevation="1dp"
+            android:padding="@dimen/_14dp"
             android:layout_marginLeft="@dimen/_20dp"
             android:layout_marginRight="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_10dp">
-            <EditText
-                android:id="@+id/edt_fName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_14dp"
-                android:hint="@string/f_name"
-                android:textColor="@color/darkGrey"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="@dimen/_16dp"
-                android:background="@drawable/rectangle_white"></EditText>
-        </androidx.cardview.widget.CardView>
+            android:layout_marginTop="@dimen/_10dp"
+            android:hint="@string/f_name"
+            android:inputType="textCapWords"
+            android:textColor="@color/darkGrey"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_16dp"
+            android:background="@drawable/reactangle_grey_outline"></EditText>
 
 
         <TextView
@@ -78,27 +75,21 @@
             android:textColor="@color/darkGrey"
             android:layout_marginRight="@dimen/_25dp"
             android:layout_marginLeft="@dimen/_25dp"></TextView>
-        <androidx.cardview.widget.CardView
+        <EditText
+            android:id="@+id/edt_lName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/_5dp"
-            app:cardElevation="1dp"
+            android:padding="@dimen/_14dp"
             android:layout_marginLeft="@dimen/_20dp"
             android:layout_marginRight="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_10dp">
-            <EditText
-                android:id="@+id/edt_lName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/_14dp"
-                android:hint="@string/l_name"
-                android:textColor="@color/darkGrey"
-                android:textSize="@dimen/_16dp"
-                android:fontFamily="@font/roboto_regular"
-                android:inputType="text"
-                android:background="@drawable/rectangle_white"></EditText>
-        </androidx.cardview.widget.CardView>
+            android:layout_marginTop="@dimen/_10dp"
+            android:hint="@string/l_name"
+            android:textColor="@color/darkGrey"
+            android:textSize="@dimen/_16dp"
+            android:fontFamily="@font/roboto_regular"
+            android:inputType="textCapWords"
+            android:background="@drawable/reactangle_grey_outline"></EditText>
     </LinearLayout>
 
     <Button

@@ -1,7 +1,10 @@
 package com.thriive.app.fragments;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +42,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,8 +67,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     TextView txt_name;
     @BindView(R.id.refresh_view)
     SwipeRefreshLayout refreshView;
+    @BindView(R.id.layout_noMeeting)
+    RelativeLayout layout_noMeeting;
+    @BindView(R.id.layout_data)
+    LinearLayout layout_data;
+    @BindView(R.id.txt_Nname)
+    TextView txt_Nname;
 
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
 
     Unbinder unbinder;
     private APIInterface apiInterface;
@@ -70,7 +82,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private KProgressHUD progressHUD;
 
     private SharedData sharedData;
-    private String UUID;
+    private String UUID, time_stamp = "";
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -98,6 +110,20 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
       //  getPendingRequest();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            try{
+                time_stamp =""+ Utility.getTimeStamp();
+            } catch (Exception e){
+
+            }
+        } else {
+            TimeZone timeZone = TimeZone.getDefault();
+            Log.d(TAG, "time zone "+ timeZone.getID());
+            time_stamp = timeZone.getID();
+        }
+
+
+
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
 
@@ -109,8 +135,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //recyclerSchedule.setAdapter(scheduleListAdapter);
 
         loginPOJO = Utility.getLoginData(getContext());
-        txt_name.setText(""+loginPOJO.getReturnEntity().getFirstName());
-
+        txt_name.setText(""+loginPOJO.getFirstName());
+        txt_Nname.setText(""+loginPOJO.getFirstName());
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -137,13 +163,17 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         EventBus.getDefault().unregister(this);
     }
 
+    @SuppressLint("NewApi")
     @Subscribe()
     public void onMessageEvent(EventBusPOJO event) {
         if (event.getEvent() == Utility.MEETING_CANCEL){
             onResume();
             //  ((MeetingsFragment()).onResume();
         }
-
+        if (event.getEvent() == Utility.MEETING_BOOK){
+            onResume();
+            //  ((MeetingsFragment()).onResume();
+        }
         if (event.getEvent() == Utility.END_CALL_DIALOG){
             Toast.makeText(getContext(), "ended", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "event  " +  event.getMeeting_id());
@@ -161,14 +191,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void getMeetingHome() {
+        TimeZone timeZone = TimeZone.getDefault();
+        Log.d(TAG, "time zone "+ timeZone.getID());
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
         if (UUID  == null)
         {
             UUID = "";
         }
         Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
-        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode(),  UUID);
+        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
         call.enqueue(new Callback<CommonHomePOJO>() {
             @Override
             public void onResponse(Call<CommonHomePOJO> call, Response<CommonHomePOJO> response) {
@@ -189,6 +221,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             recyclerRequester.setAdapter(requesterListAdapter);
                         }
 
+                        if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
+
+                            layout_data.setVisibility(View.VISIBLE);
+                            layout_noMeeting.setVisibility(View.GONE);
+                        } else {
+                            layout_data.setVisibility(View.VISIBLE);
+                            layout_noMeeting.setVisibility(View.GONE);
+                        }
                         ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
                         // recycler_requested.setAdapter(requestedAdapter);
                         Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
@@ -218,8 +258,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
             @Override
             public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {

@@ -32,8 +32,6 @@ public class RequestedAdapter extends RecyclerView.Adapter<RequestedAdapter.Recy
 
     private  Fragment fragment;
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layout_tags)
-        FlexboxLayout layout_tags;
         @BindView(R.id.txt_reason)
         TextView txt_reason;
         @BindView(R.id.txt_persona)
@@ -63,7 +61,7 @@ public class RequestedAdapter extends RecyclerView.Adapter<RequestedAdapter.Recy
     public void onBindViewHolder(final RequestedAdapter.RecyclerAdapterHolder holder,int position) {
         PendingMeetingRequestPOJO.MeetingRequestList item  = requesterPOJOArrayList.get(position);
         holder.txt_persona.setText(item.getGiverPersonaName());
-        holder.txt_reason.setText(item.getReasonName());
+        holder.txt_reason.setText("Meeting for "+item.getReasonName());
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());
         arrayList.addAll(item.getSubDomainTags());
@@ -72,6 +70,11 @@ public class RequestedAdapter extends RecyclerView.Adapter<RequestedAdapter.Recy
         holder.rv_tags.setLayoutManager(gridLayout );
         holder.rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
     }
+
+    public String getDate(int i ){
+        return requesterPOJOArrayList.get(i).getRequestDate();
+    }
+
 
     @Override
     public int getItemCount() {

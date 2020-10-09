@@ -24,18 +24,6 @@
             android:layout_margin="@dimen/_5dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txt_persona"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_medium"
-                android:textSize="@dimen/_16dp"
-                android:layout_marginLeft="@dimen/_10dp"
-                android:layout_marginRight="@dimen/_10dp"
-                android:padding="1dp"
-                android:textColor="@color/darkGrey"
-                android:text="Ashish Ashraful" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,6 +34,19 @@
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp">
+                    <TextView
+                        android:id="@+id/txt_persona"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_marginRight="@dimen/_5dp"
+                        android:padding="1dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/darkGreyBlue"
+                        android:text="Ashish Ashraful" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_tags"
@@ -68,11 +69,11 @@
 
                         <com.thriive.app.utilities.CircularSeekBar
                             android:id="@+id/circular_seekbar"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
                             android:layout_gravity="center_horizontal"
                             app:cs_maintain_equal_circle="true"
-                            app:cs_start_angle="-180"
+                            app:cs_start_angle="-200"
                             app:cs_end_angle="120"
                             app:cs_progress="80"
                             app:cs_circle_style="round"
@@ -156,17 +157,18 @@
                 android:layout_marginTop="7dp"
                 android:layout_marginRight="@dimen/_10dp"
                 android:layout_marginBottom="7dp"
-                android:background="@drawable/outline_circle_gray"
-                android:fontFamily="@font/roboto_regular"
-                android:gravity="center"
-                android:paddingLeft="@dimen/_20dp"
                 android:paddingTop="@dimen/_5dp"
-                android:paddingRight="@dimen/_20dp"
                 android:paddingBottom="@dimen/_5dp"
-                android:text="Meeting for fundraising"
+                android:paddingRight="@dimen/_12dp"
+                android:paddingLeft="@dimen/_12dp"
                 android:textAlignment="center"
                 android:textColor="@color/slateGrey"
-                android:textSize="@dimen/_12dp" />
+                android:textSize="@dimen/_12dp"
+                android:ellipsize="middle"
+                android:fontFamily="@font/roboto_regular"
+                android:background="@drawable/outline_background_experience"
+                android:text="Borning Inc - 1 year"
+                />
 
             <TextView
                 android:id="@+id/txt_01"

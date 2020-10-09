@@ -13,6 +13,7 @@ public class SharedData {
     public static final String MEETING_ID = "MEETING_ID";
     public static final String PUSH_TOKEN = "PUSH_TOKEN";
     public static final String CALLING_NAME = "CALLING_NAME";
+    public static final String MEETING_BOOKED = "MEETING_BOOKED" ;
     Context context;
     SharedPreferences prefs;
     public static String first_time_open = "first_time_open";

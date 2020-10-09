@@ -83,14 +83,13 @@
                                 android:orientation="horizontal">
                                 <com.thriive.app.utilities.CircleImageView
                                     android:id="@id/img_user"
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_weight="0"
                                     android:layout_gravity="center"
                                     android:layout_marginLeft="@dimen/_10dp"
                                     android:layout_marginRight="@dimen/_10dp"
-                                    android:scaleType="centerInside"
-                                    android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
+                                    android:scaleType="centerInside"></com.thriive.app.utilities.CircleImageView>
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -131,12 +130,14 @@
                                         android:layout_marginBottom="2dp"
                                         android:layout_weight="1">
                                         <Button
+                                            android:id="@+id/btn_linkedin"
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
                                             android:background="@drawable/ic_linklined_white"
                                             android:layout_marginRight="@dimen/_10dp"
                                             android:layout_weight="0"></Button>
                                         <Button
+                                            android:id="@+id/btn_email"
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
                                             android:layout_marginRight="@dimen/_10dp"
@@ -145,6 +146,7 @@
                                         <Button
                                             android:layout_width="30dp"
                                             android:layout_height="30dp"
+                                            android:visibility="gone"
                                             android:background="@drawable/ic_browser_white"
                                             android:layout_marginRight="@dimen/_10dp"
                                             android:layout_weight="0"></Button>

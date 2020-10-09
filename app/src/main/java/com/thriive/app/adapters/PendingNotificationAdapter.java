@@ -102,7 +102,7 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
         arrayList.addAll(item.getRequestorSubDomainTags());
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout);
-        holder.rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
+        holder.rv_tags.setAdapter(new TagListAdapter(context, arrayList));
         holder.txt_reason.setText(item.getMeetingReason());
         // setProgress();
         ArrayList<String> ex_array = new ArrayList<>();

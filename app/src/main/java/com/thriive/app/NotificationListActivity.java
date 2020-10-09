@@ -66,7 +66,7 @@ public class NotificationListActivity extends AppCompatActivity {
 
     private APIInterface apiInterface;
     private SharedData sharedData;
-    private LoginPOJO  loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private KProgressHUD progressHUD;
 
     String meetingCode ="", startTime ="", endTime ="", cancelReason = "", selectedDate = "";
@@ -98,7 +98,7 @@ public class NotificationListActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getReturnEntity().getActiveToken(),
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
                 getIntent().getStringExtra("meeting_id"));
         call.enqueue(new Callback<CommonMeetingPOJO>() {
             @Override
@@ -141,8 +141,8 @@ public class NotificationListActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
             @Override
             public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {
@@ -181,8 +181,8 @@ public class NotificationListActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingCode, loginPOJO.getReturnEntity().getRowcode(), startTime, endTime);
+        Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
+                meetingCode, loginPOJO.getRowcode(), startTime, endTime);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
@@ -218,8 +218,8 @@ public class NotificationListActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getReturnEntity().getActiveToken(),
-                meetingCode, loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
+                meetingCode, loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
@@ -271,20 +271,46 @@ public class NotificationListActivity extends AppCompatActivity {
         final AlertDialog dialogs = builder.create();
         dialogs.setCancelable(true);
 
-        txt_reason.setText("Meeting For "+meetingListPOJO.getMeetingReason());
+        txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
         if (meetingListPOJO.getRequestorDesignationTags().size() == 0){
             txt_objective.setText("");
         } else {
             txt_objective.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
         }
 
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i<meetingListPOJO.getRequestorName().length()- 2; i++){
-            s.append("X");
+        String[] splited = meetingListPOJO.getRequestorName().trim().split("\\s+");
+        String split_one=splited[0];
+        String split_second=splited[1];
+
+        StringBuilder s1 = new StringBuilder();
+        try {
+            for (int i = 0; i < split_one.length(); i++){
+                if (i == 0){
+                    s1.append(split_one.charAt(i));
+                } else {
+                    s1.append("X");
+                }
+            }
+        } catch (Exception e){
+            e.getMessage();
         }
-        String temp_no = meetingListPOJO.getRequestorName();
-        String string = temp_no.substring(0, temp_no.length() - temp_no.length()) + s;
-        txt_requestor.setText(string);
+
+
+        StringBuilder s2 = new StringBuilder();
+        try {
+            for (int i = 0; i < split_second.length(); i++){
+                if (i == 0){
+                    s2.append(split_second.charAt(i));
+                } else {
+                    s2.append("X");
+                }
+            }
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+        txt_requestor.setText(s1 + "  " + s2);
 
         FlexboxLayoutManager manager = new FlexboxLayoutManager(NotificationListActivity.this);
         manager.setFlexWrap(FlexWrap.WRAP);
@@ -349,8 +375,8 @@ public class NotificationListActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getReturnEntity().getActiveToken(),
-                loginPOJO.getReturnEntity().getRowcode());
+        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
             @SuppressLint("NewApi")
             @Override

@@ -90,10 +90,11 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
     private PreciseCountdown preciseCountdown, endCountDown;
     private APIInterface apiInterface;
-    private LoginPOJO loginPOJO;
+    private LoginPOJO.ReturnEntity loginPOJO;
     private SharedData sharedData;
     private Handler popupHandler;
     private Runnable popupRunnable;
+
 
 
     private String rating_int = "";
@@ -176,25 +177,88 @@ public class MeetingJoinActivity extends AppCompatActivity {
         meeting_token = sharedData.getStringData(SharedData.MEETING_TOKEN);
         loginPOJO = Utility.getLoginData(getApplicationContext());
         apiInterface = APIClient.getApiInterface();
-
-        Log.d(TAG, meeting_id + " meeting_token " + meeting_token +  "meeting_channel  " + meeting_channel);
-        initUI();
-
         NotificationManager notificationManager = (NotificationManager) getBaseContext()
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
+        Log.d(TAG, meeting_id + " meeting_token " + meeting_token +  "meeting_channel  " + meeting_channel);
+        initUI();
+        if(getIntent().getStringExtra("intent_type").equals("NOTI")){
+            getStartMeeting();
+        } else {
+            if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+                    checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
+                    checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+                initEngineAndJoinChannel();
+            }
+            startTimer();
+            preciseCountdown.start();
+        }
+
+
 
         // Ask for permissions at runtime.
         // This is just an example set of permissions. Other permissions
         // may be needed, and please refer to our online documents.
 
-        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
-                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
-                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
-            initEngineAndJoinChannel();
-        }
-        startTimer();
-        preciseCountdown.start();
+
+    }
+
+    private void getStartMeeting() {
+        progressHUD = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                Integer.parseInt(meeting_id), true, loginPOJO.getRowcode());
+        call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+            @Override
+            public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d("TAG", response.toString());
+                    CommonStartMeetingPOJO reasonPOJO = response.body();
+                    progressHUD.dismiss();
+                    Log.d(TAG,""+reasonPOJO.getMessage());
+                    // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                    if (reasonPOJO.getOK()) {
+                        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+                                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
+                                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+                            initEngineAndJoinChannel();
+                        }
+                        startTimer();
+                        preciseCountdown.start();
+                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        //Toast.makeText(MeetingJoinActivity.this, " Meeting has already ended", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (isTaskRoot()) {
+                            Intent i = new Intent(MeetingJoinActivity.this, HomeActivity.class);
+                            i.putExtra("intent_type", "FLOW");
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            setResult(000, i);
+                            startActivity(i);
+                            finish();
+                            //super.onBackPressed();
+                        }else {
+                            Intent intent = new Intent();
+                            //EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, meeting_id));
+                            setResult(000, intent);
+                            finish();
+
+                            // super.onBackPressed();
+                        }
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @SuppressLint("WrongViewCast")
@@ -320,6 +384,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
         setupVideoConfig();
         setupLocalVideo();
         joinChannel();
+
     }
 
     private void initializeEngine() {
@@ -371,6 +436,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
             meeting_token = null; // default, no token
         }
         mRtcEngine.joinChannel(meeting_token, meeting_channel, "Extra Optional Data", 0);
+        mRtcEngine.setEnableSpeakerphone(true);
     }
 
     @Override
@@ -389,7 +455,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
     }
 
     private void leaveChannel() {
-        mRtcEngine.leaveChannel();
+        if (mRtcEngine !=null){
+            mRtcEngine.leaveChannel();
+        }
+
     }
 
     public void onLocalAudioMuteClicked(View view) {
@@ -402,7 +471,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
     public void onSwitchCameraClicked(View view) {
         // Switches between front and rear cameras.
-        mRtcEngine.switchCamera();
+        if (mRtcEngine !=null){
+            mRtcEngine.switchCamera();
+        }
+
     }
 
     public void onCallClicked(View view) {
@@ -425,10 +497,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
 
     private void getMeetingEnd() {
-        Log.d(TAG, loginPOJO.getReturnEntity().getActiveToken() +  " \n "+
-                meeting_id + " "+ loginPOJO.getReturnEntity().getRowcode());
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getReturnEntity().getActiveToken(),
-                meeting_id, loginPOJO.getReturnEntity().getRowcode());
+        Log.d(TAG, loginPOJO.getActiveToken() +  " \n "+
+                meeting_id + " "+ loginPOJO.getRowcode());
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getActiveToken(),
+                meeting_id, loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonStartMeetingPOJO>() {
             @Override
             public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
@@ -440,7 +512,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
                         endCall();
                         closeActivity();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+
                     }
 
                 }

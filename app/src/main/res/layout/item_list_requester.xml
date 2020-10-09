@@ -52,17 +52,7 @@
                             android:padding="1dp"
                             android:textColor="@color/darkGrey"
                             android:text="Ashish Ashraful" />
-                        <TextView
-                            android:id="@+id/txt_reason"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_regular"
-                            android:textSize="@dimen/_12dp"
-                            android:layout_marginLeft="@dimen/_10dp"
-                            android:layout_marginRight="@dimen/_10dp"
-                            android:padding="1dp"
-                            android:textColor="@color/darkGrey"
-                            android:text="Ashish Ashraful" />
+
                     </LinearLayout>
                     <TextView
                         android:id="@+id/label_shortlisting"
@@ -83,10 +73,22 @@
                         android:background="@drawable/rectangle_white"
                         android:text="@string/awaiting"></TextView>
                 </LinearLayout>
-
+                <TextView
+                    android:id="@+id/txt_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_12dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:padding="1dp"
+                    android:textColor="@color/darkGrey"
+                    android:text="Ashish Ashraful" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5dp"
+                    android:layout_marginRight="@dimen/_5dp"
                     android:id="@+id/rv_tags"></androidx.recyclerview.widget.RecyclerView>
 
 

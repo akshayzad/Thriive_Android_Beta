@@ -4,12 +4,17 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
@@ -28,9 +33,11 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
+import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +65,12 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
         CircleImageView img_giver;
         @BindView(R.id.rv_tags)
         RecyclerView rv_tags;
+        @BindView(R.id.txt_reason)
+        TextView txt_reason;
+        @BindView(R.id.iv_linkdin)
+        ImageView iv_linkdin;
+        @BindView(R.id.iv_email)
+        ImageView iv_email;
         public RecyclerAdapterHolder(View itemView) {
             super( itemView );
             ButterKnife.bind(this,itemView);
@@ -94,9 +107,31 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
                 holder.txt_profession.setText("");
             }
 
-            Glide.with(context)
-                    .load(item.getGiverPicUrl())
-                    .into(holder.img_giver);
+
+            if (item.getGiverPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(55) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
+                holder.img_giver.setImageDrawable(drawable);
+            } else {
+                holder.img_giver.setMinimumWidth(120);
+                holder.img_giver.setMaxHeight(120);
+                holder.img_giver.setMinimumHeight(120);
+                holder.img_giver.setMaxWidth(120);
+                Glide.with(context)
+                        .load(item.getGiverPicUrl())
+                        .into(holder.img_giver);
+            }
+
 
         } else {
             arrayList.addAll(item.getRequestorDomainTags());
@@ -108,11 +143,32 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
             } else {
                 holder.txt_profession.setText("");
             }
-            Glide.with(context)
-                    .load(item.getRequestorPicUrl())
-                    .into(holder.img_giver);
+            if (item.getRequestorPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(55) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.whiteTwo));
+                holder.img_giver.setImageDrawable(drawable);
+            } else {
+                holder.img_giver.setMinimumWidth(120);
+                holder.img_giver.setMaxHeight(120);
+                holder.img_giver.setMinimumHeight(120);
+                holder.img_giver.setMaxWidth(120);
+                Glide.with(context)
+                        .load(item.getRequestorPicUrl())
+                        .into(holder.img_giver);
+            }
         }
-        holder.txt_dateTime.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
+        holder.txt_reason.setText("Meeting for "+ item.getMeetingReason());
+        holder.txt_dateTime.setText(Utility.getScheduledMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
                 Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
 
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
@@ -153,6 +209,98 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
 
                  ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
 
+            }
+        });
+        holder.iv_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    if (item.getGiverEmailId().equals("")){
+                        Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                        emailIntent.setType("text/plain");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                        final PackageManager pm = context.getPackageManager();
+                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                        ResolveInfo best = null;
+                        for(final ResolveInfo info : matches)
+                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                best = info;
+                        if (best != null)
+                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                        context.startActivity(emailIntent);
+//                        Intent intent = new Intent(Intent.ACTION_SEND);
+//                        intent.setType("*/*");
+//                        intent.putExtra(Intent.EXTRA_EMAIL, item.getGiverEmailId());
+//                        intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//                        if (intent.resolveActivity(context.getPackageManager()) != null) {
+//                            context.startActivity(intent);
+//                        }
+                    }
+
+                } else {
+                    if (item.getRequestorEmailId().equals("")){
+                        Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                        emailIntent.setType("text/plain");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                        final PackageManager pm = context.getPackageManager();
+                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                        ResolveInfo best = null;
+                        for(final ResolveInfo info : matches)
+                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                best = info;
+                        if (best != null)
+                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                        context.startActivity(emailIntent);
+                    }
+                }
+            }
+        });
+        holder.iv_linkdin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    if (item.getGiverLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl())));
+                        }
+
+                    }
+
+                } else {
+                    if (item.getRequestorLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
+                        }
+                    }
+                }
             }
         });
     }
