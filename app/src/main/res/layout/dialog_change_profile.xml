@@ -82,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_7dp"
                     android:padding="@dimen/_10dp"
+                    android:visibility="gone"
                     android:textAlignment="center"
                     android:textColor="@color/darkGrey"
                     android:textSize="@dimen/_12dp"

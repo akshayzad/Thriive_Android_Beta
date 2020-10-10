@@ -94,38 +94,44 @@ public class NotificationListActivity extends AppCompatActivity {
     }
 
     private void getMeetingRequestById() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
-                getIntent().getStringExtra("meeting_id"));
-        call.enqueue(new Callback<CommonMeetingPOJO>() {
-            @Override
-            public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    progressHUD.dismiss();
-                    CommonMeetingPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo != null){
-                        if (pojo.getOK()) {
-                            detailsMeeting(pojo.getMeetingObject());
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
+                    getIntent().getStringExtra("meeting_id"));
+            call.enqueue(new Callback<CommonMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        progressHUD.dismiss();
+                        CommonMeetingPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingObject() != null){
+
+                                    detailsMeeting(pojo.getMeetingObject());
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-
                     }
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
 
@@ -140,231 +146,263 @@ public class NotificationListActivity extends AppCompatActivity {
     }
 
     private void getMeetingRequest() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonMeetingListPOJO>() {
-            @Override
-            public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonMeetingListPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                     //    Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        rv_notification.setAdapter(new PendingNotificationAdapter(NotificationListActivity.this,
-                                reasonPOJO.getMeetingList()));
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonMeetingListPOJO>() {
+                @Override
+                public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonMeetingListPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        if (reasonPOJO.getOK()) {
+                            if (reasonPOJO.getMeetingList() != null){
+                                //    Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                rv_notification.setAdapter(new PendingNotificationAdapter(NotificationListActivity.this,
+                                        reasonPOJO.getMeetingList()));
+                            }
 
-                    } else {
-                         Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
 
     }
 
     private void getAcceptMeeting() {
-        startTime = Utility.ConvertUserTimezoneToUTC(startTime);
-        endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
-        Log.d(TAG, "Accept meeting start" + startTime + " end  "+ endTime );
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
-                meetingCode, loginPOJO.getRowcode(), startTime, endTime);
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
+            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
+            Log.d(TAG, "Accept meeting start" + startTime + " end  "+ endTime );
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
+                    meetingCode, loginPOJO.getRowcode(), startTime, endTime);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        if (reasonPOJO.getOK()) {
+                            Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        successDialog();
+                            successDialog();
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
 
     }
 
     public void getDeclineMeeting(String meetingCode) {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
-                meetingCode, loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
+                    meetingCode, loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        if (reasonPOJO != null){
+                            if (reasonPOJO.getOK()) {
+                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        finish();
+                                finish();
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
 
     }
 
-    @SuppressLint({"UseCompatLoadingForDrawables", "NewApi"})
     public void detailsMeeting(CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO) {
-        meetingCode = meetingListPOJO.getMeetingCode();
-        startTime = meetingListPOJO.getPlanStartTime();
-        endTime = meetingListPOJO.getPlanEndTime();
-        AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_request_accept, null);
-        RecyclerView rv_experience = view1.findViewById(R.id.rv_experience);
-        RecyclerView rv_expertise = view1.findViewById(R.id.rv_expertise);
-        ImageView img_close = view1.findViewById(R.id.img_close);
-        ImageButton accept = view1.findViewById(R.id.img_accept);
-        ImageButton decline = view1.findViewById(R.id.img_decline);
-        TextView txt_objective = view1.findViewById(R.id.txt_objective);
-        TextView txt_reason  = view1.findViewById(R.id.txt_reason);
-        FlexboxLayout layout_tags = view1.findViewById(R.id.layout_tags);
-        TextView txt_requestor = view1.findViewById(R.id.txt_requestor);
-        //    tv_msg.setText("Session Added Successfully.");
-        builder.setView(view1);
-        final AlertDialog dialogs = builder.create();
-        dialogs.setCancelable(true);
-
-        txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
-        if (meetingListPOJO.getRequestorDesignationTags().size() == 0){
-            txt_objective.setText("");
-        } else {
-            txt_objective.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
-        }
-
-        String[] splited = meetingListPOJO.getRequestorName().trim().split("\\s+");
-        String split_one=splited[0];
-        String split_second=splited[1];
-
-        StringBuilder s1 = new StringBuilder();
         try {
-            for (int i = 0; i < split_one.length(); i++){
-                if (i == 0){
-                    s1.append(split_one.charAt(i));
+            meetingCode = meetingListPOJO.getMeetingCode();
+            startTime = meetingListPOJO.getPlanStartTime();
+            endTime = meetingListPOJO.getPlanEndTime();
+        } catch (Exception e ){
+            e.getMessage();
+        }
+        try {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
+            LayoutInflater layoutInflater = this.getLayoutInflater();
+            final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_request_accept, null);
+            RecyclerView rv_experience = view1.findViewById(R.id.rv_experience);
+            RecyclerView rv_expertise = view1.findViewById(R.id.rv_expertise);
+            ImageView img_close = view1.findViewById(R.id.img_close);
+            ImageButton accept = view1.findViewById(R.id.img_accept);
+            ImageButton decline = view1.findViewById(R.id.img_decline);
+            TextView txt_objective = view1.findViewById(R.id.txt_objective);
+            TextView txt_reason  = view1.findViewById(R.id.txt_reason);
+            FlexboxLayout layout_tags = view1.findViewById(R.id.layout_tags);
+            TextView txt_requestor = view1.findViewById(R.id.txt_requestor);
+            //    tv_msg.setText("Session Added Successfully.");
+            builder.setView(view1);
+            final AlertDialog dialogs = builder.create();
+            dialogs.setCancelable(true);
+
+            txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
+            try {
+                if (meetingListPOJO.getRequestorDesignationTags().size() == 0){
+                    txt_objective.setText("");
                 } else {
-                    s1.append("X");
+                    txt_objective.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
                 }
+            } catch (Exception e){
+                e.getMessage();
             }
-        } catch (Exception e){
+
+
+            String[] splited = meetingListPOJO.getRequestorName().trim().split("\\s+");
+            StringBuilder s1 = new StringBuilder();
+            try {
+                String split_one=splited[0];
+                for (int i = 0; i < split_one.length(); i++){
+                    if (i == 0){
+                        s1.append(split_one.charAt(i));
+                    } else {
+                        s1.append("X");
+                    }
+                }
+            } catch (Exception e){
+                e.getMessage();
+            }
+
+
+            StringBuilder s2 = new StringBuilder();
+            try {
+                String split_second=splited[1];
+                for (int i = 0; i < split_second.length(); i++){
+                    if (i == 0){
+                        s2.append(split_second.charAt(i));
+                    } else {
+                        s2.append("X");
+                    }
+                }
+            } catch (Exception e){
+                e.getMessage();
+            }
+            txt_requestor.setText(s1 + "  " + s2);
+
+            FlexboxLayoutManager manager = new FlexboxLayoutManager(NotificationListActivity.this);
+            manager.setFlexWrap(FlexWrap.WRAP);
+            manager.setJustifyContent(JustifyContent.CENTER);
+            rv_experience.setLayoutManager(manager );
+            ArrayList<String> array = new ArrayList<>();
+            array.addAll(meetingListPOJO.getRequestorObjectiveTags());
+            array.addAll(meetingListPOJO.getRequestorDesignationTags());
+            rv_experience.setAdapter(new ExperienceAdapter(NotificationListActivity.this,array));
+
+            FlexboxLayoutManager manager1 = new FlexboxLayoutManager(NotificationListActivity.this);
+            manager1.setFlexWrap(FlexWrap.WRAP);
+            manager1.setJustifyContent(JustifyContent.CENTER);
+            rv_expertise.setLayoutManager(manager1 );
+            ArrayList<String> array1 = new ArrayList<>();
+            array1.addAll(meetingListPOJO.getRequestorDomainTags());
+            array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
+            // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
+            rv_expertise.setAdapter(new ExpertiseAdapter(NotificationListActivity.this, array1));
+            img_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (getIntent().getStringExtra("intent_type").equals("NOTI")){
+                        dialogs.dismiss();
+                        getMeetingRequest();
+                    } else {
+                        dialogs.dismiss();
+                    }
+                    //   ratingDialog();
+                }
+            });
+            decline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogs.dismiss();
+                    getDeclineMeeting(meetingCode);
+                }
+            });
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogs.dismiss();
+                    getMeetingSlote();
+
+
+                    //s successDialog();
+                }
+            });
+            dialogs.show();
+        } catch(Exception e){
             e.getMessage();
         }
 
-
-        StringBuilder s2 = new StringBuilder();
-        try {
-            for (int i = 0; i < split_second.length(); i++){
-                if (i == 0){
-                    s2.append(split_second.charAt(i));
-                } else {
-                    s2.append("X");
-                }
-            }
-        } catch (Exception e){
-            e.getMessage();
-        }
-
-
-        txt_requestor.setText(s1 + "  " + s2);
-
-        FlexboxLayoutManager manager = new FlexboxLayoutManager(NotificationListActivity.this);
-        manager.setFlexWrap(FlexWrap.WRAP);
-        manager.setJustifyContent(JustifyContent.CENTER);
-        rv_experience.setLayoutManager(manager );
-        ArrayList<String> array = new ArrayList<>();
-        array.addAll(meetingListPOJO.getRequestorObjectiveTags());
-        array.addAll(meetingListPOJO.getRequestorDesignationTags());
-        rv_experience.setAdapter(new ExperienceAdapter(NotificationListActivity.this,array));
-
-        FlexboxLayoutManager manager1 = new FlexboxLayoutManager(NotificationListActivity.this);
-        manager1.setFlexWrap(FlexWrap.WRAP);
-        manager1.setJustifyContent(JustifyContent.CENTER);
-        rv_expertise.setLayoutManager(manager1 );
-        ArrayList<String> array1 = new ArrayList<>();
-        array1.addAll(meetingListPOJO.getRequestorDomainTags());
-        array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
-       // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
-        rv_expertise.setAdapter(new ExpertiseAdapter(NotificationListActivity.this, array1));
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (getIntent().getStringExtra("intent_type").equals("NOTI")){
-                    dialogs.dismiss();
-                    getMeetingRequest();
-                } else {
-                    dialogs.dismiss();
-                }
-             //   ratingDialog();
-            }
-        });
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                getDeclineMeeting(meetingCode);
-            }
-        });
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                getMeetingSlote();
-
-
-               //s successDialog();
-            }
-        });
-        dialogs.show();
     }
 
     @Override
@@ -381,41 +419,44 @@ public class NotificationListActivity extends AppCompatActivity {
     }
 
     private void getMeetingSlote() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onResponse(Call<CommonEntitySlotsPOJO> call, Response<CommonEntitySlotsPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonEntitySlotsPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onResponse(Call<CommonEntitySlotsPOJO> call, Response<CommonEntitySlotsPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonEntitySlotsPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        if (reasonPOJO != null){
+                            if (reasonPOJO.getOK()) {
+                                //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                meetingAvailability(reasonPOJO.getEntitySlotList());
 
-
-                        meetingAvailability(reasonPOJO.getEntitySlotList());
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -451,34 +492,15 @@ public class NotificationListActivity extends AppCompatActivity {
         layout1.setVisibility(View.GONE);
         layout2.setVisibility(View.GONE);
         layout3.setVisibility(View.GONE);
+        try {
+            if (entitySlotList.size() == 0) {
+                edit.setVisibility(View.GONE);
+            } else if (entitySlotList.size() == 1){
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++)
+                {
 
-        if (entitySlotList.size() == 0) {
-            edit.setVisibility(View.GONE);
-        } else if (entitySlotList.size() == 1){
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++)
-            {
-
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                layout2.setVisibility(View.VISIBLE);
-                txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                        Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-
-                startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-            }
-        } else {
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++)
-            {
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                if(i == 0){
-                    layout1.setVisibility(View.VISIBLE);
-                    txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                } else  if(i == 1){
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
                     layout2.setVisibility(View.VISIBLE);
                     txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
                     txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
@@ -486,19 +508,42 @@ public class NotificationListActivity extends AppCompatActivity {
 
                     startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-                    //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                }
+            } else {
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++)
+                {
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
+                    if(i == 0){
+                        layout1.setVisibility(View.VISIBLE);
+                        txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                    } else  if(i == 1){
+                        layout2.setVisibility(View.VISIBLE);
+                        txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
-                } else  if(i == 2){
-                    layout3.setVisibility(View.VISIBLE);
-                    txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                        startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
+                        //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
-                    // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                    } else  if(i == 2){
+                        layout3.setVisibility(View.VISIBLE);
+                        txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
+                        // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+
+                    }
                 }
             }
+        } catch (Exception e){
+            e.getMessage();
         }
+
 
 
         layout1.setOnClickListener(new View.OnClickListener() {
@@ -724,87 +769,4 @@ public class NotificationListActivity extends AppCompatActivity {
         dialogs.show();
     }
 
-
-    public void meetingCancel(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        final View view1 = layoutInflater.inflate(R.layout.dialog_cancel_meeting, null);
-
-        Button accept = view1.findViewById(R.id.txt_10);
-        Button decline = view1.findViewById(R.id.txt_11);
-        ImageView img_close = view1.findViewById(R.id.img_close);
-
-
-        //    tv_msg.setText("Session Added Successfully.");
-        builder.setView(view1);
-        final AlertDialog dialogs = builder.create();
-        dialogs.setCancelable(true);
-
-        // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                //   ratingDialog();
-            }
-        });
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-            }
-        });
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                meetingCancelConfirmation();
-            }
-        });
-        dialogs.show();
-    }
-
-    private void meetingCancelConfirmation() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_cancel_alert, null);
-
-        Button btn_TimeMatch = view1.findViewById(R.id.btn_TimeMatch);
-        Button btm_noTime = view1.findViewById(R.id.btm_noTime);
-        ImageView img_close = view1.findViewById(R.id.img_close);
-
-
-        //    tv_msg.setText("Session Added Successfully.");
-        builder.setView(view1);
-        final AlertDialog dialogs = builder.create();
-        dialogs.setCancelable(true);
-
-        // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                //   ratingDialog();
-            }
-        });
-        btn_TimeMatch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                cancelReason = btn_TimeMatch.getText().toString();
-             //   getCancelMeeting();
-            }
-        });
-        btm_noTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                cancelReason = btm_noTime.getText().toString();
-//                //  meetingCancelConfirmation();
-            }
-        });
-        dialogs.show();
-
-    }
 }

@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.JsonObject;
 import com.onesignal.OneSignal;
 import com.thriive.app.adapters.ExperienceAdapter;
 import com.thriive.app.adapters.ViewPagerAdapter;
@@ -41,6 +42,7 @@ import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.fragments.MeetingsFragment;
 
+import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonPOJO;
@@ -132,7 +134,8 @@ public class HomeActivity extends AppCompatActivity {
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-                callFragment();
+                getMeetingCount();
+
                 // Toast.makeText(HomeActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
             }
 
@@ -154,30 +157,73 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void getPendingMeeting() {
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(), meetingId);
-        call.enqueue(new Callback<CommonMeetingPOJO>() {
-            @Override
-            public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonMeetingPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
+    private void getMeetingCount() {
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonMeetingCountPOJO> call = apiInterface.getMeetingCount(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonMeetingCountPOJO>() {
+                @Override
+                public void onResponse(Call<CommonMeetingCountPOJO> call, Response<CommonMeetingCountPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        progressHUD.dismiss();
+                        CommonMeetingCountPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getDoneCount() + " " + pojo.getTotalCount());
+                        sharedData.addIntData(SharedData.MEETING_TOTAL, pojo.getTotalCount());
+                        sharedData.addIntData(SharedData.MEETING_DONE, pojo.getDoneCount());
+                        if (pojo != null){
+                            try {
+                                if (pojo.getOK()){
+                                    if (pojo.getDoneCount() >= pojo.getTotalCount()){
+                                        getMeetingExsaustedDialog(pojo.getTemplateMessage());
+                                    } else {
+                                        callFragment();
+                                    }
+                                }
+                            } catch (Exception e){
+                                Log.d(TAG, " "+ e.getMessage());
+                            }
 
-                        popupMeetingRequest(pojo.getMeetingObject());
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
-
                 }
-            }
+                @Override
+                public void onFailure(Call<CommonMeetingCountPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+    }
+
+    private void getMeetingExsaustedDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_success_alert, null);
+
+        TextView txt_message = view1.findViewById(R.id.txt_message);
+        TextView label_close = view1.findViewById(R.id.label_close);
+        //    tv_msg.setText("Session Added Successfully.");
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(true);
+        txt_message.setText(""+message);
+        // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
+        label_close.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                dialogs.dismiss();
+                //   ratingDialog();
             }
         });
+        dialogs.show();
     }
 
 
@@ -482,12 +528,13 @@ public class HomeActivity extends AppCompatActivity {
                     CommonPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
                     Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (reasonPOJO != null){
+                        if (reasonPOJO.getOK()) {
+                            Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
-
                 }
             }
             @Override

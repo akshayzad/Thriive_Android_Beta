@@ -4,9 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -34,18 +31,13 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.thriive.app.HomeActivity;
 import com.thriive.app.MeetingJoinActivity;
-import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
-import com.thriive.app.RequestMeetingGuideActivity;
-import com.thriive.app.adapters.BusinessProfessionAdapter;
+
 import com.thriive.app.adapters.ExperienceAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.api.APIClient;
@@ -53,7 +45,6 @@ import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonPOJO;
-import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
@@ -352,12 +343,15 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             } else {
                 try {
+
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl()));
                     intent.setPackage("com.linkedin.android");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getActivity().startActivity(intent);
                 } catch (Exception e) {
                     getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl())));
+                } finally {
+
                 }
 
             }
@@ -374,6 +368,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     getActivity().startActivity(intent);
                 } catch (Exception e) {
                     getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getRequestorLinkedinUrl())));
+                } finally {
+
                 }
             }
         }

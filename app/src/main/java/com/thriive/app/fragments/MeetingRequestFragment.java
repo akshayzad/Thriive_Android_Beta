@@ -168,6 +168,10 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     TextView label_region;
     @BindView(R.id.label_noDomain)
     TextView label_noDomain;
+    @BindView(R.id.txt_meetingCount)
+    TextView txt_meetingCount;
+    @BindView(R.id.txt_message)
+    TextView txt_message;
     private DomainAdapter domainAdapter;
 
 
@@ -206,6 +210,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             }
         });
 
+
+
         init();
         getReason();
 
@@ -232,7 +238,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style. AppBottomSheetDialogTheme);
+        setStyle(STYLE_NORMAL, R.style.SheetDialog);
     }
 
     @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
@@ -368,6 +374,10 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void init(){
+
+        txt_message.setText("You can request only "+ sharedData.getIntData(SharedData.MEETING_TOTAL) + " meetings a week.");
+        int count_m = sharedData.getIntData(SharedData.MEETING_DONE) + 1;
+        txt_meetingCount.setText(count_m+ "/" + sharedData.getIntData(SharedData.MEETING_TOTAL));
         //selected tag
         layout_lreason.setVisibility(View.GONE);
         layout_lpersona.setVisibility(View.GONE);

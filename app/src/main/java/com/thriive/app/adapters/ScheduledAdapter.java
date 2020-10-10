@@ -101,13 +101,18 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
             arrayList.addAll(item.getGiverSubDomainTags());
             holder.txt_giverName.setText(item.getGiverName());
             sharedData.addStringData(SharedData.CALLING_NAME, item.getGiverName());
-            if (item.getGiverDesignationTags().size() > 0){
-                holder.txt_profession.setText(item.getGiverDesignationTags().get(0));
-            } else {
-                holder.txt_profession.setText("");
+            try{
+                if (item.getGiverDesignationTags().size() > 0){
+                    holder.txt_profession.setText(item.getGiverDesignationTags().get(0));
+                } else {
+                    holder.txt_profession.setText("");
+                }
+            } catch (Exception e)
+            {
+                e.getMessage();
             }
 
-
+          //  www.linkedin.com/in/sachchit-chaudhary-29464a14b
             if (item.getGiverPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
@@ -273,15 +278,20 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
                 if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
                     if (item.getGiverLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
-
+                        //www.linkedin.com/in/sachchit-chaudhary-29464a14b
+//                        Intent intent = new Intent(Intent.ACTION_VIEW);
+//                        intent.setData(Uri.parse("www.linkedin.com/in/sachchit-chaudhary-29464a14b"));
+//                        context.startActivity(intent);
                     } else {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
-                            intent.setPackage("com.linkedin.android");
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
                             context.startActivity(intent);
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+//                            intent.setPackage("com.linkedin.android");
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            context.startActivity(intent);
                         } catch (Exception e) {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl())));
                         }
 
                     }
@@ -289,15 +299,17 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
                 } else {
                     if (item.getRequestorLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
-
                     } else {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl()));
-                            intent.setPackage("com.linkedin.android");
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
+//                            Intent intent = new Intent(Intent.ACTION_VIEW);
+//                            intent.setData(Uri.parse(item.getRequestorLinkedinUrl()));
+//                            context.startActivity(intent);
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl()));
+//                            intent.setPackage("com.linkedin.android");
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            context.startActivity(intent);
                         } catch (Exception e) {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
+                        //    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
                         }
                     }
                 }

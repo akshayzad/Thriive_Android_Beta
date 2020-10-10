@@ -5,17 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class SharedData {
-
-
-    public static final String USER_ID = "USER_ID";
-    public static final String MEETING_TOKEN = "MEETING_TOKEN";
-    public static final String SHOW_DIALOG = "SHOW_DIALOG";
-    public static final String MEETING_ID = "MEETING_ID";
-    public static final String PUSH_TOKEN = "PUSH_TOKEN";
-    public static final String CALLING_NAME = "CALLING_NAME";
-    public static final String MEETING_BOOKED = "MEETING_BOOKED" ;
     Context context;
     SharedPreferences prefs;
+
     public static String first_time_open = "first_time_open";
     public static String LOGIN_STATUS="LOGIN_STATUS";
     public static String domainId ="domainId";
@@ -24,6 +16,15 @@ public class SharedData {
     public static String isFirstVisit = "isFirstVisit";
     public static String isMeetingRequestVisit = "isMeetingRequestVisit";
     public static String requestMeetingBook = "isFirstVisit";
+    public static final String USER_ID = "USER_ID";
+    public static final String MEETING_TOKEN = "MEETING_TOKEN";
+    public static final String SHOW_DIALOG = "SHOW_DIALOG";
+    public static final String MEETING_ID = "MEETING_ID";
+    public static final String PUSH_TOKEN = "PUSH_TOKEN";
+    public static final String CALLING_NAME = "CALLING_NAME";
+    public static final String MEETING_BOOKED = "MEETING_BOOKED" ;
+    public static final String MEETING_DONE = "MEETING_DONE";
+    public static final String MEETING_TOTAL = "MEETING_TOTAL";
 
     public static String PREFS_2 = "PREFS_2";
     private SharedPreferences prefs2 ;

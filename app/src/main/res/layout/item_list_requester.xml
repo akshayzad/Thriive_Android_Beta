@@ -68,6 +68,7 @@
                         android:drawablePadding="@dimen/_3dp"
                         android:textSize="@dimen/_12dp"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:drawableLeft="@drawable/ic_watch"
                         android:fontFamily="@font/roboto_regular"
                         android:background="@drawable/rectangle_white"

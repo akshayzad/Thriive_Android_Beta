@@ -64,7 +64,7 @@
     <string name="tag_expertise">Please select the area of expertise of the </string>
     <string name="tag_domain">Please select the domain of the </string>
     <string name="awaiting">Awaiting Confirmation</string>
-    <string name="tag_camera">New Profile Photo</string>
+    <string name="tag_camera">Select From Camera</string>
     <string name="tag_gallery">Select From Gallery</string>
     <string name="remove_photo">Remove Profile Photo</string>
 

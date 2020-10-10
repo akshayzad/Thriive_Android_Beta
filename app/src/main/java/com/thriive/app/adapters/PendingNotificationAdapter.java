@@ -87,11 +87,16 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
     @Override
     public void onBindViewHolder(final PendingNotificationAdapter.RecyclerAdapterHolder holder, int position) {
         CommonMeetingListPOJO.MeetingListPOJO item = requesterPOJOArrayList.get(position);
-        if (item.getRequestorDesignationTags().size() == 0) {
-            holder.txt_persona.setText("");
-        } else {
-            holder.txt_persona.setText(item.getRequestorDesignationTags().get(0));
+        try {
+            if (item.getRequestorDesignationTags().size() == 0) {
+                holder.txt_persona.setText("");
+            } else {
+                holder.txt_persona.setText(item.getRequestorDesignationTags().get(0));
+            }
+        } catch (Exception e){
+            e.getMessage();
         }
+
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getRequestorDomainTags());
         arrayList.addAll(item.getRequestorSubDomainTags());

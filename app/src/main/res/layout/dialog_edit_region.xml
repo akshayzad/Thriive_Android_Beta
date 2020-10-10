@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_background_fragment">
+    <RelativeLayout
+        android:id="@+id/header"
+        android:background="@color/space_transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="@dimen/_30dp"
+            android:layout_height="@dimen/_30dp"
+            android:layout_weight="0"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/_10dp"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_close"></ImageView>
+        <TextView
+            android:id="@+id/label_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_18dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:textAlignment="center"
+            android:padding="@dimen/_10dp"
+            android:textColor="@color/darkGreyBlue"
+            android:text="Edit Region" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/_10dp">
+
+        <EditText
+            android:id="@+id/edt_region"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_10dp"
+            android:layout_marginLeft="@dimen/_20dp"
+            android:layout_marginRight="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:hint="Search region"
+            android:drawableLeft="@drawable/ic_search"
+            android:inputType="textCapWords"
+            android:textColor="@color/darkGrey"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_16dp"
+            android:background="@drawable/reactangle_grey_outline"></EditText>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_region"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:layout_gravity="center"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/txt_noRegion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_12dp"
+            android:layout_margin="@dimen/_10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:textAlignment="center"
+            android:padding="@dimen/_20dp"
+            android:visibility="invisible"
+            android:textColor="@color/darkGrey"
+            android:text="@string/no_domain" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/filled_circle_terracota"
+            android:textColor="@color/whiteTwo"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_14dp"
+            android:layout_marginBottom="@dimen/_40dp"
+            android:text="Save"></Button>
+
+    </LinearLayout>
+
+</RelativeLayout>

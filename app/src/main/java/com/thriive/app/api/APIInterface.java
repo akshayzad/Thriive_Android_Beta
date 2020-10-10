@@ -1,9 +1,12 @@
 package com.thriive.app.api;
 
+import com.thriive.app.models.CommonCountryPOJO;
 import com.thriive.app.models.CommonDomainPOJO;
+import com.thriive.app.models.CommonEntityImagePOJO;
 import com.thriive.app.models.CommonEntityPOJO;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonHomePOJO;
+import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonMetaPOJO;
@@ -21,6 +24,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -247,11 +251,24 @@ APIInterface {
 
 //    "pic_base64_string" : "asdf32423zs!@#" }
     @FormUrlEncoded
-    @POST("onboarding/upload-entity-photo")
-    Call<CommonEntityPOJO> getUploadEntityPhoto(@Header("Authorization") String authorization,
-                                      @Field("rowcode") String rowcode,
-                                      @Field("pic_base64_string") String pic_base64_string);
+    @POST("Entity/upload-entity-photo")
+    Call<CommonEntityImagePOJO> getUploadEntityPhoto(@Header("Authorization") String authorization,
+                                                     @Field("rowcode") String rowcode,
+                                                     @Field("pic_base64_string") String pic_base64_string);
 
+    @GET("Entity/get-country-list")
+    Call<CommonCountryPOJO> getCountryList();
+
+
+    @FormUrlEncoded
+    @POST("Entity/save-entity-country")
+    Call<CommonEntityPOJO> getSaveEntityRegion(@Header("Authorization")String activeToken,@Field("rowcode") String rowcode,
+                                               @Field("country_id") int countryCode,  @Field("country_name") String country_name);
+
+
+    @FormUrlEncoded
+    @POST("Entity/get-request-count")
+    Call<CommonMeetingCountPOJO> getMeetingCount(@Header("Authorization")String activeToken, @Field("rowcode") String rowcode);
 }
 
 

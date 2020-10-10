@@ -204,61 +204,69 @@ public class MeetingJoinActivity extends AppCompatActivity {
     }
 
     private void getStartMeeting() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
-                Integer.parseInt(meeting_id), true, loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonStartMeetingPOJO>() {
-            @Override
-            public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d("TAG", response.toString());
-                    CommonStartMeetingPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
-                    if (reasonPOJO.getOK()) {
-                        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
-                                checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
-                                checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
-                            initEngineAndJoinChannel();
-                        }
-                        startTimer();
-                        preciseCountdown.start();
-                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                    Integer.parseInt(meeting_id), true, loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d("TAG", response.toString());
+                        CommonStartMeetingPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                        if (reasonPOJO != null){
+                            if (reasonPOJO.getOK()) {
+                                if (checkSelfPermission(REQUESTED_PERMISSIONS[0], PERMISSION_REQ_ID) &&
+                                        checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
+                                        checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
+                                    initEngineAndJoinChannel();
+                                }
+                                startTimer();
+                                preciseCountdown.start();
+                                //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
 
-                        //Toast.makeText(MeetingJoinActivity.this, " Meeting has already ended", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        if (isTaskRoot()) {
-                            Intent i = new Intent(MeetingJoinActivity.this, HomeActivity.class);
-                            i.putExtra("intent_type", "FLOW");
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            setResult(000, i);
-                            startActivity(i);
-                            finish();
-                            //super.onBackPressed();
-                        }else {
-                            Intent intent = new Intent();
-                            //EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, meeting_id));
-                            setResult(000, intent);
-                            finish();
+                                //Toast.makeText(MeetingJoinActivity.this, " Meeting has already ended", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                if (isTaskRoot()) {
+                                    Intent i = new Intent(MeetingJoinActivity.this, HomeActivity.class);
+                                    i.putExtra("intent_type", "FLOW");
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    setResult(000, i);
+                                    startActivity(i);
+                                    finish();
+                                    //super.onBackPressed();
+                                }else {
+                                    Intent intent = new Intent();
+                                    //EventBus.getDefault().post(new EventBusPOJO(Utility.END_CALL_DIALOG, meeting_id));
+                                    setResult(000, intent);
+                                    finish();
 
-                            // super.onBackPressed();
+                                    // super.onBackPressed();
+                                }
+                            }
                         }
+
+
                     }
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
     @SuppressLint("WrongViewCast")
@@ -497,31 +505,35 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
 
     private void getMeetingEnd() {
-        Log.d(TAG, loginPOJO.getActiveToken() +  " \n "+
-                meeting_id + " "+ loginPOJO.getRowcode());
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getActiveToken(),
-                meeting_id, loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonStartMeetingPOJO>() {
-            @Override
-            public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonStartMeetingPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        endCall();
-                        closeActivity();
-                    } else {
-
+        try {
+            Log.d(TAG, loginPOJO.getActiveToken() +  " \n "+
+                    meeting_id + " "+ loginPOJO.getRowcode());
+            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getActiveToken(),
+                    meeting_id, loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonStartMeetingPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                endCall();
+                                closeActivity();
+                            }
+                        }
                     }
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
 
