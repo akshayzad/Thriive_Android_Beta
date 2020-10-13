@@ -41,122 +41,105 @@ public class CommonMeetingListPOJO {
 
     public class MeetingListPOJO {
 
-
-
         @SerializedName("meeting_id")
-        @Expose
         private Integer meetingId;
         @SerializedName("meeting_token")
-        @Expose
         private String meetingToken;
         @SerializedName("meeting_request_id")
-        @Expose
         private Integer meetingRequestId;
         @SerializedName("meeting_code")
-        @Expose
         private String meetingCode;
         @SerializedName("meeting_channel")
-        @Expose
         private String meetingChannel;
         @SerializedName("meeting_reason")
-        @Expose
         private String meetingReason;
         @SerializedName("meeting_domain")
-        @Expose
         private String meetingDomain;
         @SerializedName("meeting_sub_domain")
-        @Expose
         private String meetingSubDomain;
         @SerializedName("meeting_expertise")
-        @Expose
         private Object meetingExpertise;
         @SerializedName("plan_start_time")
-        @Expose
         private String planStartTime;
         @SerializedName("plan_end_time")
-        @Expose
         private String planEndTime;
         @SerializedName("giver_id")
-        @Expose
         private Integer giverId;
         @SerializedName("giver_name")
-        @Expose
         private String giverName;
         @SerializedName("giver_pic_url")
-        @Expose
         private String giverPicUrl;
         @SerializedName("giver_email_id")
-        @Expose
         private String giverEmailId;
         @SerializedName("giver_linkedin_url")
-        @Expose
         private String giverLinkedinUrl;
         @SerializedName("date_match")
-        @Expose
         private String dateMatch;
         @SerializedName("giver_persona_tags")
-        @Expose
         private List<String> giverPersonaTags = null;
         @SerializedName("giver_objective_tags")
-        @Expose
         private List<String> giverObjectiveTags = null;
         @SerializedName("giver_experience_tags")
-        @Expose
         private List<String> giverExperienceTags = null;
         @SerializedName("giver_domain_tags")
-        @Expose
         private List<String> giverDomainTags = null;
         @SerializedName("giver_sub_domain_tags")
-        @Expose
         private List<String> giverSubDomainTags = null;
         @SerializedName("giver_designation_tags")
-        @Expose
         private List<String> giverDesignationTags = null;
         @SerializedName("giver_expertise_tags")
-        @Expose
         private List<String> giverExpertiseTags = null;
         @SerializedName("giver_response_int")
-        @Expose
         private Integer giverResponseInt;
         @SerializedName("requestor_id")
-        @Expose
         private Integer requestorId;
         @SerializedName("requestor_name")
-        @Expose
         private String requestorName;
         @SerializedName("requestor_pic_url")
-        @Expose
         private String requestorPicUrl;
         @SerializedName("requestor_email_id")
-        @Expose
         private String requestorEmailId;
         @SerializedName("requestor_linkedin_url")
-        @Expose
         private String requestorLinkedinUrl;
         @SerializedName("requestor_persona_tags")
-        @Expose
         private List<String> requestorPersonaTags = null;
         @SerializedName("requestor_objective_tags")
-        @Expose
         private List<String> requestorObjectiveTags = null;
         @SerializedName("requestor_experience_tags")
-        @Expose
         private List<String> requestorExperienceTags = null;
         @SerializedName("requestor_domain_tags")
-        @Expose
         private List<String> requestorDomainTags = null;
         @SerializedName("requestor_sub_domain_tags")
-        @Expose
         private List<String> requestorSubDomainTags = null;
         @SerializedName("requestor_designation_tags")
-        @Expose
         private List<String> requestorDesignationTags = null;
         @SerializedName("requestor_expertise_tags")
-        @Expose
         private List<String> requestorExpertiseTags = null;
         @SerializedName("requestor_response_int")
-        @Expose
         private Integer requestorResponseInt;
+        @SerializedName("requestor_sub_title")
+        private String requestorSubTitle;
+        @SerializedName("giver_sub_title")
+        private String giverSubTitle;
+        @SerializedName("meeting_label")
+        private String meetingLabel;
+        @SerializedName("meeting_tag")
+        private List<String> meetingTag = null;
+        public String getMeetingLabel() {
+            return meetingLabel;
+        }
+
+        public void setMeetingLabel(String meetingLabel) {
+            this.meetingLabel = meetingLabel;
+        }
+
+        public List<String> getMeetingTag() {
+            return meetingTag;
+        }
+
+        public void setMeetingTag(List<String> meetingTag) {
+            this.meetingTag = meetingTag;
+        }
 
         public Integer getMeetingId() {
             return meetingId;
@@ -316,6 +299,22 @@ public class CommonMeetingListPOJO {
 
         public void setGiverExperienceTags(List<String> giverExperienceTags) {
             this.giverExperienceTags = giverExperienceTags;
+        }
+
+        public String getRequestorSubTitle() {
+            return requestorSubTitle;
+        }
+
+        public void setRequestorSubTitle(String requestorSubTitle) {
+            this.requestorSubTitle = requestorSubTitle;
+        }
+
+        public String getGiverSubTitle() {
+            return giverSubTitle;
+        }
+
+        public void setGiverSubTitle(String giverSubTitle) {
+            this.giverSubTitle = giverSubTitle;
         }
 
         public List<String> getGiverDomainTags() {

@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     private KProgressHUD progressHUD;
 
 
-    private String email = "", password = "", login_method = "", app_ver = "", platform_ver= "", token = "", time_stamp;
+    private String email = "", password = "", login_method = "", time_stamp;
     private APIInterface apiInterface;
 
     private SharedData sharedData;
@@ -98,7 +98,6 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
         apiInterface = APIClient.getApiInterface();
 
-        getOneSignalToken();
 
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
@@ -229,21 +228,6 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     }
 
 
-
-    private void getOneSignalToken() {
-        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-            @Override
-            public void idsAvailable(String userId, String registrationId) {
-                if (userId != null) {
-                    token = userId;
-                } else {
-                    getOneSignalToken();
-                }
-            }
-        });
-        Log.d("token","one signal token "+token);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -300,26 +284,31 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         Log.d(TAG, response.toString());
                         LoginPOJO loginPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG, ""+loginPOJO.getMessage());
-                        if (loginPOJO != null){
-                            if (loginPOJO.getOK()) {
-                                if (loginPOJO.getReturnEntity() != null){
-                                    Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+                        try {
+                            if (loginPOJO != null){
+                                Log.d(TAG, ""+loginPOJO.getMessage());
+                                if (loginPOJO.getOK()) {
+                                    if (loginPOJO.getReturnEntity() != null){
+                                        Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+                                     //   Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                        sharedData.addBooleanData(SharedData.isLogged, true);
+                                        Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
+                                        intent.putExtra("intent_type", "FLOW");
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                } else {
                                     Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                    sharedData.addBooleanData(SharedData.isLogged, true);
-                                    Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
-                                    intent.putExtra("intent_type", "FLOW");
-                                    startActivity(intent);
-                                    finish();
                                 }
-                            } else {
-                                Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
+                            else {
+                                Log.d(TAG,  " FAIL" +  response.toString());
+                                Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
                         }
-                        else {
-                            Log.d(TAG,  " FAIL" +  response.toString());
-                            Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
-                        }
+
                     } else {
                         Log.d(TAG,  " FAIL" +  response.toString());
                         Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
@@ -377,6 +366,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             email = acct.getEmail();
 //            String personId = acct.getId();
 //            Uri personPhoto = acct.getPhotoUrl();
+            login_method = "google";
+            Log.d(TAG, email);
             getLogin();
 
         }

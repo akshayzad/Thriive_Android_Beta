@@ -61,6 +61,18 @@
                     android:textColor="@color/darkGrey"
                     android:text="@string/label_next_schedule" />
 
+                <TextView
+                    android:id="@+id/txt_noSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:textSize="@dimen/_18dp"
+                    android:padding="@dimen/_25dp"
+                    android:textAlignment="center"
+                    android:visibility="gone"
+                    android:textColor="@color/slateGrey"
+                    android:text="Ready to Thriive today? Set your next meeting now!"
+                    />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_schedule"
@@ -84,7 +96,18 @@
                     android:layout_marginTop="@dimen/_10dp"
                     android:textColor="@color/darkGrey"
                     android:text="@string/label_requested" />
-
+                <TextView
+                    android:id="@+id/txt_noRequest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_bold"
+                    android:padding="@dimen/_25dp"
+                    android:textAlignment="center"
+                    android:visibility="gone"
+                    android:text=""
+                    android:textColor="@color/slateGrey"
+                    android:textSize="@dimen/_18dp" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_requester"
                     android:layout_width="match_parent"

@@ -73,6 +73,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     LinearLayout layout_data;
     @BindView(R.id.txt_Nname)
     TextView txt_Nname;
+    @BindView(R.id.txt_noRequest)
+    TextView txt_noRequest;
+    @BindView(R.id.txt_noSchedule)
+    TextView txt_noSchedule;
 
     private LoginPOJO.ReturnEntity loginPOJO;
 
@@ -201,8 +205,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         TimeZone timeZone = TimeZone.getDefault();
         Log.d(TAG, "time zone "+ timeZone.getID());
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
-        if (UUID  == null)
-        {
+        if (UUID  == null) {
             UUID = "";
         }
         Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
@@ -212,50 +215,67 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onResponse(Call<CommonHomePOJO> call, Response<CommonHomePOJO> response) {
                 if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
+                    Log.d(TAG, " "+ response.toString());
              //       progressHUD.dismiss();
                     CommonHomePOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo != null){
-                        if (pojo.getOK()) {
-                            if (pojo.getMeetingScheduledList() != null){
-                                scheduleListAdapter = new ScheduleListAdapter(getActivity(), (ArrayList<CommonMeetingListPOJO.MeetingListPOJO>) pojo.getMeetingScheduledList());
-                                recyclerSchedule.setAdapter(scheduleListAdapter);
-                            }
+                    try {
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingScheduledList() != null){
+                                    scheduleListAdapter = new ScheduleListAdapter(getActivity(), (ArrayList<CommonMeetingListPOJO.MeetingListPOJO>) pojo.getMeetingScheduledList());
+                                    recyclerSchedule.setAdapter(scheduleListAdapter);
+                                }
 
-                            if (pojo.getMeetingRequestList() != null)
-                            {
-                                requesterListAdapter = new RequesterListAdapter(getActivity(), (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                                recyclerRequester.setAdapter(requesterListAdapter);
-                            }
+                                if (pojo.getMeetingRequestList() != null)
+                                {
+                                    requesterListAdapter = new RequesterListAdapter(getActivity(), (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
+                                    recyclerRequester.setAdapter(requesterListAdapter);
+                                }
 
-                            if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
+                                if (pojo.getMeetingRequestList().size() == 0 && pojo.getMeetingScheduledList().size() == 0){
 
-                                layout_data.setVisibility(View.VISIBLE);
-                                layout_noMeeting.setVisibility(View.GONE);
+                                    layout_data.setVisibility(View.VISIBLE);
+                                    layout_noMeeting.setVisibility(View.GONE);
+                                } else {
+                                    layout_data.setVisibility(View.VISIBLE);
+                                    layout_noMeeting.setVisibility(View.GONE);
+                                }
+
+                                if (pojo.getMeetingScheduledList().size() == 0){
+                                    txt_noSchedule.setVisibility(View.VISIBLE);
+                                } else {
+                                    txt_noSchedule.setVisibility(View.GONE);
+                                }
+
+                                if (pojo.getMeetingRequestList().size() == 0){
+                                    txt_noRequest.setVisibility(View.VISIBLE);
+                                } else {
+                                    txt_noRequest.setVisibility(View.GONE);
+                                }
+                                ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
+                                // recycler_requested.setAdapter(requestedAdapter);
+                               // Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+
                             } else {
-                                layout_data.setVisibility(View.VISIBLE);
-                                layout_noMeeting.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                            ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
-                            // recycler_requested.setAdapter(requestedAdapter);
-                            Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }
 
 
-                    if(refreshView != null) {
-                        refreshView.setRefreshing(false);
+                        if(refreshView != null) {
+                            refreshView.setRefreshing(false);
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
                     }
+
                 }
             }
             @Override
             public void onFailure(Call<CommonHomePOJO> call, Throwable t) {
              //   progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), ""+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -129,19 +129,20 @@
                                         android:layout_marginTop="@dimen/_5dp"
                                         android:layout_marginBottom="2dp"
                                         android:layout_weight="1">
+
                                         <Button
                                             android:id="@+id/btn_linkedin"
-                                            android:layout_width="30dp"
-                                            android:layout_height="30dp"
-                                            android:background="@drawable/ic_linklined"
+                                            android:layout_width="@dimen/_35dp"
+                                            android:layout_height="@dimen/_35dp"
                                             android:layout_marginRight="@dimen/_10dp"
-                                            android:layout_weight="0"></Button>
+                                            android:layout_weight="0"
+                                            android:background="@drawable/ic_linkedin"></Button>
                                         <Button
                                             android:id="@+id/btn_email"
-                                            android:layout_width="30dp"
-                                            android:layout_height="30dp"
+                                            android:layout_width="@dimen/_35dp"
+                                            android:layout_height="@dimen/_35dp"
                                             android:layout_marginRight="@dimen/_10dp"
-                                            android:background="@drawable/ic_mail"
+                                            android:background="@drawable/ic_email"
                                             android:layout_weight="0"></Button>
                                         <Button
                                             android:layout_width="30dp"
@@ -156,25 +157,40 @@
                                 </LinearLayout>
 
                             </LinearLayout>
+                            <TextView
+                                android:id="@+id/txt_tag"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Area of expertise"
+                                android:textSize="@dimen/_16dp"
+                                android:layout_marginRight="@dimen/_10dp"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginBottom="@dimen/_1dp"
+                                android:layout_marginLeft="@dimen/_10dp"
+                                android:textColor="@color/darkGreyBlue"
+                                android:fontFamily="@font/roboto_regular"></TextView>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_tags"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
+
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/_10dp"
-                                android:layout_marginLeft="@dimen/_10dp">
+                                android:layout_marginLeft="@dimen/_5dp">
                                 <ImageView
                                     android:layout_width="@dimen/_25dp"
                                     android:layout_height="@dimen/_25dp"
                                     android:background="@drawable/ic_pin"
                                     android:layout_margin="@dimen/_10dp"
+                                    android:visibility="gone"
                                     android:layout_weight="0"></ImageView>
 
-                                <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/rv_tags"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                    android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
-                            </LinearLayout>
+                                    </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
@@ -185,44 +201,39 @@
                         android:layout_margin="@dimen/_5dp">
 
                         <TextView
-                            android:id="@+id/label_reason"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/label_experience"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_medium"
+                            android:fontFamily="@font/roboto_regular"
                             android:textSize="@dimen/_16dp"
-                            android:layout_marginTop="@dimen/_10dp"
+                            android:layout_marginTop="@dimen/_14dp"
                             android:layout_marginLeft="@dimen/_10dp"
                             android:layout_marginRight="@dimen/_10dp"
                             android:padding="2dp"
                             android:textColor="@color/darkGreyBlue"
-                            android:text="Purpose of meeting" />
+                            android:text="Previous Experience" />
 
-
-                        <TextView
-                            android:id="@+id/txt_reason"
-                            android:layout_width="wrap_content"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_experience"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_10dp"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginRight="@dimen/_10dp"
-                            android:layout_marginBottom="@dimen/_10dp"
-                            android:background="@drawable/bg_pinkish_grey"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="1dp"
                             android:fontFamily="@font/roboto_medium"
-                            android:gravity="center"
-                            android:paddingLeft="@dimen/_20dp"
-                            android:paddingTop="@dimen/_5dp"
-                            android:paddingRight="@dimen/_20dp"
-                            android:paddingBottom="@dimen/_5dp"
-                            android:text="Meeting for fundraising"
-                            android:textAlignment="center"
-                            android:textColor="@color/darkGrey"
-                            android:textSize="@dimen/_12dp" />
+                            android:background="@color/darkSeaGreen"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/_20dp" />
+
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/_5dp"
                             android:gravity="center"
+                            android:visibility="gone"
                             android:orientation="horizontal">
                             <ImageView
                                 android:layout_width="@dimen/_20dp"
@@ -321,24 +332,37 @@
                                 android:text="11:00 AM - 12:30 PM (Singapore time)" />
 
                         </LinearLayout>
-                        <TextView
-                            android:id="@+id/label_experience"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/roboto_medium"
-                            android:textSize="@dimen/_16dp"
-                            android:layout_marginTop="@dimen/_14dp"
-                            android:layout_marginLeft="@dimen/_10dp"
-                            android:layout_marginRight="@dimen/_10dp"
-                            android:padding="2dp"
-                            android:textColor="@color/darkGreyBlue"
-                            android:text="Experience" />
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_experience"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
+                            android:layout_margin="@dimen/_5dp"
+                            android:gravity="center"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="@dimen/_20dp"
+                                android:layout_height="@dimen/_20dp"
+                                android:src="@drawable/tag_reason"
+                                android:layout_margin="@dimen/_5dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="0"></ImageView>
+                            <TextView
+                                android:id="@+id/txt_reason"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_medium"
+                                android:layout_gravity="center"
+                                android:textSize="@dimen/_16dp"
+                                android:layout_weight="1"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginLeft="@dimen/_20dp"
+                                android:layout_marginBottom="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:textColor="@color/slateGreyTwo"
+                                android:text="meeting for" />
+
+                        </LinearLayout>
+
 
 
                         <TextView
@@ -356,7 +380,7 @@
                             android:layout_marginLeft="@dimen/_5dp"
                             android:gravity="center"
                             android:layout_marginRight="@dimen/_5dp"
-                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginTop="@dimen/_10dp"
                             android:layout_marginBottom="@dimen/_20dp"
                             android:orientation="horizontal">
                             <TextView

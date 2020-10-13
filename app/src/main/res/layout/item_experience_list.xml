@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginTop="1dp"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/txt_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_20dp"
+        android:textColor="@color/butterscotch"
+        android:layout_marginRight="7dp"
+        android:layout_weight="0"
+        android:padding="1dp"
+        android:layout_gravity="center"
+        android:src="@drawable/line_backslash"></ImageView>
+    <TextView
+        android:id="@+id/txt_experience"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkGrey"
+        android:textSize="@dimen/_16dp"
+        android:padding="@dimen/_1dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Borning Inc - 1 yea d r"></TextView>
+    </LinearLayout>

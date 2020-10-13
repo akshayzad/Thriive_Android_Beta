@@ -133,11 +133,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         apiInterface = APIClient.getApiInterface();
 
-
-//        Glide.with(this)
-//                .load(loginPOJO.getPicUrl())
-//                .apply(requestOptions)
-//                .into(img_profile);
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getApplicationContext());
         rv_tags.setLayoutManager(gridLayout );
        // rv_tags.setAdapter(new PersonaTagsAdapter(getApplicationContext(),loginPOJO.()));
@@ -148,49 +143,57 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     private void setData() {
-        loginPOJO = Utility.getLoginData(getApplicationContext());
-        fName = loginPOJO.getFirstName();
-        lName = loginPOJO.getLastName();
-        txt_name.setText(fName + " "+ lName);
-        txt_profession.setText(loginPOJO.getDesignationName());
-        txt_email.setText(loginPOJO.getEmailId());
-        //txt_gender.setText(loginPOJO.);
-        txt_phoneNumber.setText(loginPOJO.getPhone());
-        txt_password.setText(loginPOJO.getEntityPassword());
-        txt_region.setText(loginPOJO.getCountryName());
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.ic_edit_profile);
-        requestOptions.error(R.drawable.ic_edit_profile);
-        Log.d(TAG, " "+ loginPOJO.getPicUrl());
-        if (loginPOJO.getPicUrl().equals("")){
-            Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(getResources().getColor( R.color.terracota))
-                    .useFont(typeface)
-                    .fontSize(40) /* size in px */
-                    .bold()
-                    .toUpperCase()
-                    .width(120)  // width in px
-                    .height(120) // height in px
-                    .endConfig()
-                    .buildRect(Utility.getInitialsName(loginPOJO.getEntityName()) ,getResources().getColor( R.color.pale48));
-            img_profile.setImageDrawable(drawable);
-        } else {
-            img_profile.setMinimumWidth(60);
-            img_profile.setMaxHeight(60);
-            img_profile.setMinimumHeight(60);
-            img_profile.setMaxWidth(60);
-            Glide.with(this)
-                    .load(loginPOJO.getPicUrl())
-                    .into(img_profile);
+        try {
+            loginPOJO = Utility.getLoginData(getApplicationContext());
+            fName = loginPOJO.getFirstName();
+            lName = loginPOJO.getLastName();
+            txt_name.setText(fName + " "+ lName);
+            txt_profession.setText(loginPOJO.getDesignationName());
+            txt_email.setText(loginPOJO.getEmailId());
+            //txt_gender.setText(loginPOJO.);
+            txt_phoneNumber.setText(loginPOJO.getPhone());
+            txt_password.setText(loginPOJO.getEntityPassword());
+            txt_region.setText(loginPOJO.getCountryName());
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.ic_edit_profile);
+            requestOptions.error(R.drawable.ic_edit_profile);
+            Log.d(TAG, " "+ loginPOJO.getPicUrl());
+            if (loginPOJO.getPicUrl().equals("")){
+                try {
+                    Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .textColor(getResources().getColor( R.color.terracota))
+                            .useFont(typeface)
+                            .fontSize(40) /* size in px */
+                            .bold()
+                            .toUpperCase()
+                            .width(120)  // width in px
+                            .height(120) // height in px
+                            .endConfig()
+                            .buildRect(Utility.getInitialsName(loginPOJO.getEntityName()) ,getResources().getColor( R.color.pale48));
+                    img_profile.setImageDrawable(drawable);
+                } catch (Exception e){
+                    e.getMessage();
+                }
+
+            } else {
+                img_profile.setMinimumWidth(60);
+                img_profile.setMaxHeight(60);
+                img_profile.setMinimumHeight(60);
+                img_profile.setMaxWidth(60);
+                Glide.with(this)
+                        .load(loginPOJO.getPicUrl())
+                        .into(img_profile);
+            }
+        } catch (Exception e){
+            e.getMessage();
         }
+
 
     }
 
-
-    @OnClick({R.id.lname, R.id.img_close, R.id.img_rateApp, R.id.ib_photo, R.id.lChangePassword,
-            R.id.lRegion, R.id.lDesignation, R.id.img_profile})
+    @OnClick({R.id.lname, R.id.img_close, R.id.img_rateApp, R.id.ib_photo, R.id.lChangePassword, R.id.lRegion, R.id.lDesignation, R.id.img_profile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.lname:
@@ -388,7 +391,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d(TAG,"Edit Image "+pojo.getMessage() + " " + pojo.getOK());
                         if (pojo != null){
                             if (pojo.getOK()) {
-                                Toast.makeText(getApplicationContext(), "success"+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "success"+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                                 if (pojo.getPicUrl() != null){
                                     Log.d(TAG, pojo.getPicUrl());
                                   //  loginPOJO.setPicUrl("");
@@ -402,7 +405,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                Toast.makeText(getApplicationContext(), "false "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -410,7 +413,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<CommonEntityImagePOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(EditProfileActivity.this, "Getting Error" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfileActivity.this, "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -434,12 +437,9 @@ public class EditProfileActivity extends AppCompatActivity {
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Validation.hasText(edt_oldPassword) && Validation.hasText(edt_newPassword) && Validation.hasText(edt_confirmPassword))
-                {
-                    if (edt_oldPassword.getText().toString().equals(loginPOJO.getEntityPassword()))
-                    {
-                        if (edt_newPassword.getText().toString().equals(edt_confirmPassword.getText().toString()))
-                        {
+                if (Validation.hasText(edt_oldPassword) && Validation.hasText(edt_newPassword) && Validation.hasText(edt_confirmPassword)) {
+                    if (edt_oldPassword.getText().toString().equals(loginPOJO.getEntityPassword())) {
+                        if (edt_newPassword.getText().toString().equals(edt_confirmPassword.getText().toString())) {
                             dialog.dismiss();
                             getChangePassword(edt_confirmPassword.getText().toString());
                         } else {
@@ -448,7 +448,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(EditProfileActivity.this, "Old password did not match", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     Toast.makeText(EditProfileActivity.this, "Fill required field", Toast.LENGTH_SHORT).show();
                 }
@@ -466,48 +465,57 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void getChangePassword(String password){
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getChangePassword(loginPOJO.getPrimaryLoginKey(), password);
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO loginPOJO = response.body();
-                    progressHUD.dismiss();
-                    if (loginPOJO.getOK()) {
-                        Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        sharedData.addBooleanData(SharedData.isFirstVisit, false);
-                        sharedData.addBooleanData(SharedData.isLogged, false);
-                        sharedData.clearPref(getApplicationContext());
-                        Utility.clearLogin(getApplicationContext());
-                        Utility.clearMeetingDetails(getApplicationContext());
-                        Handler mHandler = new Handler();
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressHUD.dismiss();
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                startActivity(intent);
-                                finishAffinity();
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getChangePassword(loginPOJO.getPrimaryLoginKey(), password);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO loginPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            if (loginPOJO != null){
+                                if (loginPOJO.getOK()) {
+                                    Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    sharedData.addBooleanData(SharedData.isFirstVisit, false);
+                                    sharedData.addBooleanData(SharedData.isLogged, false);
+                                    sharedData.clearPref(getApplicationContext());
+                                    Utility.clearLogin(getApplicationContext());
+                                    Utility.clearMeetingDetails(getApplicationContext());
+                                    Handler mHandler = new Handler();
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressHUD.dismiss();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            startActivity(intent);
+                                            finishAffinity();
+                                        }
+                                    }, 2000);
+                                } else {
+                                    Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }, 2000);
-                    } else {
-                        Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
                     }
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
 
 
     }
@@ -680,32 +688,30 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonEntityPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO.getOK()) {
-                            if (reasonPOJO.getEntityObject() != null){
+                        if (reasonPOJO != null){
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                if (reasonPOJO.getEntityObject() != null){
+                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
+                                    setData();
+                                }
+
+                            } else {
                                 Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
-
-                                setData();
                             }
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonEntityPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(EditProfileActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfileActivity.this, "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
             e.getMessage();
         }
-
-
     }
 
 
@@ -724,23 +730,26 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonCountryPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO.getOK()) {
-                            if (reasonPOJO.getCountryList() != null){
-                                editRegion(reasonPOJO.getCountryList());
+
+                        if (reasonPOJO != null){
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                if (reasonPOJO.getCountryList() != null){
+                                    editRegion(reasonPOJO.getCountryList());
+                                }
+
+                                //  Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
-                          //  Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonCountryPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(EditProfileActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfileActivity.this, "", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -850,7 +859,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     setData();
                                 }
                             } else {
-                                Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e ){
                             e.getMessage();
@@ -861,7 +870,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<CommonEntityPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(EditProfileActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+               //     Toast.makeText(EditProfileActivity.this, "", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -920,23 +929,24 @@ public class EditProfileActivity extends AppCompatActivity {
                     Log.d(TAG, response.toString());
                     CommonEntityPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        if (reasonPOJO.getEntityObject() != null){
-                            Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                            Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
-                            setData();
+                    if (reasonPOJO != null){
+                        Log.d(TAG,""+reasonPOJO.getMessage());
+                        if (reasonPOJO.getOK()) {
+                            if (reasonPOJO.getEntityObject() != null){
+                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
+                                setData();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
             @Override
             public void onFailure(Call<CommonEntityPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(EditProfileActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditProfileActivity.this, "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -1008,7 +1018,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (reasonPOJO.getOK()) {
                         Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -1016,7 +1026,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CommonPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(EditProfileActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(EditProfileActivity.this, " ", Toast.LENGTH_SHORT).show();
             }
         });
 

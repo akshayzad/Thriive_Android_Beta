@@ -9,22 +9,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.flexbox.FlexboxLayout;
+import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
 import com.thriive.app.models.CommonMeetingListPOJO;
-import com.thriive.app.models.PendingMeetingRequestPOJO;
+import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.CircularSeekBar;
 import com.thriive.app.utilities.PreciseCountdown;
+import com.thriive.app.utilities.Utility;
+import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +40,8 @@ import static com.thriive.app.NotificationListActivity.TAG;
 public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNotificationAdapter.RecyclerAdapterHolder> {
     private Context context;
     private List<CommonMeetingListPOJO.MeetingListPOJO> requesterPOJOArrayList;
-    private BusinessProfessionAdapter businessProfessionAdapter;
     long progress = 0;
     PreciseCountdown preciseCountdown;
-    private SeekBarUpdater seekBarUpdater;
-
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.rv_tags)
         public RecyclerView rv_tags;
@@ -56,12 +53,18 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
         public ImageButton btn_meeting_accept;
         @BindView(R.id.txt_persona)
         TextView txt_persona;
+        @BindView(R.id.txt_profession)
+        TextView txt_profession;
         @BindView(R.id.txt_objective)
         TextView txt_objective;
         @BindView(R.id.txt_reason)
         TextView txt_reason;
         @BindView(R.id.circular_seekbar)
         CircularSeekBar circularSeekbar;
+        @BindView(R.id.txt_name)
+        TextView txt_name;
+        @BindView(R.id.img_user)
+        CircleImageView img_user;
 
         public RecyclerAdapterHolder(View itemView) {
             super(itemView);
@@ -87,22 +90,58 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
     @Override
     public void onBindViewHolder(final PendingNotificationAdapter.RecyclerAdapterHolder holder, int position) {
         CommonMeetingListPOJO.MeetingListPOJO item = requesterPOJOArrayList.get(position);
-        try {
-            if (item.getRequestorDesignationTags().size() == 0) {
-                holder.txt_persona.setText("");
-            } else {
-                holder.txt_persona.setText(item.getRequestorDesignationTags().get(0));
+        if (item.getRequestorPicUrl().equals("")){
+            try {
+                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(55) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.whiteTwo));
+                holder.img_user.setImageDrawable(drawable);
+            } catch (Exception e){
+                e.getMessage();
             }
+
+        } else {
+            holder.img_user.setMinimumWidth(120);
+            holder.img_user.setMaxHeight(120);
+            holder.img_user.setMinimumHeight(120);
+            holder.img_user.setMaxWidth(120);
+            Glide.with(context)
+                    .load(item.getRequestorPicUrl())
+                    .into(holder.img_user);
+        }
+        try {
+            holder.txt_profession.setText(""+item.getRequestorSubTitle());
+//            if (item.getRequestorDesignationTags().size() == 0) {
+//                holder.txt_profession.setText("");
+//            } else {
+//                holder.txt_profession.setText(item.getRequestorDesignationTags().get(0));
+//            }
         } catch (Exception e){
             e.getMessage();
         }
 
+        try {
+            holder.txt_name.setText(Utility.getEncodedName(item.getRequestorName()));
+        } catch (Exception e)
+        {
+            e.getMessage();
+        }
         ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.addAll(item.getRequestorDomainTags());
-        arrayList.addAll(item.getRequestorSubDomainTags());
+       // arrayList.addAll(item.getRequestorDomainTags());
+    //    arrayList.addAll(item.getRequestorSubDomainTags());
+        arrayList.addAll(item.getRequestorExpertiseTags());
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout);
-        holder.rv_tags.setAdapter(new TagListAdapter(context, arrayList));
+        holder.rv_tags.setAdapter(new ExpertiseAdapter(context, arrayList));
         holder.txt_reason.setText("Meeting for "+item.getMeetingReason());
         // setProgress();
         ArrayList<String> ex_array = new ArrayList<>();
@@ -119,7 +158,6 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
         holder.rv_experience.setLayoutManager(gridLayout1);
         holder.rv_experience.setAdapter(new ExperienceAdapter(context, ex_array));
        // holder.circularSeekbar.setMax(TimeUnit.MINUTES.toMillis(7));
-        holder.circularSeekbar.post(seekBarUpdater);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,45 +189,6 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
             }
         });
     }
-    public long setProgress() {
-        preciseCountdown = new PreciseCountdown(TimeUnit.MINUTES.toMillis(7), 1000, 0) {
-            @Override
-            public void onTick(long timeLeft) {
-                if (TimeUnit.MINUTES.toMillis(2) == timeLeft) {
-                    //  ratingDialog();
-
-
-                    progress = timeLeft;
-                }
-
-            }
-
-            @Override
-            public void onFinished() {
-                Log.d(TAG, "RESTART");
-            }
-        };
-        return progress;
-    }
-
-    private class SeekBarUpdater implements Runnable {
-        RecyclerAdapterHolder adapterHolder;
-
-        @Override
-        public void run() {
-            adapterHolder.circularSeekbar.setMax(TimeUnit.MINUTES.toMillis(7));
-            adapterHolder.circularSeekbar.setProgress(progress);
-            adapterHolder.circularSeekbar.postDelayed(this, 1000);
-//            if (adapterHolder.getAdapterPosition() == 0) {
-//                adapterHolder.circularSeekbar.setMax(TimeUnit.MINUTES.toMillis(7));
-//                adapterHolder.circularSeekbar.setProgress(progress);
-//                adapterHolder.circularSeekbar.postDelayed(this, 1000);
-//            } else {
-//                adapterHolder.circularSeekbar.removeCallbacks(seekBarUpdater);
-//            }
-        }
-    }
-
     @Override
     public int getItemCount() {
         return requesterPOJOArrayList.size();

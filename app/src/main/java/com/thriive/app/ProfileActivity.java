@@ -24,6 +24,7 @@ import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.R;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
+import com.thriive.app.models.CommonCountryPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.CircleImageView;
@@ -106,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.profile, R.id.preferences, R.id.history, R.id.img_close, R.id.txt_logout})
+    @OnClick({R.id.profile, R.id.preferences, R.id.history, R.id.img_close, R.id.txt_logout,R.id.service, R.id.policy})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.profile:
@@ -135,6 +136,19 @@ public class ProfileActivity extends AppCompatActivity {
             case R.id.txt_logout:
                 logoutApp();
                 break;
+
+            case R.id.service:
+                Intent intent3 = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+                intent3.putExtra("intent_type", Utility.TERMS);
+                startActivity(intent3);
+                break;
+
+            case R.id.policy:
+                Intent intent4 = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+                intent4.putExtra("intent_type", Utility.PRIVACY_POLICY);
+                startActivity(intent4);
+                break;
+
         }
     }
 
@@ -176,26 +190,64 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getLogoutApp() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        sharedData.addBooleanData(SharedData.isFirstVisit, false);
-        sharedData.addBooleanData(SharedData.isLogged, false);
-        sharedData.clearPref(getApplicationContext());
-        Utility.clearLogin(getApplicationContext());
-        Utility.clearMeetingDetails(getApplicationContext());
-        Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                progressHUD.dismiss();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-                finishAffinity();
-            }
-        }, 2000);
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getLogout(loginPOJO.getActiveToken(), loginPOJO.getPrimaryLoginKey());
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        //   progressHUD.dismiss();
+                        try {
+                            if (reasonPOJO != null){
+                                Log.d(TAG,""+reasonPOJO.getMessage());
+                                if (reasonPOJO.getOK()) {
+                                    sharedData.addBooleanData(SharedData.isFirstVisit, false);
+                                    sharedData.addBooleanData(SharedData.isLogged, false);
+                                    sharedData.clearPref(getApplicationContext());
+                                    Utility.clearLogin(getApplicationContext());
+                                    Utility.clearMeetingDetails(getApplicationContext());
+                                    Handler mHandler = new Handler();
+                                    mHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressHUD.dismiss();
+                                          //  Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            startActivity(intent);
+                                            finishAffinity();
+                                        }
+                                    }, 2000);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    // Toast.makeText(ProfileActivity.this, "", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+
+
 
     }
 }

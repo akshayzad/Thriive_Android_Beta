@@ -6,7 +6,7 @@
     app:cardCornerRadius="@dimen/_10dp"
     app:cardElevation="@null"
     app:cardPreventCornerOverlap="true"
-    app:cardBackgroundColor="@color/whiteTwo"
+    app:cardBackgroundColor="@color/beige"
     android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,6 +16,7 @@
         android:orientation="horizontal">
         <TextView
             android:layout_width="3dp"
+            android:visibility="gone"
             android:layout_height="match_parent"
             android:background="@color/terracota"></TextView>
         <LinearLayout
@@ -23,35 +24,89 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_5dp"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/_5dp"
+                android:orientation="horizontal">
+
+                <com.thriive.app.utilities.CircleImageView
+                    android:id="@+id/img_user"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_weight="0"
+                    android:visibility="visible"
+                    android:src="@drawable/ic_edit_profile"></com.thriive.app.utilities.CircleImageView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/_5dp">
+                    <TextView
+                        android:id="@+id/txt_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/_18dp"
+                       android:padding="1dp"
+                        android:textColor="@color/darkGreyBlue"
+                        android:text="Ashish Ashraful" />
+                    <TextView
+                        android:id="@+id/txt_profession"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="1dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="@dimen/_16dp"
+                        android:textColor="@color/darkGrey"
+                        android:text="Business Analyst" />
+                    <TextView
+                        android:id="@+id/txt_persona"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textSize="@dimen/_16dp"
+                        android:padding="1dp"
+                        android:visibility="gone"
+                        android:textColor="@color/darkGreyBlue"
+                        android:text="Bshish Ashraful" />
+
+
+                </LinearLayout>
+               </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/_5dp">
+                android:layout_margin="@dimen/_5dp">
+
+
                 <TextView
-                    android:id="@+id/txt_persona"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
+                    android:text="Area of expertise"
                     android:textSize="@dimen/_16dp"
-                    android:padding="1dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginLeft="@dimen/_10dp"
                     android:textColor="@color/darkGreyBlue"
-                    android:text="Bshish Ashraful" />
-                <TextView
-                    android:id="@+id/txt_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="1dp"
-                    android:textColor="@color/darkGrey"
-                    android:textSize="@dimen/_12dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="Borning Inc - 1 year"
-                    />
+                    android:fontFamily="@font/roboto_regular"></TextView>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_3dp"
+                    android:layout_marginLeft="@dimen/_5dp"
+                    android:layout_marginRight="@dimen/_5dp"
                     android:layout_marginBottom="@dimen/_3dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
                 <TextView
@@ -61,6 +116,7 @@
                     android:fontFamily="@font/roboto_medium"
                     android:textSize="@dimen/_14dp"
                     android:padding="1dp"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/_5dp"
                     android:layout_marginBottom="@dimen/_3dp"
                     android:textColor="@color/darkGreyBlue"
@@ -71,17 +127,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="5dp"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
-
+                <TextView
+                    android:id="@+id/txt_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_16dp"
+                    android:textAlignment="center"
+                    android:padding="@dimen/_10dp"
+                    android:textColor="@color/darkGreyBlue"
+                    android:text="Meeting for" />
                 <TextView
                     android:id="@+id/txt_learnMore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="center"
                     android:textColor="@color/darkSeaGreen"
                     android:textSize="@dimen/_12dp"
                     android:textAllCaps="true"
-                    android:layout_marginTop="2dp"
                     android:fontFamily="@font/roboto_regular"
                     android:background="@drawable/outline_circle_darkseagreen"
                     android:text="Learn More"

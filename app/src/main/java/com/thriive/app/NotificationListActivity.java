@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -24,12 +25,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.thriive.app.adapters.ExperienceAdapter;
+import com.thriive.app.adapters.ExperienceListAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.adapters.PendingNotificationAdapter;
 import com.thriive.app.api.APIClient;
@@ -43,13 +46,17 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
+import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
+import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,10 +66,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NotificationListActivity extends AppCompatActivity {
+public class NotificationListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.rv_notification)
     RecyclerView rv_notification;
+    @BindView(R.id.txt_noData)
+    TextView txt_noData;
+    @BindView(R.id.refresh_view)
+    SwipeRefreshLayout refreshView;
     private ArrayList<PendingMeetingRequestPOJO>arrayList = new ArrayList<>();
 
     private APIInterface apiInterface;
@@ -84,12 +95,16 @@ public class NotificationListActivity extends AppCompatActivity {
         sharedData = new SharedData(getApplicationContext());
         loginPOJO  = Utility.getLoginData(getApplicationContext());
 
+        refreshView.setOnRefreshListener(this);
+        refreshView.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+        refreshView.setRefreshing(false);
+
         if (getIntent().getStringExtra("intent_type").equals("NOTI")){
             getMeetingRequestById();
-
         }
-
-
         //getMeetingRequest();
     }
 
@@ -109,23 +124,28 @@ public class NotificationListActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         progressHUD.dismiss();
                         CommonMeetingPOJO pojo = response.body();
-                        Log.d(TAG,""+pojo.getMessage());
-                        if (pojo != null){
-                            if (pojo.getOK()) {
-                                if (pojo.getMeetingObject() != null){
+                        try {
+                            Log.d(TAG,""+pojo.getMessage());
+                            if (pojo != null){
+                                if (pojo.getOK()) {
+                                    if (pojo.getMeetingObject() != null){
 
-                                    detailsMeeting(pojo.getMeetingObject());
+                                        detailsMeeting(pojo.getMeetingObject());
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             }
+                        } catch (Exception e){
+                            e.getMessage();
                         }
+
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -147,6 +167,7 @@ public class NotificationListActivity extends AppCompatActivity {
 
     private void getMeetingRequest() {
         try {
+            txt_noData.setVisibility(View.GONE);
             progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
@@ -161,26 +182,37 @@ public class NotificationListActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonMeetingListPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO.getOK()) {
-                            if (reasonPOJO.getMeetingList() != null){
-                                //    Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                rv_notification.setAdapter(new PendingNotificationAdapter(NotificationListActivity.this,
-                                        reasonPOJO.getMeetingList()));
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                if (reasonPOJO.getMeetingList() != null){
+                                    //    Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    rv_notification.setAdapter(new PendingNotificationAdapter(NotificationListActivity.this,
+                                            reasonPOJO.getMeetingList()));
+
+                                    if (reasonPOJO.getMeetingList().size() == 0){
+                                        txt_noData.setVisibility(View.VISIBLE);
+                                    } else {
+                                        txt_noData.setVisibility(View.GONE);
+                                    }
+                                }
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e){
+                            e.getMessage();
                         }
-
-
                     }
+                    if (refreshView != null) {
+                        refreshView.setRefreshing(false);
+                    }
+
                 }
                 @Override
                 public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotificationListActivity.this, ""+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -209,23 +241,25 @@ public class NotificationListActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO.getOK()) {
-                            Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                             //   Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                            successDialog();
+                                successDialog();
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
                         }
-
-
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotificationListActivity.this, " " +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -251,26 +285,27 @@ public class NotificationListActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO != null){
-                            if (reasonPOJO.getOK()) {
-                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO != null){
+                                if (reasonPOJO.getOK()) {
+                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    finish();
 
-                                finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
 
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-
+                        } catch (Exception e){
+                            e.getMessage();
                         }
-
-
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotificationListActivity.this, "" +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -298,85 +333,83 @@ public class NotificationListActivity extends AppCompatActivity {
             ImageView img_close = view1.findViewById(R.id.img_close);
             ImageButton accept = view1.findViewById(R.id.img_accept);
             ImageButton decline = view1.findViewById(R.id.img_decline);
-            TextView txt_objective = view1.findViewById(R.id.txt_objective);
             TextView txt_reason  = view1.findViewById(R.id.txt_reason);
-            FlexboxLayout layout_tags = view1.findViewById(R.id.layout_tags);
-            TextView txt_requestor = view1.findViewById(R.id.txt_requestor);
+            TextView txt_name = view1.findViewById(R.id.txt_name);
+            TextView txt_profession = view1.findViewById(R.id.txt_profession);
+            CircleImageView img_user = view1.findViewById(R.id.img_user);
             //    tv_msg.setText("Session Added Successfully.");
             builder.setView(view1);
             final AlertDialog dialogs = builder.create();
-            dialogs.setCancelable(true);
-
+            dialogs.setCancelable(false);
+//            if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
+//                txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
+//            } else {
+//
+//            }
+            txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
             txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
             try {
-                if (meetingListPOJO.getRequestorDesignationTags().size() == 0){
-                    txt_objective.setText("");
-                } else {
-                    txt_objective.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
-                }
+                txt_name.setText(Utility.getEncodedName(meetingListPOJO.getRequestorName()));
             } catch (Exception e){
-                e.getMessage();
+                txt_name.setText(""+meetingListPOJO.getRequestorName());
             }
 
+            if (meetingListPOJO.getRequestorPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(getResources().getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(60) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(140)  // width in px
+                        .height(140) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(meetingListPOJO.getRequestorName()) ,getResources().getColor(R.color.whiteTwo));
 
-            String[] splited = meetingListPOJO.getRequestorName().trim().split("\\s+");
-            StringBuilder s1 = new StringBuilder();
-            try {
-                String split_one=splited[0];
-                for (int i = 0; i < split_one.length(); i++){
-                    if (i == 0){
-                        s1.append(split_one.charAt(i));
-                    } else {
-                        s1.append("X");
-                    }
-                }
-            } catch (Exception e){
-                e.getMessage();
+//                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
+//                        .height(60)
+//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
+                img_user.setImageDrawable(drawable);
+            } else {
+                img_user.setMinimumWidth(120);
+                img_user.setMaxHeight(120);
+                img_user.setMinimumHeight(120);
+                img_user.setMaxWidth(120);
+                Glide.with(this)
+                        .load(meetingListPOJO.getRequestorPicUrl())
+                        .into(img_user);
             }
-
-
-            StringBuilder s2 = new StringBuilder();
-            try {
-                String split_second=splited[1];
-                for (int i = 0; i < split_second.length(); i++){
-                    if (i == 0){
-                        s2.append(split_second.charAt(i));
-                    } else {
-                        s2.append("X");
-                    }
-                }
-            } catch (Exception e){
-                e.getMessage();
-            }
-            txt_requestor.setText(s1 + "  " + s2);
 
             FlexboxLayoutManager manager = new FlexboxLayoutManager(NotificationListActivity.this);
-            manager.setFlexWrap(FlexWrap.WRAP);
-            manager.setJustifyContent(JustifyContent.CENTER);
+//            manager.setFlexWrap(FlexWrap.WRAP);
+//            manager.setJustifyContent(JustifyContent.CENTER);
             rv_experience.setLayoutManager(manager );
             ArrayList<String> array = new ArrayList<>();
-            array.addAll(meetingListPOJO.getRequestorObjectiveTags());
+            array.addAll(meetingListPOJO.getRequestorExperienceTags());
             array.addAll(meetingListPOJO.getRequestorDesignationTags());
-            rv_experience.setAdapter(new ExperienceAdapter(NotificationListActivity.this,array));
+           // array.addAll(meetingListPOJO.getRequestorDesignationTags());
+            rv_experience.setAdapter(new ExperienceListAdapter(NotificationListActivity.this,array));
 
             FlexboxLayoutManager manager1 = new FlexboxLayoutManager(NotificationListActivity.this);
             manager1.setFlexWrap(FlexWrap.WRAP);
             manager1.setJustifyContent(JustifyContent.CENTER);
             rv_expertise.setLayoutManager(manager1 );
             ArrayList<String> array1 = new ArrayList<>();
-            array1.addAll(meetingListPOJO.getRequestorDomainTags());
-            array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
+            array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
+            //array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
             // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
             rv_expertise.setAdapter(new ExpertiseAdapter(NotificationListActivity.this, array1));
             img_close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (getIntent().getStringExtra("intent_type").equals("NOTI")){
                         dialogs.dismiss();
                         getMeetingRequest();
                     } else {
                         dialogs.dismiss();
+                        getMeetingRequest();
                     }
                     //   ratingDialog();
                 }
@@ -435,22 +468,31 @@ public class NotificationListActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         CommonEntitySlotsPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
-                        Log.d(TAG,""+reasonPOJO.getMessage());
-                        if (reasonPOJO != null){
-                            if (reasonPOJO.getOK()) {
-                                //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                meetingAvailability(reasonPOJO.getEntitySlotList());
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO != null){
+                                if (reasonPOJO.getOK()) {
+                                    if (reasonPOJO.getEntitySlotList() != null){
+                                        meetingAvailability(reasonPOJO.getEntitySlotList());
+                                    }
+                                    //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
                             }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                        if (refreshView != null) {
+                            refreshView.setRefreshing(false);
                         }
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+               //     Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -461,65 +503,47 @@ public class NotificationListActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void meetingAvailability(List<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList) {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_availability, null);
-        BottomSheetDialog dialog = new BottomSheetDialog(NotificationListActivity.this, R.style.SheetDialog);
-
-        Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
-        ImageView img_close = dialogView.findViewById(R.id.img_close);
-        LinearLayout edit = dialogView.findViewById(R.id.edit);
-        LinearLayout layout1 = dialogView.findViewById(R.id.layout1);
-        LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
-        LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
-
-
-
-        ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
-        ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
-        ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
-        ImageView img_time1 = dialogView.findViewById(R.id.img_time1);
-        ImageView img_time2 = dialogView.findViewById(R.id.img_time2);
-        ImageView img_time3 = dialogView.findViewById(R.id.img_time3);
-
-
-        TextView txt_date1 = dialogView.findViewById(R.id.txt_date1);
-        TextView txt_date2 = dialogView.findViewById(R.id.txt_date2);
-        TextView txt_date3 = dialogView.findViewById(R.id.txt_date3);
-        TextView txt_time1 = dialogView.findViewById(R.id.txt_time1);
-        TextView txt_time2 = dialogView.findViewById(R.id.txt_time2);
-        TextView txt_time3 = dialogView.findViewById(R.id.txt_time3);
-
-
-        layout1.setVisibility(View.GONE);
-        layout2.setVisibility(View.GONE);
-        layout3.setVisibility(View.GONE);
         try {
-            if (entitySlotList.size() == 0) {
-                edit.setVisibility(View.GONE);
-            } else if (entitySlotList.size() == 1){
-                edit.setVisibility(View.VISIBLE);
-                for (int i = 0; i < entitySlotList.size(); i++)
-                {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_availability, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(NotificationListActivity.this, R.style.SheetDialog);
 
-                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                    layout2.setVisibility(View.VISIBLE);
-                    txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+            Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
+            ImageView img_close = dialogView.findViewById(R.id.img_close);
+            LinearLayout edit = dialogView.findViewById(R.id.edit);
+            LinearLayout layout1 = dialogView.findViewById(R.id.layout1);
+            LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
+            LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
 
-                    startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                    endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-                }
-            } else {
-                edit.setVisibility(View.VISIBLE);
-                for (int i = 0; i < entitySlotList.size(); i++)
-                {
-                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                    if(i == 0){
-                        layout1.setVisibility(View.VISIBLE);
-                        txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                        txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                    } else  if(i == 1){
+
+
+            ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
+            ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
+            ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
+            ImageView img_time1 = dialogView.findViewById(R.id.img_time1);
+            ImageView img_time2 = dialogView.findViewById(R.id.img_time2);
+            ImageView img_time3 = dialogView.findViewById(R.id.img_time3);
+
+
+            TextView txt_date1 = dialogView.findViewById(R.id.txt_date1);
+            TextView txt_date2 = dialogView.findViewById(R.id.txt_date2);
+            TextView txt_date3 = dialogView.findViewById(R.id.txt_date3);
+            TextView txt_time1 = dialogView.findViewById(R.id.txt_time1);
+            TextView txt_time2 = dialogView.findViewById(R.id.txt_time2);
+            TextView txt_time3 = dialogView.findViewById(R.id.txt_time3);
+
+
+            layout1.setVisibility(View.GONE);
+            layout2.setVisibility(View.GONE);
+            layout3.setVisibility(View.GONE);
+            try {
+                if (entitySlotList.size() == 0) {
+                    edit.setVisibility(View.GONE);
+                } else if (entitySlotList.size() == 1){
+                    edit.setVisibility(View.VISIBLE);
+                    for (int i = 0; i < entitySlotList.size(); i++)
+                    {
+
+                        CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
                         layout2.setVisibility(View.VISIBLE);
                         txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
                         txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
@@ -527,106 +551,126 @@ public class NotificationListActivity extends AppCompatActivity {
 
                         startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
                         endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-                        //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                    }
+                } else {
+                    edit.setVisibility(View.VISIBLE);
+                    for (int i = 0; i < entitySlotList.size(); i++)
+                    {
+                        CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
+                        if(i == 0){
+                            layout1.setVisibility(View.VISIBLE);
+                            txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                            txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                        } else  if(i == 1){
+                            layout2.setVisibility(View.VISIBLE);
+                            txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                            txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
-                    } else  if(i == 2){
-                        layout3.setVisibility(View.VISIBLE);
-                        txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                        txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                            startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
+                            endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
+                            //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
-                        // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                        } else  if(i == 2){
+                            layout3.setVisibility(View.VISIBLE);
+                            txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                            txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
+                            // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+
+                        }
                     }
                 }
+            } catch (Exception e){
+                e.getMessage();
             }
-        } catch (Exception e){
-            e.getMessage();
-        }
 
 
 
-        layout1.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-//                startTime = entitySlotList.get(0).getPlanStartTime();
-//                endTime = entitySlotList.get(0).getPlanEndTime();
-                setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
-                selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
-                setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
-
-            }
-        });
-
-
-        layout2.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                if (entitySlotList.size() == 1)
-                {
+            layout1.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
                     startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-                } else {
-                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
-                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
+//                startTime = entitySlotList.get(0).getPlanStartTime();
+//                endTime = entitySlotList.get(0).getPlanEndTime();
+                    setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
+                    selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
+                    setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
+
                 }
-                setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
-
-            }
-        });
+            });
 
 
-        layout3.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
-                selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
-            }
-        });
+            layout2.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    if (entitySlotList.size() == 1)
+                    {
+                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
+                    } else {
+                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
+                    }
+                    setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                    selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-              //  getMeetingSlote();
-                meetingEditDate();
-            }
-        });
-        btn_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (entitySlotList.size() == 0) {
+                }
+            });
+
+
+            layout3.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
+                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
+                    selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                    setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
+                }
+            });
+
+            img_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     dialog.dismiss();
                     //  getMeetingSlote();
                     meetingEditDate();
-                } else {
-                    dialog.dismiss();
-
-                    getAcceptMeeting();
                 }
+            });
+            btn_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (entitySlotList.size() == 0) {
+                        dialog.dismiss();
+                        //  getMeetingSlote();
+                        meetingEditDate();
+                    } else {
+                        dialog.dismiss();
 
-            }
-        });
-        dialog.setContentView(dialogView);
-        dialog.show();
+                        getAcceptMeeting();
+                    }
 
-
+                }
+            });
+            dialog.setContentView(dialogView);
+            dialog.show();
+        } catch (Exception e){
+            e.getMessage();
+        }
     }
 
     private void selectDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
@@ -654,6 +698,7 @@ public class NotificationListActivity extends AppCompatActivity {
         Button btn_next = dialogView.findViewById(R.id.btn_next);
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         CalendarView calender_view = dialogView.findViewById(R.id.calender);
+        calender_view.setMinDate(new Date().getTime());
 
         selectedDate = DateFormat.format("yyyy-MM-dd", calender_view.getDate()).toString();
         Log.d("NEW_DATE", selectedDate);
@@ -769,4 +814,11 @@ public class NotificationListActivity extends AppCompatActivity {
         dialogs.show();
     }
 
+    @Override
+    public void onRefresh() {
+        if (refreshView != null){
+            refreshView.setRefreshing(true);
+        }
+        getMeetingRequest();
+    }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#EFDEDA"
+    android:background="#F7F7F7"
     tools:context="com.thriive.app.NotificationListActivity">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:textAlignment="center"
                 android:padding="@dimen/_10dp"
                 android:textColor="@color/darkGreyBlue"
-                android:text="Notification" />
+                android:text="Meeting Request Received" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
     <TextView
@@ -51,13 +51,37 @@
         android:paddingLeft="@dimen/_10dp"
         android:layout_marginRight="@dimen/_10dp"
         android:layout_marginTop="@dimen/_10dp"
+        android:visibility="gone"
         android:text="Pending Confirmation" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_notification"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_margin="@dimen/_10dp"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_margin="@dimen/_5dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+           ></androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <TextView
+        android:id="@+id/txt_noData"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="@dimen/_18dp"
+        android:paddingTop="@dimen/_10dp"
+        android:gravity="center"
+        android:textColor="@color/darkGreyBlue"
+        android:layout_marginLeft="@dimen/_10dp"
+        android:paddingLeft="@dimen/_10dp"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/_10dp"
+        android:layout_marginTop="@dimen/_10dp"
+        android:visibility="gone"
+        android:text="No Meeting Request Received" />
 
 </LinearLayout>

@@ -39,6 +39,7 @@ import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
 
 import com.thriive.app.adapters.ExperienceAdapter;
+import com.thriive.app.adapters.ExperienceListAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
@@ -57,6 +58,7 @@ import com.thriive.app.utilities.textdrawable.TextDrawable;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -97,6 +99,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     Button btn_linkedin;
     @BindView(R.id.btn_email)
     Button btn_email;
+    @BindView(R.id.txt_tag)
+    TextView txt_tag;
 
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
     private CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO;
@@ -134,9 +138,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         sharedData = new SharedData(getActivity());
         apiInterface = APIClient.getApiInterface();
         loginPOJO = Utility.getLoginData(getActivity());
-
         meetingListPOJO = Utility.getMeetingDetailsData(getContext());
-
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -168,132 +170,135 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
 
     private void setData() {
-        if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))){
-            txt_name.setText(meetingListPOJO.getGiverName());
-            if (meetingListPOJO.getGiverPicUrl().equals("")){
-//                TextDrawable drawable = TextDrawable.builder()
-//                        .beginConfig()
-//                        .withBorder(4) /* thickness in px */
-//                        .endConfig()
-//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
+        try {
+          //  txt_tag.setText(""+meetingListPOJO.getMeetingLabel());
+            if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))){
+                txt_name.setText(meetingListPOJO.getGiverName());
+                if (meetingListPOJO.getGiverPicUrl().equals("")){
+                    Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .textColor(getResources().getColor(R.color.darkGreyBlue))
+                            .useFont(typeface)
+                            .fontSize(60) /* size in px */
+                            .bold()
+                            .toUpperCase()
+                            .width(140)  // width in px
+                            .height(140) // height in px
+                            .endConfig()
+                            .buildRect(Utility.getInitialsName(meetingListPOJO.getGiverName()) , getResources().getColor(R.color.whiteTwo));
+                    img_user.setImageDrawable(drawable);
+                } else {
+                    img_user.setMinimumWidth(120);
+                    img_user.setMaxHeight(120);
+                    img_user.setMinimumHeight(120);
+                    img_user.setMaxWidth(120);
+                    Glide.with(getActivity())
+                            .load(meetingListPOJO.getGiverPicUrl())
+                            .into(img_user);
+                }
 
-                Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(getResources().getColor(R.color.darkGreyBlue))
-                        .useFont(typeface)
-                        .fontSize(60) /* size in px */
-                        .bold()
-                        .toUpperCase()
-                        .width(140)  // width in px
-                        .height(140) // height in px
-                        .endConfig()
-                        .buildRect(Utility.getInitialsName(meetingListPOJO.getGiverName()) , getResources().getColor(R.color.whiteTwo));
+//                if (meetingListPOJO.getGiverDesignationTags().size() > 0){
+//                    txt_profession.setText(meetingListPOJO.getGiverDesignationTags().get(0));
+//                } else {
+//                    txt_profession.setText("");
+//                }
 
-//                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
-//                        .height(60)
-//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
-                img_user.setImageDrawable(drawable);
-            } else {
-                img_user.setMinimumWidth(120);
-                img_user.setMaxHeight(120);
-                img_user.setMinimumHeight(120);
-                img_user.setMaxWidth(120);
-                Glide.with(getActivity())
-                        .load(meetingListPOJO.getGiverPicUrl())
-                        .into(img_user);
-            }
+                txt_profession.setText(""+meetingListPOJO.getGiverSubTitle());
+                ArrayList<String> arrayList = new ArrayList<>();
+                arrayList.addAll(meetingListPOJO.getGiverDomainTags());
+                arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
+                FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
+                rv_tags.setLayoutManager(gridLayout );
+                if (meetingListPOJO.getMeetingTag() != null){
+                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                }
 
-            if (meetingListPOJO.getGiverDesignationTags().size() > 0){
-                txt_profession.setText(meetingListPOJO.getGiverDesignationTags().get(0));
-            } else {
-                txt_profession.setText("");
-            }
+                txt_email.setText(meetingListPOJO.getGiverEmailId());
 
-            ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.addAll(meetingListPOJO.getGiverDomainTags());
-            arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
-            FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
-            rv_tags.setLayoutManager(gridLayout );
-            rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
-            txt_email.setText(meetingListPOJO.getGiverEmailId());
-
-            ArrayList<String> arrayList1 = new ArrayList<>();
+                ArrayList<String> arrayList1 = new ArrayList<>();
 //            for (int i = 0; i<meetingListPOJO.getGiverDesignationTags().size(); i++)
 //            {
 //                if (i != 0){
 //                    arrayList1.add(meetingListPOJO.getGiverDesignationTags().get(i));
 //                }
 //            }
-            arrayList1.addAll(meetingListPOJO.getGiverExperienceTags());
-            arrayList1.addAll(meetingListPOJO.getGiverDesignationTags());
+                arrayList1.addAll(meetingListPOJO.getGiverExperienceTags());
+                arrayList1.addAll(meetingListPOJO.getGiverDesignationTags());
 
-            rv_experience.setLayoutManager(new FlexboxLayoutManager(getContext()) );
-            rv_experience.setAdapter(new ExperienceAdapter(getContext(), arrayList1));
+                rv_experience.setLayoutManager(new FlexboxLayoutManager(getContext()) );
+                rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));
 
-        } else {
-            txt_name.setText(meetingListPOJO.getRequestorName());
-            if (meetingListPOJO.getRequestorPicUrl().equals("")){
-                Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(getResources().getColor(R.color.darkGreyBlue))
-                        .useFont(typeface)
-                        .fontSize(60) /* size in px */
-                        .bold()
-                        .toUpperCase()
-                        .width(140)  // width in px
-                        .height(140) // height in px
-                        .endConfig()
-                        .buildRect(Utility.getInitialsName(meetingListPOJO.getRequestorName()) ,getResources().getColor(R.color.whiteTwo));
+            } else {
+                txt_name.setText(meetingListPOJO.getRequestorName());
+                if (meetingListPOJO.getRequestorPicUrl().equals("")){
+                    Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .textColor(getResources().getColor(R.color.darkGreyBlue))
+                            .useFont(typeface)
+                            .fontSize(60) /* size in px */
+                            .bold()
+                            .toUpperCase()
+                            .width(140)  // width in px
+                            .height(140) // height in px
+                            .endConfig()
+                            .buildRect(Utility.getInitialsName(meetingListPOJO.getRequestorName()) ,getResources().getColor(R.color.whiteTwo));
 
 //                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
 //                        .height(60)
 //                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
-                img_user.setImageDrawable(drawable);
-            } else {
-                img_user.setMinimumWidth(120);
-                img_user.setMaxHeight(120);
-                img_user.setMinimumHeight(120);
-                img_user.setMaxWidth(120);
-                Glide.with(getActivity())
-                        .load(meetingListPOJO.getRequestorPicUrl())
-                        .into(img_user);
-            }
+                    img_user.setImageDrawable(drawable);
+                } else {
+                    img_user.setMinimumWidth(120);
+                    img_user.setMaxHeight(120);
+                    img_user.setMinimumHeight(120);
+                    img_user.setMaxWidth(120);
+                    Glide.with(getActivity())
+                            .load(meetingListPOJO.getRequestorPicUrl())
+                            .into(img_user);
+                }
 
-            if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
-                txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
-            } else {
-                txt_profession.setText("");
-            }
-            //0));
-            ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.addAll(meetingListPOJO.getRequestorDomainTags());
-            arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
-            FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
-            rv_tags.setLayoutManager(gridLayout );
-            rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
-            txt_email.setText(meetingListPOJO.getRequestorEmailId());
+//                if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
+//                    txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
+//                } else {
+//                    txt_profession.setText("");
+//                }
+                txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
+                //0));
+                ArrayList<String> arrayList = new ArrayList<>();
+                arrayList.addAll(meetingListPOJO.getRequestorDomainTags());
+                arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
+                FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
+                rv_tags.setLayoutManager(gridLayout);
+                if (meetingListPOJO.getMeetingTag() != null){
+                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                }
 
-            ArrayList<String> arrayList1 = new ArrayList<>();
+             //   rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                txt_email.setText(meetingListPOJO.getRequestorEmailId());
+
+                ArrayList<String> arrayList1 = new ArrayList<>();
 //            for (int i = 0; i<meetingListPOJO.getRequestorDesignationTags().size(); i++)
 //            {
 //                if (i != 0){
 //                    arrayList1.add(meetingListPOJO.getRequestorDesignationTags().get(i));
 //                }
 //            }
-            arrayList1.addAll(meetingListPOJO.getRequestorExperienceTags());
-            arrayList1.addAll(meetingListPOJO.getRequestorDesignationTags());
+                arrayList1.addAll(meetingListPOJO.getRequestorExperienceTags());
+                arrayList1.addAll(meetingListPOJO.getRequestorDesignationTags());
 
+                rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));
+            }
 
-            rv_experience.setLayoutManager(new FlexboxLayoutManager(getContext()) );
-            rv_experience.setAdapter(new ExperienceAdapter(getContext(), arrayList1));
+            txt_reason.setText("Meeting for " +meetingListPOJO.getMeetingReason());
+            txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())));
+            txt_time.setText(Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
+                    Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime())));
+        } catch (Exception e){
+            e.getMessage();
         }
 
-        txt_reason.setText(meetingListPOJO.getMeetingReason());
-        txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())));
-        txt_time.setText(Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
-                Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime())));
 
     }
 
@@ -305,8 +310,14 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 break;
 
             case R.id.join_meeting:
+                if (Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())).equals("called")) {
+                    startMeeting();
+                } else {
+                    Toast.makeText(getActivity(), "Meeting is yet to start", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), ""+Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())), Toast.LENGTH_SHORT).show();
+                }
                 //dismiss();
-                startMeeting();
+
                 break;
 
             case R.id.img_close:
@@ -318,7 +329,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             case R.id.layout_avail:
 
-                getMeetingSlot(meetingListPOJO.getMeetingCode());
+                getMeetingSlot();
 
                 break;
 
@@ -440,211 +451,220 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
 
 
-    public void getMeetingSlot(String m) {
+    public void getMeetingSlot() {
       //  meetingCode = ""+m;
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onResponse(Call<CommonEntitySlotsPOJO> call, Response<CommonEntitySlotsPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonEntitySlotsPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            progressHUD = KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onResponse(Call<CommonEntitySlotsPOJO> call, Response<CommonEntitySlotsPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonEntitySlotsPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
 
-                        entitySlotList = (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) reasonPOJO.getEntitySlotList();
-                        meetingAvailability();
+                                entitySlotList = (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) reasonPOJO.getEntitySlotList();
+                                meetingAvailability();
 
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(getContext(), " "+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void meetingAvailability() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_availability, null);
-        BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
+        try {
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_availability, null);
+            BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
 
-        Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
-        ImageView img_close = dialogView.findViewById(R.id.img_close);
-        LinearLayout edit = dialogView.findViewById(R.id.edit);
-        LinearLayout layout1 = dialogView.findViewById(R.id.layout1);
-        LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
-        LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
-
-
-
-        ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
-        ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
-        ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
-        ImageView img_time1 = dialogView.findViewById(R.id.img_time1);
-        ImageView img_time2 = dialogView.findViewById(R.id.img_time2);
-        ImageView img_time3 = dialogView.findViewById(R.id.img_time3);
+            Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
+            ImageView img_close = dialogView.findViewById(R.id.img_close);
+            LinearLayout edit = dialogView.findViewById(R.id.edit);
+            LinearLayout layout1 = dialogView.findViewById(R.id.layout1);
+            LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
+            LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
 
 
-        TextView txt_date1 = dialogView.findViewById(R.id.txt_date1);
-        TextView txt_date2 = dialogView.findViewById(R.id.txt_date2);
-        TextView txt_date3 = dialogView.findViewById(R.id.txt_date3);
-        TextView txt_time1 = dialogView.findViewById(R.id.txt_time1);
-        TextView txt_time2 = dialogView.findViewById(R.id.txt_time2);
-        TextView txt_time3 = dialogView.findViewById(R.id.txt_time3);
-        layout1.setVisibility(View.GONE);
-        layout2.setVisibility(View.GONE);
-        layout3.setVisibility(View.GONE);
 
-        if (entitySlotList.size() == 0) {
-            edit.setVisibility(View.GONE);
-        } else if (entitySlotList.size() == 1){
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++) {
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                layout2.setVisibility(View.VISIBLE);
-                txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                        Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+            ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
+            ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
+            ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
+            ImageView img_time1 = dialogView.findViewById(R.id.img_time1);
+            ImageView img_time2 = dialogView.findViewById(R.id.img_time2);
+            ImageView img_time3 = dialogView.findViewById(R.id.img_time3);
 
-//                startTime = slotList.getPlanStartTime();
-//                endTime = slotList.getPlanEndTime();
-                startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-            }
-        } else {
-            edit.setVisibility(View.VISIBLE);
-            for (int i = 0; i < entitySlotList.size(); i++)
-            {
-                CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                if(i == 0){
-                    layout1.setVisibility(View.VISIBLE);
-                    txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                } else  if(i == 1){
+
+            TextView txt_date1 = dialogView.findViewById(R.id.txt_date1);
+            TextView txt_date2 = dialogView.findViewById(R.id.txt_date2);
+            TextView txt_date3 = dialogView.findViewById(R.id.txt_date3);
+            TextView txt_time1 = dialogView.findViewById(R.id.txt_time1);
+            TextView txt_time2 = dialogView.findViewById(R.id.txt_time2);
+            TextView txt_time3 = dialogView.findViewById(R.id.txt_time3);
+            layout1.setVisibility(View.GONE);
+            layout2.setVisibility(View.GONE);
+            layout3.setVisibility(View.GONE);
+
+            if (entitySlotList.size() == 0) {
+                edit.setVisibility(View.GONE);
+            } else if (entitySlotList.size() == 1){
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++) {
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
                     layout2.setVisibility(View.VISIBLE);
                     txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
                     txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
                             Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+
+//                startTime = slotList.getPlanStartTime();
+//                endTime = slotList.getPlanEndTime();
                     startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
+                }
+            } else {
+                edit.setVisibility(View.VISIBLE);
+                for (int i = 0; i < entitySlotList.size(); i++)
+                {
+                    CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
+                    if(i == 0){
+                        layout1.setVisibility(View.VISIBLE);
+                        txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                    } else  if(i == 1){
+                        layout2.setVisibility(View.VISIBLE);
+                        txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                        startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
 //
 //                    startTime = slotList.getPlanStartTime();
 //                    endTime = slotList.getPlanEndTime();
-                    //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                        //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
-                } else  if(i == 2){
-                    layout3.setVisibility(View.VISIBLE);
-                    txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                    txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                            Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
+                    } else  if(i == 2){
+                        layout3.setVisibility(View.VISIBLE);
+                        txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
+                        txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
+                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
 
-                    // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
+                        // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
 
+                    }
                 }
             }
-        }
 
-        layout1.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-//                startTime = entitySlotList.get(0).getPlanStartTime();
-//                endTime = entitySlotList.get(0).getPlanEndTime();
-                setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
-                selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
-                setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
-
-            }
-        });
-
-
-        layout2.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                if (entitySlotList.size() == 1)
-                {
+            layout1.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
                     startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
                     endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-                } else {
-                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
-                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
+//                startTime = entitySlotList.get(0).getPlanStartTime();
+//                endTime = entitySlotList.get(0).getPlanEndTime();
+                    setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
+                    selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
+                    setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
+
                 }
+            });
+
+
+            layout2.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    if (entitySlotList.size() == 1)
+                    {
+                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
+                    } else {
+                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
+                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
+                    }
 
 //                startTime = entitySlotList.get(1).getPlanStartTime();
 //                endTime = entitySlotList.get(1).getPlanEndTime();
-                setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
+                    setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                    selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
-            }
-        });
+                }
+            });
 
 
-        layout3.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onClick(View view) {
-                startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
-                endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
+            layout3.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("NewApi")
+                @Override
+                public void onClick(View view) {
+                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
+                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
 //                startTime = entitySlotList.get(2).getPlanStartTime();
 //                endTime = entitySlotList.get(2).getPlanEndTime();
-                selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
+                    selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
+                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
+                    setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
 
-            }
-        });
+                }
+            });
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-                meetingEditDate();
-            }
-        });
-        btn_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (entitySlotList.size() == 0) {
+            img_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     dialog.dismiss();
                     meetingEditDate();
-                } else {
-                    dialog.dismiss();
-                    getResheduledMeeting();
                 }
-            }
-        });
-        dialog.setContentView(dialogView);
-        dialog.show();
-
-
+            });
+            btn_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (entitySlotList.size() == 0) {
+                        dialog.dismiss();
+                        meetingEditDate();
+                    } else {
+                        dialog.dismiss();
+                        getResheduledMeeting();
+                    }
+                }
+            });
+            dialog.setContentView(dialogView);
+            dialog.show();
+        } catch (Exception e){
+            e.getMessage();
+        }
     }
 
     private void selectDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
@@ -671,6 +691,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         Button btn_next = dialogView.findViewById(R.id.btn_next);
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         CalendarView calender_view = dialogView.findViewById(R.id.calender);
+        calender_view.setMinDate(new Date().getTime());
         selectedDate = DateFormat.format("yyyy-MM-dd", calender_view.getDate()).toString();
         Log.d("NEW_DATE", selectedDate);
         calender_view.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -681,7 +702,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 // output to log cat **not sure how to format year to two places here**
                 String newDate = year+"-"+month+"-"+date;
                 Log.d("NEW_DATE", newDate);
-                Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
+              //  Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
                 selectedDate = newDate;
             }
         });
@@ -755,110 +776,97 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
 
     private void getResheduledMeeting() {
-        startTime = Utility.ConvertUserTimezoneToUTC(startTime);
-        endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
-        Log.d(TAG, startTime + "  " + endTime);
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
-                meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), startTime,endTime);
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        Toast.makeText(getContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
-                        dismiss();
-
-
-                        //  successDialog();
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+        try {
+            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
+            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
+            Log.d(TAG, startTime + "  " + endTime);
+            progressHUD = KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
+                    meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), startTime,endTime);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                // Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                                dismiss();
+                                //  successDialog();
+                            } else {
+                                Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
                     }
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //  Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //  Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e ){
+            e.getMessage();
+        }
     }
-
-    private void successDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.SheetDialog);
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_confirmed, null);
-        TextView label_close = view1.findViewById(R.id.label_close);
-
-        //    tv_msg.setText("Session Added Successfully.");
-        builder.setView(view1);
-        final AlertDialog dialogs = builder.create();
-        dialogs.setCancelable(false);
-        label_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogs.dismiss();
-                dismiss();
-            }
-        });
-        dialogs.show();
-    }
-
 
     private void startMeeting() {
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
-                meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonStartMeetingPOJO>() {
-            @Override
-            public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d("TAG", response.toString());
-                    CommonStartMeetingPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
-                    if (reasonPOJO.getOK()) {
-                        meetingDataPOJO = reasonPOJO.getMeetingData();
-                        sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+        try {
+            progressHUD = KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                    meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d("TAG", response.toString());
+                        CommonStartMeetingPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                            if (reasonPOJO.getOK()) {
+                                meetingDataPOJO = reasonPOJO.getMeetingData();
+                                sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
 
-                        sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
-                        callMeeting();
+                                sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+                                callMeeting();
 
-                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                           Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                           dismiss();
-                            EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                                //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                dismiss();
+                                EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
                     }
-
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
 
@@ -978,27 +986,29 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     Log.d("TAG", response.toString());
                     CommonPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
-                    Log.d("TAG",""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        Toast.makeText(getActivity(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    try {
+                        Log.d("TAG",""+reasonPOJO.getMessage());
+                        if (reasonPOJO.getOK()) {
+                          //  Toast.makeText(getActivity(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                        dismiss();
-                     //   ((MeetingsFragment)getParentFragment()).onResume();
+                            dismiss();
+                            //   ((MeetingsFragment)getParentFragment()).onResume();
 //
 
-                        EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                            EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
 
-                    } else {
-                        Toast.makeText(getContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
                     }
-
-
                 }
             }
             @Override
             public void onFailure(Call<CommonPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(getActivity(), "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -37,6 +37,8 @@ public class Utility {
     public static final int MEETING_CANCEL = 200;
     public static final int END_CALL_FLAG = 300;
     public static final int END_CALL_DIALOG = 500;
+    public static final String PRIVACY_POLICY = "Privacy Policy";
+    public static final String TERMS = "Terms of Service";
 
     public static String UTILITY_URL = "https://niticode.com/";
 
@@ -98,6 +100,38 @@ public class Utility {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public  static  String getEncodedName(String name){
+        String[] splited = name.trim().split("\\s+");
+        StringBuilder s1 = new StringBuilder();
+        try {
+            String split_one=splited[0];
+            for (int i = 0; i < split_one.length(); i++){
+                if (i == 0){
+                    s1.append(split_one.charAt(i));
+                } else {
+                    s1.append("x");
+                }
+            }
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+        StringBuilder s2 = new StringBuilder();
+        try {
+            String split_second=splited[1];
+            for (int i = 0; i < split_second.length(); i++){
+                if (i == 0){
+                    s2.append(split_second.charAt(i));
+                } else {
+                    s2.append("x");
+                }
+            }
+        } catch (Exception e){
+            e.getMessage();
+        }
+        return  s1 + "  " + s2;
+    }
     public static String getMeetingDate(String date, String endDate){
         String dtStart = "";
         SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -191,6 +225,56 @@ public class Utility {
 
     }
 
+    public static String getCallJoin(String datetime) {
+        String call = "";
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getDefault());
+
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        format.setTimeZone(TimeZone.getDefault());
+
+        Calendar calendar = Calendar.getInstance();
+        Date parsed = null;
+        try {
+            parsed = sourceFormat.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String server_date = sourceFormat.format(parsed);
+        String system_date = sourceFormat.format(calendar.getTime());
+        Date d1 = null;
+        Date d2 = null;
+        try {
+            d1 = sourceFormat.parse(server_date);
+            d2 = sourceFormat.parse(system_date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("D1", " "+ d1);
+        Log.d("D2", " "+ d2);
+        long diff = d1.getTime() - d2.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        Log.d("time", "D " + diffDays + " H " + diffHours + " M "
+                + diffMinutes + " S " + diffSeconds);
+        if (diffDays == 0){
+            if (diffHours == 0){
+                if (diffMinutes <= 0) {
+                    call = "called";
+                } else {
+
+//                    call = String.format("%1$02d", hours) + ":" + String.format("%1$02d", minutes)
+//                            + ":" + String.format("%1$02d", seconds);
+                    call =  "Meeting is yet to start.";
+                }
+            }
+        }
+
+        return  call;
+    }
 
     public static String getMeetingDate(String date){
         String dtStart = "";

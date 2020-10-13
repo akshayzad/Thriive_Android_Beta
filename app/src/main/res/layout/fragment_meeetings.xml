@@ -59,9 +59,6 @@
                         android:padding="@dimen/_20dp"
                         android:textAlignment="center"
                         android:visibility="gone"
-                        android:layout_marginLeft="@dimen/_10dp"
-                        android:layout_marginRight="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_10dp"
                         android:textColor="@color/slateGrey"
                         android:text="@string/no_meeting" />
                     <TextView
@@ -79,20 +76,20 @@
                         android:text="@string/label_no_meeting" />
 
                 </LinearLayout>
-
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_scheduled"
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewpager_schedule"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="true"
-                    android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
-                <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
-                    android:id="@+id/indicator_schedule"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
+                    android:layout_height="230dp"
+                    android:layout_margin="@dimen/_5dp"
+                    android:clipToPadding="false" />
+                <LinearLayout
+                    android:id="@+id/layout_dotSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/txt_03"
@@ -117,6 +114,22 @@
                     android:textColor="@color/slateGrey"
                     android:text="" />
 
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewpager_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:layout_margin="@dimen/_5dp"
+                    android:clipToPadding="false" />
+                <LinearLayout
+                    android:id="@+id/layout_dotRequest"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_30dp"
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                </LinearLayout>
+
+
                 <LinearLayout
                     android:id="@+id/layout_noRequest"
                     android:layout_width="match_parent"
@@ -129,9 +142,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/_10dp"
-                        android:layout_marginTop="@dimen/_10dp"
-                        android:layout_marginRight="@dimen/_10dp"
                         android:fontFamily="@font/roboto_bold"
                         android:padding="@dimen/_20dp"
                         android:visibility="gone"
@@ -151,26 +161,7 @@
                         android:layout_marginRight="@dimen/_10dp"
                         android:textColor="@color/darkGrey"
                         android:text="@string/label_no_request" />
-
                 </LinearLayout>
-
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_requested"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    android:layout_margin="5dp">
-
-                </androidx.recyclerview.widget.RecyclerView>
-                <com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator
-                    android:id="@+id/indicator_requster"
-                    android:layout_width="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"></com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator>
-
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

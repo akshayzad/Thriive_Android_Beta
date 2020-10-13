@@ -63,6 +63,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
         CountryListPOJO item = countryList.get(position);
         holder.txt_expertise.setText(item.getCountryName());
         holder.txt_expertise.setBackground(null);
+        holder.txt_expertise.setPadding(7,7,7,7);
         if (currentItem == position) {
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_tarcoto));
         } else {

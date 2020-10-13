@@ -1,6 +1,7 @@
 package com.thriive.app.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -210,8 +211,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             }
         });
 
-
-
         init();
         getReason();
 
@@ -241,137 +240,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         setStyle(STYLE_NORMAL, R.style.SheetDialog);
     }
 
-    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_request_meeting:
-                getSubmitRequestMeeting();
-                // successDialog();
-                break;
-
-            case R.id.img_close:
-                dismiss();
-                //onCancel();
-                break;
-
-            case R.id.layout_lreason:
-                init();
-                getReason();
-                break;
-
-            case R.id.layout_lpersona:
-                getPersona(reasonId,reasonName);
-                break;
-
-            case R.id.layout_ldomain:
-
-                getMeta(personaId, personaName);
-
-                break;
-
-            case R.id.layout_lexpertise:
-                getMeta(personaId, personaName);
-                break;
-
-        }
-    }
-
-    private void getSearchDomain(String s) {
-//        progressHUD = KProgressHUD.create(getActivity())
-//                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-//                .setLabel("Please wait")
-//                .setCancellable(false)
-//                .show();
-        sharedData.addIntData(SharedData.domainId, 0);
-        sharedData.addIntData(SharedData.subDomainId, 0);
-        Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(loginPOJO.getActiveToken(),s,"10", "0");
-        call.enqueue(new Callback<CommonDomainPOJO>() {
-            @Override
-            public void onResponse(Call<CommonDomainPOJO> call, Response<CommonDomainPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonDomainPOJO reasonPOJO = response.body();
-                    //  progressHUD.dismiss();
-                    //  Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
-                    if (reasonPOJO.getOK()) {
-                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                    if (reasonPOJO.getDomainList() != null){
-                        if (reasonPOJO.getDomainList().size() == 0 ){
-                            label_noDomain.setVisibility(View.VISIBLE);
-                        } else {
-                            label_noDomain.setVisibility(View.GONE);
-                        }
-
-                    } else {
-                        label_noDomain.setVisibility(View.VISIBLE);
-                    }
-
-//                    txt_persona.setText(""+persona_name);
-//                    if (reasonPOJO.getMrParams().getFlagExpertise()){
-//                        layout_expertise.setVisibility(View.VISIBLE);
-//                    } else {
-//                        layout_expertise.setVisibility(View.GONE);
-//                    }
-
-                    domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
-                            (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
-                    rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    rv_domain.setAdapter(domainAdapter);
-
-
-
-
-
-                    setMeta();
-
-                }
-            }
-            @Override
-            public void onFailure(Call<CommonDomainPOJO> call, Throwable t) {
-                //  progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void getSubmitRequestMeeting() {
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
-                loginPOJO.getEntityId()
-                ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        successDialog();
-                      //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-
-
-                }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     public void init(){
 
@@ -427,9 +295,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     progressHUD.dismiss();
                     Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
                     if (reasonPOJO.getOK()) {
-                      //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     } else {
-                       // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                     rv_reason.setVisibility(View.VISIBLE);
                     rv_reason.setLayoutManager(new GridLayoutManager(getActivity(), 3));
@@ -441,7 +309,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     manager.setJustifyContent(JustifyContent.FLEX_START);
                     rv_region.setLayoutManager(manager );
 
-                //    rv_region.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
+                    //    rv_region.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
                     rv_region.setAdapter(new RegionAdapter(getActivity(), MeetingRequestFragment.this,
                             (ArrayList<CountryListPOJO>) reasonPOJO.getMrParams().getCountryList()));
 
@@ -455,6 +323,123 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             }
         });
     }
+
+    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_request_meeting:
+                getSubmitRequestMeeting();
+                // successDialog();
+                break;
+
+            case R.id.img_close:
+                dismiss();
+                //onCancel();
+                break;
+
+            case R.id.layout_lreason:
+                init();
+                getReason();
+                break;
+
+            case R.id.layout_lpersona:
+                getPersona(reasonId,reasonName);
+                break;
+
+            case R.id.layout_ldomain:
+
+                getMetaData(personaId, personaName);
+
+                break;
+
+            case R.id.layout_lexpertise:
+                getMetaData(personaId, personaName);
+                break;
+
+        }
+    }
+
+    private void getSearchDomain(String s) {
+        try {
+            sharedData.addIntData(SharedData.domainId, 0);
+            sharedData.addIntData(SharedData.subDomainId, 0);
+            Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(loginPOJO.getActiveToken(),s,"10", "0");
+            call.enqueue(new Callback<CommonDomainPOJO>() {
+                @Override
+                public void onResponse(Call<CommonDomainPOJO> call, Response<CommonDomainPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonDomainPOJO reasonPOJO = response.body();
+                        try {
+                            if (reasonPOJO.getDomainList() != null){
+                                if (reasonPOJO.getDomainList().size() == 0 ){
+                                    label_noDomain.setVisibility(View.VISIBLE);
+                                } else {
+                                    label_noDomain.setVisibility(View.GONE);
+                                }
+                                domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
+                                        (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
+                                rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                rv_domain.setAdapter(domainAdapter);
+
+                            } else {
+                                label_noDomain.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                        setMeta();
+
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonDomainPOJO> call, Throwable t) {
+                    //  progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+    }
+
+    private void getSubmitRequestMeeting() {
+        progressHUD = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
+                loginPOJO.getEntityId()
+                ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
+        call.enqueue(new Callback<CommonPOJO>() {
+            @Override
+            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    CommonPOJO reasonPOJO = response.body();
+                    progressHUD.dismiss();
+                    Log.d(TAG,""+reasonPOJO.getMessage());
+                    if (reasonPOJO.getOK()) {
+                        successDialog();
+                      //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
 
     public void getPersona(String reason_id, String reason_name) {
@@ -534,7 +519,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
 
-    public void getMeta(String persona_id, String persona_name) {
+    public void getMetaData(String persona_id, String persona_name) {
         // ddapter.re();omainA
         txt_persona.setText(""+persona_name);
         edt_domain.setText("");
@@ -658,7 +643,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         sdomainName = subDomainName;
         txt_domains.setText(subDomainName);
         label_domain.setVisibility(View.GONE);
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName);
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"?");
         layout_domain.setVisibility(View.GONE);
         rv_persona.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.VISIBLE);
@@ -674,7 +659,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void setExpertise(Integer expertise_id, String expertiseName) {
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName);
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"?");
         txt_expertise.setText(""+expertiseName);
         label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
@@ -696,8 +681,14 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 //        Hey Samir, Thriive is now at work to find you the right business guru.
 //
 //                Expect a notification for your match within 48 hrs."
-        label_title.setText("Hey "+ loginPOJO.getFirstName() + ", " + getResources().getString(R.string.label_success_meeting) + " "
-        + personaName + " "+ getResources().getString(R.string.label_success_meeting1));
+
+//        Hey Samir,
+//        Thriive is now at work to find you the right business guru.
+//
+//        Expect a notification for your match within 48 hrs.
+
+        label_title.setText(Html.fromHtml("Hey <b>"+ loginPOJO.getFirstName() + ",</b> " + getResources().getString(R.string.label_success_meeting) + " "
+        + personaName + ".<br> <br /> "+ getResources().getString(R.string.label_success_meeting1) + "<b>  48 hrs. </b>"));
         //    tv_msg.setText("Session Added Successfully.");
         builder.setView(view1);
         final AlertDialog dialogs = builder.create();

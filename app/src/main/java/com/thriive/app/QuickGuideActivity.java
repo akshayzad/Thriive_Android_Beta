@@ -23,12 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.thriive.app.adapters.BusinessProfessionAdapter;
-import com.thriive.app.adapters.MeetingRequestSelectionAdapter;
-import com.thriive.app.models.CommonRequesterPOJO;
-import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.SelectBusinessPOJO;
 import com.thriive.app.utilities.SharedData;
@@ -106,7 +100,7 @@ public class QuickGuideActivity extends AppCompatActivity {
                 }
                 if (currentPage == scree_list.length - 0)
                 {
-                    txt_close.setVisibility(View.GONE);
+                    txt_close.setVisibility(View.VISIBLE);
                     timer.cancel();
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.putExtra("intent_type", "FLOW");

@@ -99,7 +99,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
         {
             arrayList.addAll(item.getGiverDomainTags());
             arrayList.addAll(item.getGiverSubDomainTags());
-            holder.txt_giverName.setText(item.getGiverName());
+            holder.txt_giverName.setText("with "+item.getGiverName());
             sharedData.addStringData(SharedData.CALLING_NAME, item.getGiverName());
             try{
                 if (item.getGiverDesignationTags().size() > 0){
@@ -114,19 +114,24 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
 
           //  www.linkedin.com/in/sachchit-chaudhary-29464a14b
             if (item.getGiverPicUrl().equals("")){
-                Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
-                TextDrawable drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .textColor(context.getColor(R.color.darkGreyBlue))
-                        .useFont(typeface)
-                        .fontSize(55) /* size in px */
-                        .bold()
-                        .toUpperCase()
-                        .width(130)  // width in px
-                        .height(130) // height in px
-                        .endConfig()
-                        .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
-                holder.img_giver.setImageDrawable(drawable);
+                try {
+                    Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
+                    TextDrawable drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .textColor(context.getColor(R.color.darkSeaGreen))
+                            .useFont(typeface)
+                            .fontSize(55) /* size in px */
+                            .bold()
+                            .toUpperCase()
+                            .width(130)  // width in px
+                            .height(130) // height in px
+                            .endConfig()
+                            .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
+                    holder.img_giver.setImageDrawable(drawable);
+                } catch (Exception e ){
+                    e.getMessage();
+                }
+
             } else {
                 holder.img_giver.setMinimumWidth(120);
                 holder.img_giver.setMaxHeight(120);
@@ -141,7 +146,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
         } else {
             arrayList.addAll(item.getRequestorDomainTags());
             arrayList.addAll(item.getRequestorSubDomainTags());
-            holder.txt_giverName.setText(item.getRequestorName());
+            holder.txt_giverName.setText("with " +item.getRequestorName());
             sharedData.addStringData(SharedData.CALLING_NAME, item.getRequestorName());
             if (item.getRequestorDesignationTags().size() > 0) {
                 holder.txt_profession.setText(item.getRequestorDesignationTags().get(0));

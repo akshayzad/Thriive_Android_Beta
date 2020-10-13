@@ -25,15 +25,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
-    private String CLIENT_ID = "7884jv1r7np0qe";
-    private String CLIENT_SECRET = "gaWSVUjMqPu3GU09";
     @BindView(R.id.imageView)
-    ImageView imageView;
-//
-//    Client Secret: gaWSVUjMqPu3GU09
-    //String REDIRECTION_URL = "http://localhost:4200/";
-
-    private String REDIRECTION_URL = "http://localhost:4200/redirect";
+    ImageView imageView;;
     private SharedData sharedData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +34,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         sharedData = new SharedData(getApplicationContext());
-
-
         Glide.with(this)
                 .load(R.raw.thriive_ani)
                 .into(imageView);
@@ -61,7 +52,6 @@ public class SplashActivity extends AppCompatActivity {
                         startActivity(intent);
                         finishAffinity();
                     }
-
                 } else {
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
@@ -71,25 +61,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 5000);
 
-
-
         //showLongToast(getResources().getString(R.string.call_message));
     }
 
-    private void showLongToast(final String msg) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast=Toast.makeText(getApplicationContext(),msg ,Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL,20,20);
-                View view=toast.getView();
-                TextView view1=(TextView)view.findViewById(android.R.id.message);
-                view1.setTextColor(Color.BLACK);
-                view1.setPadding(10,10,10,10);
-                view.setBackgroundResource(R.drawable.rectangle_white);
-                toast.show();
-
-            }
-        });
-    }
 }

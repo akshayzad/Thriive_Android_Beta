@@ -171,30 +171,35 @@ public class HomeActivity extends AppCompatActivity {
                     if(response.isSuccessful()) {
                         Log.d(TAG, response.toString());
                         progressHUD.dismiss();
-                        CommonMeetingCountPOJO pojo = response.body();
-                        Log.d(TAG,""+pojo.getDoneCount() + " " + pojo.getTotalCount());
-                        sharedData.addIntData(SharedData.MEETING_TOTAL, pojo.getTotalCount());
-                        sharedData.addIntData(SharedData.MEETING_DONE, pojo.getDoneCount());
-                        if (pojo != null){
-                            try {
-                                if (pojo.getOK()){
-                                    if (pojo.getDoneCount() >= pojo.getTotalCount()){
-                                        getMeetingExsaustedDialog(pojo.getTemplateMessage());
-                                    } else {
-                                        callFragment();
+                        try {
+                            CommonMeetingCountPOJO pojo = response.body();
+                            Log.d(TAG,""+pojo.getDoneCount() + " " + pojo.getTotalCount());
+                            sharedData.addIntData(SharedData.MEETING_TOTAL, pojo.getTotalCount());
+                            sharedData.addIntData(SharedData.MEETING_DONE, pojo.getDoneCount());
+                            if (pojo != null){
+                                try {
+                                    if (pojo.getOK()){
+                                        if (pojo.getDoneCount() >= pojo.getTotalCount()){
+                                            getMeetingExsaustedDialog(pojo.getTemplateMessage());
+                                        } else {
+                                            callFragment();
+                                        }
                                     }
+                                } catch (Exception e){
+                                    Log.d(TAG, " "+ e.getMessage());
                                 }
-                            } catch (Exception e){
-                                Log.d(TAG, " "+ e.getMessage());
-                            }
 
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
                         }
+
                     }
                 }
                 @Override
                 public void onFailure(Call<CommonMeetingCountPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -265,26 +270,32 @@ public class HomeActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     progressHUD.dismiss();
-                    CommonMeetingPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        Utility.saveMeetingDetailsData(getApplicationContext(), pojo.getMeetingObject());
-                        MeetingDetailsFragment meetingDetailsFragment =
-                                (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
-                        meetingDetailsFragment.show(getSupportFragmentManager(), "MeetingDetailsFragment");
-                        // recycler_requested.setAdapter(requestedAdapter);
-                        Toast.makeText(getApplicationContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                    try {
+                        CommonMeetingPOJO pojo = response.body();
+                        if (pojo != null){
+                            Log.d(TAG,""+pojo.getMessage());
+                            if (pojo.getOK()) {
+                                Utility.saveMeetingDetailsData(getApplicationContext(), pojo.getMeetingObject());
+                                MeetingDetailsFragment meetingDetailsFragment =
+                                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
+                                meetingDetailsFragment.show(getSupportFragmentManager(), "MeetingDetailsFragment");
+                                // recycler_requested.setAdapter(requestedAdapter);
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
                     }
+
 
                 }
             }
             @Override
             public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -527,20 +538,25 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d(TAG, response.toString());
                     CommonPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO != null){
-                        if (reasonPOJO.getOK()) {
-                            Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    try {
+                        if (reasonPOJO != null){
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
                         }
+                    } catch (Exception e){
+                        e.getMessage();
                     }
+
                 }
             }
             @Override
             public void onFailure(Call<CommonPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(HomeActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -609,10 +625,4 @@ public class HomeActivity extends AppCompatActivity {
         addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                 "MeetingRequestFragment");
     }
-//
-//    @Override
-//    public void onBackPressed() {
-//      //  super.onBackPressed();
-//
-//    }
 }

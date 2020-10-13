@@ -19,6 +19,14 @@
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:src="@drawable/background_request_meeting"></ImageView>
+        <ImageView
+            android:id="@+id/img_stamp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="@dimen/_30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/graphic_stamp"></ImageView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,13 +84,14 @@
                             android:textColor="@color/darkGreyBlue"
                             android:textSize="@dimen/_17dp"
                             android:layout_margin="1dp"
-                            android:text="What are you looking to achieve today?"></TextView>
+                            android:text="@string/tag_reason"></TextView>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_regular"
                             android:textColor="@color/darkGreyBlue"
                             android:textSize="@dimen/_14dp"
+                            android:visibility="gone"
                             android:layout_margin="1dp"
                             android:text="Thriive connects you with the right people for the right purpose."></TextView>
 
@@ -111,7 +120,7 @@
                             android:fontFamily="@font/roboto_regular"
                             android:textColor="@color/darkGreyBlue"
                             android:textSize="@dimen/_14dp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             android:layout_margin="1dp"
                             android:text="@string/label_meeting_request1"></TextView>
 

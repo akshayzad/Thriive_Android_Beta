@@ -218,9 +218,9 @@ APIInterface {
                                           @Field("response_text") String response_text,
                                           @Field("response_int") int response_int);
     @FormUrlEncoded
-    @POST("meeting/save-app-review")
+    @POST("AppLogin/logout")
     Call<CommonPOJO> getLogout(@Header("Authorization") String authorization,
-                               @Field("rowcode") String rowcode);
+                               @Field("primary_login_key") String primary_login_key);
 
     @FormUrlEncoded
     @POST("AppLogin/forgot-password")

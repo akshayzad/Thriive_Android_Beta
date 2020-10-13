@@ -14,7 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -33,14 +35,15 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
+import com.thriive.app.adapters.RequestPagerAdapter;
 import com.thriive.app.adapters.RequestedAdapter;
+import com.thriive.app.adapters.SchedulePagerAdapter;
 import com.thriive.app.adapters.ScheduledAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonPOJO;
-import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
@@ -48,16 +51,11 @@ import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
-import com.thriive.app.utilities.scrollingpagerindicator.ScrollingPagerIndicator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -71,10 +69,6 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @BindView(R.id.txt_noRequest)
     TextView txt_noRequest;
-    @BindView(R.id.recycler_requested)
-    RecyclerView recycler_requested;
-    @BindView(R.id.recycler_scheduled)
-    RecyclerView recycler_scheduled;
     @BindView(R.id.txt_noSchedule)
     TextView txt_noSchedule;
     @BindView(R.id.refresh_view)
@@ -84,16 +78,18 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     TextView txt_schedule;
     @BindView(R.id.txt_request)
     TextView txt_request;
+    @BindView(R.id.viewpager_schedule)
+    ViewPager viewpager_schedule;
+    @BindView(R.id.layout_dotSchedule)
+    LinearLayout layout_dotSchedule;
+    TextView[] dotSchedule;
 
-    private LinearLayoutManager layoutManagerSchedule;
-    private LinearLayoutManager layoutManagerRequested;
-    private ScrollingPagerIndicator recyclerIndicator, recyclerIndicator1;
-//    @BindView(R.id.txt_name)
-//    TextView txt_name;
+    @BindView(R.id.layout_dotRequest)
+    LinearLayout layout_dotRequest;
+    @BindView(R.id.viewpager_request)
+    ViewPager viewpager_request;
+    TextView[] dotRequest;
 
-
-    private RequestedAdapter requestedAdapter;
-    private ScheduledAdapter scheduledAdapter;
 
     private APIInterface apiInterface;
     private LoginPOJO.ReturnEntity loginPOJO;
@@ -105,7 +101,13 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     private KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
 
+    private  ArrayList<CommonMeetingListPOJO.MeetingListPOJO> meetingListSchedule = new ArrayList<>();
+    private ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> meetingListRequest = new ArrayList<>();
+
     private String schedule_date = "", request_date = "";
+
+    private  SchedulePagerAdapter schedulePagerAdapter;
+    private RequestPagerAdapter requestPagerAdapter;
     public MeetingsFragment() {
         // Required empty public constructor
     }
@@ -135,8 +137,6 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
             onResume();
             //  ((MeetingsFragment()).onResume();
         }
-
-
     }
 
 
@@ -162,52 +162,12 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
 
         //txt_name.setText("Welcome, " + loginPOJO.getFirstName());
-        recyclerIndicator = view.findViewById(R.id.indicator_requster);
-        recyclerIndicator1 = view.findViewById(R.id.indicator_schedule);
-
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
         refreshView.setRefreshing(false);
-
-
-        layoutManagerSchedule = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false);
-        layoutManagerRequested = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false);
-
-        recycler_scheduled.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState != RecyclerView.SCROLL_STATE_IDLE || newState != RecyclerView.SCROLL_STATE_DRAGGING) {
-                    int position = layoutManagerSchedule.findFirstVisibleItemPosition();
-                    schedule_date = scheduledAdapter.getDate(position);
-                    txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
-                  // return;
-                }
-              //  Toast.makeText(getContext(), ""+layoutManagerSchedule.getPosition(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-
-        recycler_requested.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState != RecyclerView.SCROLL_STATE_IDLE || newState != RecyclerView.SCROLL_STATE_DRAGGING) {
-                    int position = layoutManagerRequested.findFirstVisibleItemPosition();
-                    request_date = requestedAdapter.getDate(position);
-                    txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
-                    return;
-                }
-                if (recycler_requested == null) {
-                    return;
-                }
-            }
-            });
 
         return view;
     }
@@ -229,6 +189,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void getScheduledMeeting() {
+        meetingListSchedule.clear();
         Call<CommonMeetingListPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
@@ -242,24 +203,28 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo != null){
                         if (pojo.getOK()) {
                             if (pojo.getMeetingList() != null){
-                                scheduledAdapter = new ScheduledAdapter(getActivity(),MeetingsFragment.this,pojo.getMeetingList());
-                                recycler_scheduled.setLayoutManager(layoutManagerSchedule);
-                                recycler_scheduled.setAdapter(scheduledAdapter);
-                                recyclerIndicator1.attachToRecyclerView(recycler_scheduled);
                                 if (pojo.getMeetingList().size() == 0){
                                     txt_noSchedule.setVisibility(View.VISIBLE);
                                     txt_schedule.setText("");
+                                    viewpager_schedule.setVisibility(View.GONE);
+                                    layout_dotSchedule.setVisibility(View.GONE);
                                 }else {
+                                    meetingListSchedule.clear();
+                                    meetingListSchedule.addAll(pojo.getMeetingList());
+                                    schedulePagerAdapter = new SchedulePagerAdapter(getActivity(), MeetingsFragment.this, meetingListSchedule);
+                                    viewpager_schedule.setAdapter(schedulePagerAdapter);
+                                    viewpager_schedule.setVisibility(View.VISIBLE);
+                                    layout_dotSchedule.setVisibility(View.VISIBLE);
                                     txt_noSchedule.setVisibility(View.GONE);
-                                    schedule_date = scheduledAdapter.getDate(0);
+                                    schedule_date = schedulePagerAdapter.getDate(0);
                                     txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
-
+                                    setScheduleData();
                                 }
 
                             }
-                            Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }  // recycler_requested.setAdapter(requestedAdapter);
 
@@ -273,6 +238,57 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
             }
         });
 
+    }
+
+    private void setScheduleData() {
+
+        //  To show preview of left and right pages set the following two values
+
+        viewpager_schedule.setClipToPadding(false);
+      //  To show preview of left and right pages set the following two values
+
+//        viewpager_schedule.setPageMargin(-40);
+//        viewpager_schedule.setHorizontalFadingEdgeEnabled(true);
+//        viewpager_schedule.setFadingEdgeLength(30);
+        viewpager_schedule.setPadding(0,0,30,0);
+        viewpager_schedule.setClipToPadding(false);
+//        viewpager_schedule.setPageMargin(10);
+        addDotSchedule(0);
+
+        // whenever the page changes
+        viewpager_schedule.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+            @Override
+            public void onPageSelected(int i) {
+                addDotSchedule(i);
+                schedule_date = schedulePagerAdapter.getDate(i);
+                txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+    }
+
+    private void addDotSchedule(int page_position) {
+        dotSchedule = new TextView[meetingListSchedule.size()];
+        layout_dotSchedule.removeAllViews();
+
+        for (int i = 0; i < dotSchedule.length; i++) {;
+            dotSchedule[i] = new TextView(getActivity());
+            dotSchedule[i].setText(Html.fromHtml("&#9679;"));
+            dotSchedule[i].setTextSize(20);
+            dotSchedule[i].setTextColor(getResources().getColor(R.color.pinkishGreyTwo));
+            layout_dotSchedule.addView(dotSchedule[i]);
+        }
+        //active dot
+        dotSchedule[page_position].setTextColor(getResources().getColor(R.color.battleshipGrey));
     }
 
 
@@ -290,17 +306,26 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo != null){
                         if (pojo.getOK()) {
                             if (pojo.getMeetingRequestList() != null){
-                                requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
-                                        (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-                                recycler_requested.setLayoutManager(layoutManagerRequested);
-                                recycler_requested.setAdapter(requestedAdapter);
-                                recyclerIndicator.attachToRecyclerView(recycler_requested);
+
+                                meetingListRequest.clear();
+                                meetingListRequest.addAll(pojo.getMeetingRequestList());
+                                requestPagerAdapter = new RequestPagerAdapter(getActivity(), MeetingsFragment.this, meetingListRequest);
+                                viewpager_request.setAdapter(requestPagerAdapter);
+
+//
+//                                requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
+//                                        (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
+//                                recycler_requested.setLayoutManager(layoutManagerRequested);
+//                                recycler_requested.setAdapter(requestedAdapter);
+//                                recyclerIndicator.attachToRecyclerView(recycler_requested);
                             }
                         } else {
                             Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                         if (pojo.getMeetingRequestList() == null){
+                            viewpager_request.setVisibility(View.GONE);
+                            layout_dotRequest.setVisibility(View.GONE);
                             txt_noRequest.setVisibility(View.VISIBLE);
                             txt_request.setText("");
                         } else {
@@ -308,10 +333,16 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                             {
                                 txt_noRequest.setVisibility(View.VISIBLE);
                                 txt_request.setText("");
+                                viewpager_request.setVisibility(View.GONE);
+                                layout_dotRequest.setVisibility(View.GONE);
                             } else {
+                                viewpager_request.setVisibility(View.VISIBLE);
+                                layout_dotRequest.setVisibility(View.VISIBLE);
                                 txt_noRequest.setVisibility(View.GONE);
-                                request_date = requestedAdapter.getDate(0);
+                                request_date = requestPagerAdapter.getDate(0);
                                 txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+
+                                setRequestData();
 
                             }
                         }
@@ -327,6 +358,59 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    private void setRequestData() {
+
+
+        //  To show preview of left and right pages set the following two values
+        viewpager_request.setClipToPadding(false);
+        viewpager_request.setPadding(0, 0, 30, 0);
+      //  viewpager_request.setPageMargin(10);
+       // viewpager_request.setHorizontalFadingEdgeEnabled(true);
+       // viewpager_request.setFadingEdgeLength(30);
+
+        viewpager_schedule.setClipToPadding(false);
+        //viewpager_schedule.setPadding(5,0,5,0);
+       // viewpager_schedule.setPageMargin(10);
+        addDotRequest(0);
+
+        // whenever the page changes
+        viewpager_request.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+            @Override
+            public void onPageSelected(int i) {
+                addDotRequest(i);
+                request_date = requestPagerAdapter.getDate(i);
+                txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+
+
+    }
+
+    private void addDotRequest(int page_position) {
+        dotRequest = new TextView[meetingListRequest.size()];
+        layout_dotRequest.removeAllViews();
+
+        for (int i = 0; i < dotRequest.length; i++) {;
+            dotRequest[i] = new TextView(getActivity());
+            dotRequest[i].setText(Html.fromHtml("&#9679;"));
+            dotRequest[i].setTextSize(20);
+            dotRequest[i].setTextColor(getResources().getColor(R.color.pinkishGreyTwo));
+            layout_dotRequest.addView(dotRequest[i]);
+        }
+        //active dot
+        dotRequest[page_position].setTextColor(getResources().getColor(R.color.battleshipGrey));
 
     }
 
@@ -351,7 +435,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                              meetingDataPOJO = reasonPOJO.getMeetingData();
                              sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
                              callMeeting();
-                             Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                          } else {
                              Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                              EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
@@ -410,7 +494,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                             meetingAvailability(pojo.getEntitySlotList());
 
                         } else {
-                            Toast.makeText(getContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -421,7 +505,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onFailure(Call<CommonEntitySlotsPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -619,6 +703,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         Button btn_next = dialogView.findViewById(R.id.btn_next);
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         CalendarView calender_view = dialogView.findViewById(R.id.calender);
+        calender_view.setMinDate(new Date().getTime());
+
         selectedDate = DateFormat.format("yyyy-MM-dd", calender_view.getDate()).toString();
         Log.d("NEW_DATE", selectedDate);
         calender_view.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -629,7 +715,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 // output to log cat **not sure how to format year to two places here**
                 String newDate = year+"-"+month+"-"+date;
                 Log.d("NEW_DATE", newDate);
-                Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
+               // Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
                 selectedDate = newDate;
             }
         });
@@ -721,7 +807,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                         Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                        // successDialog();
                     } else {
-                        Toast.makeText(getContext(), "Failure "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
 

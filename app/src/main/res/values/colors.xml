@@ -47,6 +47,7 @@
     <color name="greyishBrown40">#66535353</color>
     <color name="pinkishGreyTwo">#CACACA</color>
     <color name="white78">#C7FFFFFF</color>
+    <color name="beige">#1FFBB04C</color>
 
     <array name="view_dot_active">
         <item>@color/colorAccent</item>

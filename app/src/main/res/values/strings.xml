@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Thriive</string>
     <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="label_next_schedule">Your next scheduled meeting: </string>
-    <string name="label_requested">You\'ve requested: </string>
+    <string name="label_next_schedule">Upcoming Meeting(s) </string>
+    <string name="label_requested">Requested Meeting(s) </string>
     <string name="scheduled">Scheduled</string>
     <string name="requested">Requested</string>
     <string name="shortlisting">Shortlisting</string>
@@ -20,7 +21,7 @@
     <string name="done">Done</string>
     <string name="profile">Profile</string>
     <string name="preferences">Preferences</string>
-    <string name="history">History</string>
+    <string name="history">Your Connections</string>
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="logout">Logout</string>
@@ -40,7 +41,7 @@
     <string name="meeting_request_success">Thank you. \n\nYour meeting is now confirmed.</string>
     <!--    <string name="rate_meeting">How relevant was your match with </string>-->
     <string name="rate_meeting">How was your meeting? </string>
-<!--    <string name="rate_meeting">How relevant was your match </string>-->
+    <!--    <string name="rate_meeting">How relevant was your match </string>-->
     <string name="rate_meeting1">How happy were you with your match?</string>
     <string name="thankyou">Thank you for your feedback. It helps us improve our platform so we can make sure that every meeting matters.</string>
     <string name="rateapptext">Please rate your experience with Thriive so far?</string>
@@ -80,7 +81,7 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="tag_region">Please select the region of the </string>
+    <string name="tag_region">Please let us know the region of the </string>
     <string name="no_meeting">No meetings scheduled.</string>
     <string name="label_no_meeting">Thriive is working hard to find you the right match.
         You should receive a notification within 48 hrs.\n\n
@@ -91,8 +92,11 @@
     <string name="no_request">No meetings requested</string>
     <string name="label_success_meeting">Thriive is now at work to find you the right</string>
 
-    <string name="label_success_meeting1">\n\nExpect a notification for your match within 48 hrs.</string>
+    <string name="label_success_meeting1">\n\nExpect a notification for your match within</string>
     <string name="no_domain">Sorry, we couldn\'t find what you were looking for.\nTry with a different keyword.</string>
+    <string name="account">Account</string>
+    <string name="tag_reason">What’s your objective today?</string>
+    <string name="privacy">Privacy Policy</string>
 
 
 </resources>

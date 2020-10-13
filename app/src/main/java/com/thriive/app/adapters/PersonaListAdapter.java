@@ -76,7 +76,7 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
             @Override
             public void onClick(View view) {
                // ((MeetingRequestFragment) fragment).reason_id = "" + item.getReasonId();
-                ((MeetingRequestFragment) fragment).getMeta("" + item.getPersonaId(), ""+item.getPersonaName());
+                ((MeetingRequestFragment) fragment).getMetaData("" + item.getPersonaId(), ""+item.getPersonaName());
             }
         });
 

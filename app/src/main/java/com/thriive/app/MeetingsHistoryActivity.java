@@ -72,29 +72,33 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
                     Log.d(TAG, response.toString());
                     progressHUD.dismiss();
                     CommonMeetingListPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo.getOK()) {
-                        if (pojo.getMeetingList() != null){
-                            if (pojo.getMeetingList().size() == 0){
-                                txt_noHistory.setVisibility(View.VISIBLE);
-                            } else {
-                                txt_noHistory.setVisibility(View.GONE);
+                    try {
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo.getOK()) {
+                            if (pojo.getMeetingList() != null){
+                                if (pojo.getMeetingList().size() == 0){
+                                    txt_noHistory.setVisibility(View.VISIBLE);
+                                } else {
+                                    txt_noHistory.setVisibility(View.GONE);
+                                }
+                                rv_history.setAdapter(new MeetingHistoryAdapter(MeetingsHistoryActivity.this,pojo.getMeetingList()));
                             }
-                            rv_history.setAdapter(new MeetingHistoryAdapter(MeetingsHistoryActivity.this,pojo.getMeetingList()));
+
+                            // recycler_requested.setAdapter(requestedAdapter);
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-
-                        // recycler_requested.setAdapter(requestedAdapter);
-                        Toast.makeText(getApplicationContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failure "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (Exception e){
+                        e.getMessage();
                     }
+
                 }
             }
             @Override
             public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
                 //   progressHUD.dismiss();
-                Toast.makeText(getApplicationContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
             }
         });
     }

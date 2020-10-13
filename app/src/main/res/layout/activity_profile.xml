@@ -37,7 +37,7 @@
                 android:textAlignment="center"
                 android:padding="@dimen/_10dp"
                 android:textColor="@color/darkGreyBlue"
-                android:text="Profile" />
+                android:text="@string/account" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -208,13 +208,13 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/help"
+                android:id="@+id/service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="horizontal"
                 >
                 <ImageView
@@ -231,7 +231,7 @@
                     android:textSize="@dimen/_16dp"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/help"
+                    android:text="Terms of Service"
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
@@ -245,13 +245,13 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/about"
+                android:id="@+id/policy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="horizontal"
                 >
                 <ImageView
@@ -268,7 +268,7 @@
                     android:textSize="@dimen/_16dp"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/about"
+                    android:text="@string/privacy"
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView

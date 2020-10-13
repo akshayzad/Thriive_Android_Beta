@@ -66,10 +66,10 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
     @Override
     public void onBindViewHolder(final ScheduleListAdapter.RecyclerAdapterHolder holder,int position) {
         CommonMeetingListPOJO.MeetingListPOJO item  = requesterPOJOArrayList.get(position);
-        holder.txt_reason.setText("Meeting for " + item.getMeetingReason());
+        holder.txt_reason.setText("For " + item.getMeetingReason());
         if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID)))
         {
-            holder.labelName.setText(item.getGiverName());
+            holder.labelName.setText("with "+item.getGiverName());
             if (item.getGiverPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
@@ -96,7 +96,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
 //                    .into(holder.img_user);
 
         } else {
-            holder.labelName.setText(item.getRequestorName());
+            holder.labelName.setText("with " + item.getRequestorName());
             if (item.getRequestorPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
