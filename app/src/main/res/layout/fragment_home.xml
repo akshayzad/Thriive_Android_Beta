@@ -71,7 +71,7 @@
                     android:textAlignment="center"
                     android:visibility="gone"
                     android:textColor="@color/slateGrey"
-                    android:text="Ready to Thriive today? Set your next meeting now!"
+                    android:text=""
                     />
 
                 <androidx.recyclerview.widget.RecyclerView

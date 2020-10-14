@@ -262,13 +262,18 @@ public class Utility {
                 + diffMinutes + " S " + diffSeconds);
         if (diffDays == 0){
             if (diffHours == 0){
-                if (diffMinutes <= 0) {
-                    call = "called";
+                if (diffMinutes == 0) {
+                    if (diffSeconds <= 0) {
+                        call = "called";
+                    } else {
+                        call =  "Meeting is yet to start.";
+                    }
+
                 } else {
 
 //                    call = String.format("%1$02d", hours) + ":" + String.format("%1$02d", minutes)
 //                            + ":" + String.format("%1$02d", seconds);
-                    call =  "Meeting is yet to start.";
+
                 }
             }
         }

@@ -289,7 +289,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                             Log.d(TAG,""+reasonPOJO.getMessage());
                             if (reasonPOJO != null){
                                 if (reasonPOJO.getOK()) {
-                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                              //      Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                     finish();
 
                                 } else {
