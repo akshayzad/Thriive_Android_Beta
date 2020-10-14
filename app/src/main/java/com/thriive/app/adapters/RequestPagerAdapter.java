@@ -68,9 +68,11 @@ public class RequestPagerAdapter extends PagerAdapter {
         TextView txt_persona = view.findViewById(R.id.txt_persona);
         RecyclerView rv_tags = view.findViewById(R.id.rv_tags);
         TextView txt_reason = view.findViewById(R.id.txt_reason);
+        TextView txt_tags = view.findViewById(R.id.txt_tags);
 
         txt_persona.setText("with "+item.getGiverPersonaName());
         txt_reason.setText("Meeting for "+item.getReasonName());
+        txt_tags.setText(""+item.getMeetingLabel());
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());
         arrayList.addAll(item.getSubDomainTags());

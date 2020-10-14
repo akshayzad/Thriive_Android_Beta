@@ -57,7 +57,8 @@ public class PendingMeetingRequestPOJO {
         private Integer requestorId;
         @SerializedName("request_date")
         String requestDate;
-
+        @SerializedName("meeting_label")
+        private String meetingLabel;
 
         public List<String> getDomainTags() {
             return domainTags;
@@ -129,6 +130,14 @@ public class PendingMeetingRequestPOJO {
 
         public void setRequestDate(String requestDate) {
             this.requestDate = requestDate;
+        }
+
+        public String getMeetingLabel() {
+            return meetingLabel;
+        }
+
+        public void setMeetingLabel(String meetingLabel) {
+            this.meetingLabel = meetingLabel;
         }
     }
 }

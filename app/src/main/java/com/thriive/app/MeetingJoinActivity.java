@@ -565,10 +565,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                preciseCountdown = new PreciseCountdown(TimeUnit.MINUTES.toMillis(7), 1000, 0) {
+                preciseCountdown = new PreciseCountdown(TimeUnit.MINUTES.toMillis(30), 1000, 0) {
                     @Override
                     public void onTick(long timeLeft) {
-                        if (TimeUnit.MINUTES.toMillis(2) == timeLeft){
+                        if (TimeUnit.MINUTES.toMillis(5) == timeLeft){
                             showCustomToast(getResources().getString(R.string.call_message));
                           //  ratingDialog();
                             Log.d(TAG, "!1 min");

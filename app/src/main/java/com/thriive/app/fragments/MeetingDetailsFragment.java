@@ -210,8 +210,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout );
-                if (meetingListPOJO.getMeetingTag() != null){
-                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                if (meetingListPOJO.getGiverExpertiseTags() != null){
+                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getGiverExpertiseTags()));
                 }
 
                 txt_email.setText(meetingListPOJO.getGiverEmailId());
@@ -271,9 +271,13 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
-                if (meetingListPOJO.getMeetingTag() != null){
-                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+//                if (meetingListPOJO.getMeetingTag() != null){
+//                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+//                }
+                if (meetingListPOJO.getRequestorExpertiseTags() != null){
+                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getRequestorExpertiseTags()));
                 }
+
 
              //   rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
                 txt_email.setText(meetingListPOJO.getRequestorEmailId());

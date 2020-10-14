@@ -53,7 +53,7 @@
     <string name="f_name">First Name</string>
     <string name="l_name">Last Name</string>
     <string name="no_schedule">You don’t have any meetings:</string>
-    <string name="call_message">Your call is going to end in 2 mins.</string>
+    <string name="call_message">Your call is going to end in 5 mins.</string>
     <string name="walk">A quick guided tour to get you started</string>
     <string name="submitted">Submitted</string>
     <string name="didnt_get">We didn’t meet</string>
@@ -62,7 +62,7 @@
     <string name="not_relevant">Relevant to me but not good conversation</string>
     <string name="waste_time">A waste of time</string>
     <string name="great_match">Great match!</string>
-    <string name="tag_expertise">Please select the area of expertise of the </string>
+    <string name="tag_expertise">Please select the expertise of the </string>
     <string name="tag_domain">Please select the domain of the </string>
     <string name="awaiting">Awaiting Confirmation</string>
     <string name="tag_camera">Select From Camera</string>
