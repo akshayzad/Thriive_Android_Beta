@@ -3,8 +3,8 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="label_next_schedule">Upcoming Meeting(s) </string>
-    <string name="label_requested">Requested Meeting(s) </string>
+    <string name="label_next_schedule">Upcoming Meeting(s): </string>
+    <string name="label_requested">Requested Meeting(s):</string>
     <string name="scheduled">Scheduled</string>
     <string name="requested">Requested</string>
     <string name="shortlisting">Shortlisting</string>
@@ -81,22 +81,26 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="tag_region">Please let us know the region of the </string>
-    <string name="no_meeting">No meetings scheduled.</string>
+    <string name="tag_region">Tell us where would you like the </string>
+    <string name="no_meeting">No Meetings Scheduled</string>
     <string name="label_no_meeting">Thriive is working hard to find you the right match.
         You should receive a notification within 48 hrs.\n\n
         as text with font weight light and font size the same as the date on the page"</string>
     <string name="label_no_request">There are business-changing possibilities at Thriive.
         Go ahead and request a meeting to find the right person.\n\n as text with font weight light
         and font size the same as the date on the page</string>
-    <string name="no_request">No meetings requested</string>
+    <string name="no_request">No Meetings Requested</string>
     <string name="label_success_meeting">Thriive is now at work to find you the right</string>
 
-    <string name="label_success_meeting1">\n\nExpect a notification for your match within</string>
+    <string name="label_success_meeting1">\n\nExpect a meeting confirmation from your match within</string>
     <string name="no_domain">Sorry, we couldn\'t find what you were looking for.\nTry with a different keyword.</string>
     <string name="account">Account</string>
     <string name="tag_reason">What’s your objective today?</string>
     <string name="privacy">Privacy Policy</string>
+    <string name="areas_expertise">Areas of expertise</string>
+    <string name="terms">Terms of Service</string>
+    <string name="edit">Edit</string>
+    <string name="add">Add</string>
 
 
 </resources>

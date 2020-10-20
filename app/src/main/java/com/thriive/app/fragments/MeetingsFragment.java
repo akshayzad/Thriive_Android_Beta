@@ -1,16 +1,22 @@
 package com.thriive.app.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.net.ParseException;
+import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -18,10 +24,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.text.Html;
 import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,30 +37,37 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.onesignal.OneSignal;
 import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
 import com.thriive.app.adapters.RequestPagerAdapter;
-import com.thriive.app.adapters.RequestedAdapter;
 import com.thriive.app.adapters.SchedulePagerAdapter;
-import com.thriive.app.adapters.ScheduledAdapter;
+import com.thriive.app.adapters.SlotListAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonPOJO;
+import com.thriive.app.models.CommonScheduleMeetingPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.SharedData;
+import com.thriive.app.utilities.SwipeController;
+import com.thriive.app.utilities.SwipeControllerActions;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
+import com.thriive.app.utilities.swipeablerv.SwipeLeftRightCallback;
+import com.thriive.app.utilities.swipeablerv.SwipeableRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,6 +78,8 @@ import retrofit2.Response;
 
 public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @BindView(R.id.txt_name)
+    TextView txt_name;
     @BindView(R.id.txt_noRequest)
     TextView txt_noRequest;
     @BindView(R.id.txt_noSchedule)
@@ -91,6 +104,12 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     TextView[] dotRequest;
 
 
+    private static final String[] REQUESTED_PERMISSIONS = {
+            Manifest.permission.WRITE_CALENDAR,
+            Manifest.permission.READ_CALENDAR
+    };
+
+
     private APIInterface apiInterface;
     private LoginPOJO.ReturnEntity loginPOJO;
     private SharedData sharedData;
@@ -98,16 +117,19 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     public static String TAG = MeetingsFragment.class.getName();
     private  String startTime, endTime, meetingCode, selectedDate;
 
+    private  String  meetingReason, title;
+    private long lnsTime, lneTime;
     private KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
 
     private  ArrayList<CommonMeetingListPOJO.MeetingListPOJO> meetingListSchedule = new ArrayList<>();
     private ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> meetingListRequest = new ArrayList<>();
 
-    private String schedule_date = "", request_date = "";
+    private String schedule_date = "", request_date = "", time_stamp = "";
 
     private  SchedulePagerAdapter schedulePagerAdapter;
     private RequestPagerAdapter requestPagerAdapter;
+    private SwipeController swipeController = null;
     public MeetingsFragment() {
         // Required empty public constructor
     }
@@ -160,8 +182,22 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         sharedData = new SharedData(getActivity());
 
         Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                try{
+                    time_stamp =""+ Utility.getTimeStamp();
+                } catch (Exception e){
 
-        //txt_name.setText("Welcome, " + loginPOJO.getFirstName());
+                }
+            } else {
+                TimeZone timeZone = TimeZone.getDefault();
+                Log.d(TAG, "time zone "+ timeZone.getID());
+                time_stamp = timeZone.getID();
+            }
+        } catch(Exception e){
+            e.getMessage();
+        }
+        txt_name.setText("Welcome, " + loginPOJO.getFirstName());
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -188,55 +224,72 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         onResume();
     }
 
+
+
+
+
     private void getScheduledMeeting() {
-        meetingListSchedule.clear();
-        Call<CommonMeetingListPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<CommonMeetingListPOJO>() {
-            @Override
-            public void onResponse(Call<CommonMeetingListPOJO> call, Response<CommonMeetingListPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                  //  progressHUD.dismiss();
-                    CommonMeetingListPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo != null){
-                        if (pojo.getOK()) {
-                            if (pojo.getMeetingList() != null){
-                                if (pojo.getMeetingList().size() == 0){
-                                    txt_noSchedule.setVisibility(View.VISIBLE);
-                                    txt_schedule.setText("");
-                                    viewpager_schedule.setVisibility(View.GONE);
-                                    layout_dotSchedule.setVisibility(View.GONE);
-                                }else {
-                                    meetingListSchedule.clear();
-                                    meetingListSchedule.addAll(pojo.getMeetingList());
-                                    schedulePagerAdapter = new SchedulePagerAdapter(getActivity(), MeetingsFragment.this, meetingListSchedule);
-                                    viewpager_schedule.setAdapter(schedulePagerAdapter);
-                                    viewpager_schedule.setVisibility(View.VISIBLE);
-                                    layout_dotSchedule.setVisibility(View.VISIBLE);
-                                    txt_noSchedule.setVisibility(View.GONE);
-                                    schedule_date = schedulePagerAdapter.getDate(0);
-                                    txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
-                                    setScheduleData();
+        try {
+            TimeZone timeZone = TimeZone.getDefault();
+            Log.d(TAG, "time zone "+ timeZone.getID());
+            String UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+            if (UUID  == null) {
+                UUID = "";
+            }
+            Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
+            meetingListSchedule.clear();
+            Call<CommonScheduleMeetingPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
+            call.enqueue(new Callback<CommonScheduleMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonScheduleMeetingPOJO> call, Response<CommonScheduleMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        //  progressHUD.dismiss();
+                        CommonScheduleMeetingPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingList() != null){
+                                    if (pojo.getMeetingList().size() == 0){
+                                        txt_noSchedule.setVisibility(View.VISIBLE);
+                                        txt_schedule.setText("");
+                                        viewpager_schedule.setVisibility(View.GONE);
+                                        layout_dotSchedule.setVisibility(View.GONE);
+                                    }else {
+                                        meetingListSchedule.clear();
+                                        meetingListSchedule.addAll(pojo.getMeetingList());
+                                        schedulePagerAdapter = new SchedulePagerAdapter(getActivity(), MeetingsFragment.this, meetingListSchedule);
+                                        viewpager_schedule.setAdapter(schedulePagerAdapter);
+                                        viewpager_schedule.setVisibility(View.VISIBLE);
+                                        layout_dotSchedule.setVisibility(View.VISIBLE);
+                                        txt_noSchedule.setVisibility(View.GONE);
+                                        schedule_date = schedulePagerAdapter.getDate(0);
+                                        txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+                                        setScheduleData();
+                                    }
+
                                 }
+                              //  ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
+                                //    Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
 
-                            }
-                        //    Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }  // recycler_requested.setAdapter(requestedAdapter);
 
-                        }  // recycler_requested.setAdapter(requestedAdapter);
-
+                        }
                     }
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonMeetingListPOJO> call, Throwable t) {
-              //  progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<CommonScheduleMeetingPOJO> call, Throwable t) {
+                    //  progressHUD.dismiss();
+                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
 
     }
 
@@ -491,8 +544,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                     if (pojo != null){
                         if (pojo.getOK()) {
                             //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                            meetingAvailability(pojo.getEntitySlotList());
-
+                           // meetingAvailability(pojo.getEntitySlotList());
+                            meetingEditSlot(pojo.getEntitySlotList());
                         } else {
                             Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -697,6 +750,86 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
+    public void meetingEditSlot(List<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_availability, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
+        Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
+        ImageView img_close = dialogView.findViewById(R.id.img_close);
+        RecyclerView rv_slots = dialogView.findViewById(R.id.rv_slots);
+        SlotListAdapter adapter  = new SlotListAdapter(getActivity(), (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) entitySlotList);
+        rv_slots.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        rv_slots.setAdapter(adapter);
+//        SwipeableRecyclerView rv = dialogView.findViewById(R.id.rv);
+//        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        rv.setAdapter(adapter);
+//
+//        rv.setListener(new SwipeLeftRightCallback.Listener() {
+//            @Override
+//            public void onSwipedLeft(int position) {
+////                mList.remove(position);
+//                adapter.notifyItemChanged(position);
+//            }
+//
+//            @Override
+//            public void onSwipedRight(int position) {
+////                mList.remove(position);
+//                adapter.notifyItemChanged(position);
+//            }
+//        });
+
+
+        SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                dialog.dismiss();
+                meetingEditDate();
+                //adapter.players.remove(position);
+                //adapter.notifyItemRemoved(position);
+               // adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+            }
+        });
+//
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(rv_slots);
+       // p.setColor(Color.rgb(16,133,104));
+
+        rv_slots.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (entitySlotList.size() == 0) {
+                    dialog.dismiss();
+                    //  getMeetingSlote();
+                    meetingEditDate();
+                } else {
+                    if (adapter.endTime.equals("")){
+                        Toast.makeText(getContext(), "Please choose slot", Toast.LENGTH_SHORT).show();
+                    } else {
+                        startTime = adapter.startTime;
+                        endTime = adapter.endTime;
+                        dialog.dismiss();
+                        getResheduledMeeting();
+                    }
+                }
+            }
+        });
+        dialog.setContentView(dialogView);
+        dialog.show();
+    }
+
+
+
     public void meetingEditDate() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
@@ -774,8 +907,15 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                getResheduledMeeting();
+                if(Utility.getCallJoin(startTime)){
+                    Toast.makeText(getContext(), "Please choose current or future time.", Toast.LENGTH_LONG).show();
+                } else {
+                    getResheduledMeeting();
+                    dialog.dismiss();
+
+                }
+               // dialog.dismiss();
+               // getResheduledMeeting();
             }
         });
         dialog.setContentView(dialogView);
@@ -786,42 +926,177 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void getResheduledMeeting() {
         startTime = Utility.ConvertUserTimezoneToUTC(startTime);
-        endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
+        endTime = Utility.ConvertUserTimezoneToUTC(endTime);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
         Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
-                meetingCode, loginPOJO.getRowcode(), startTime,endTime);
+                meetingCode, loginPOJO.getRowcode(), startTime, endTime);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     Log.d(TAG, response.toString());
                     CommonPOJO reasonPOJO = response.body();
                     progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
+                    Log.d(TAG, "" + reasonPOJO.getMessage());
                     if (reasonPOJO.getOK()) {
                         EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
-                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                       // successDialog();
+                        Toast.makeText(getContext(), "" + reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        // successDialog();
                     } else {
-                        Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), " " + reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
 
                 }
             }
+
             @Override
             public void onFailure(Call<CommonPOJO> call, Throwable t) {
                 progressHUD.dismiss();
-              //  Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(NotificationListActivity.this, "Getting Error", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    public void getAddCalenderEvent(String e_title, String e_meetingReason, long lns_Time, long lne_Time) {
+        title = e_title;
+        meetingReason = e_meetingReason;
+        lneTime = lne_Time;
+        lnsTime = lns_Time;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.alert_dialog_yesno, null);
+        TextView txt_add = view1.findViewById(R.id.txt_add);
+        TextView txt_cancel = view1.findViewById(R.id.txt_cancel);
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        txt_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                getPermission();
+            }
+        });
+        dialogs.show();
+    }
 
+    public void getPermission(){
+
+        if (checkSelfPermission(REQUESTED_PERMISSIONS[0], 111) &&
+                checkSelfPermission(REQUESTED_PERMISSIONS[1], 111)) {
+            getAddCalender();
+        } else {
+            requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR,}, 111);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 111:
+                getPermission();
+                break;
+
+        }
+    }
+
+    private void getAddCalender() {
+        try {
+            String eventUriString = "content://com.android.calendar/events";
+            ContentValues eventValues = new ContentValues();
+            eventValues.put("calendar_id", 1); // id, We need to choose from
+            // our mobile for primary its 1
+            eventValues.put("title", title);
+            eventValues.put("description", "Meeting for "+ meetingReason);
+            eventValues.put("dtstart", lnsTime);
+            eventValues.put("dtend", lneTime);
+            // values.put("allDay", 1); //If it is bithday alarm or such
+            // kind (which should remind me for whole day) 0 for false, 1
+            // for true
+//           eventValues.put("eventStatus", status); // This information is
+            // sufficient for most
+            // entries tentative (0),
+            // confirmed (1) or canceled
+            // (2):
+
+
+            TimeZone timeZone = TimeZone.getDefault();
+            //Log.d(TAG, "time zone "+ timeZone.getID());
+            eventValues.put("eventTimezone",  timeZone.getDisplayName());
+            /*
+             * Comment below visibility and transparency column to avoid
+             * java.lang.IllegalArgumentException column visibility is invalid
+             * error
+             */
+            // eventValues.put("allDay", 1);
+            // eventValues.put("visibility", 0); // visibility to default (0),
+            // confidential (1), private
+            // (2), or public (3):
+            // eventValues.put("transparency", 0); // You can control whether
+            // an event consumes time
+            // opaque (0) or transparent (1).
+
+            eventValues.put("hasAlarm", 1); // 0 for false, 1 for true
+
+            Uri eventUri = getActivity().getApplicationContext()
+                    .getContentResolver()
+                    .insert(Uri.parse(eventUriString), eventValues);
+
+            if (Long.parseLong(eventUri.getLastPathSegment()) != -1){
+                successDialog();
+            }
+
+
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+    }
+
+    public void successDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_request_meeting_success, null);
+        TextView label_close = view1.findViewById(R.id.label_close);
+        TextView label_title = view1.findViewById(R.id.label_title);
+
+        label_title.setText("Meeting added to your calender.");
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        label_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        dialogs.show();
+    }
+
+
+    public boolean checkSelfPermission(String permission, int requestCode) {
+        Log.i("LOG_TAG", "checkSelfPermission " + permission + " " + requestCode);
+        if (ContextCompat.checkSelfPermission(getContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_CALENDAR,
+                            Manifest.permission.READ_CALENDAR},
+                    111);
+            return false;
+        }
+        return true;
+    }
 
 }

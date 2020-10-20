@@ -4,11 +4,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +38,7 @@ import com.thriive.app.adapters.ExperienceAdapter;
 import com.thriive.app.adapters.ExperienceListAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.adapters.PendingNotificationAdapter;
+import com.thriive.app.adapters.SlotListAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.fragments.MeetingDetailsFragment;
@@ -48,6 +52,8 @@ import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
+import com.thriive.app.utilities.SwipeController;
+import com.thriive.app.utilities.SwipeControllerActions;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
@@ -335,6 +341,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             ImageButton decline = view1.findViewById(R.id.img_decline);
             TextView txt_reason  = view1.findViewById(R.id.txt_reason);
             TextView txt_name = view1.findViewById(R.id.txt_name);
+            TextView txt_experience = view1.findViewById(R.id.txt_experience);
             TextView txt_profession = view1.findViewById(R.id.txt_profession);
             CircleImageView img_user = view1.findViewById(R.id.img_user);
             //    tv_msg.setText("Session Added Successfully.");
@@ -353,7 +360,9 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             } catch (Exception e){
                 txt_name.setText(""+meetingListPOJO.getRequestorName());
             }
-
+            if (meetingListPOJO.getRequestorExperienceTags() != null){
+                txt_experience.setText("Total " +meetingListPOJO.getRequestorExperienceTags().get(0));
+            }
             if (meetingListPOJO.getRequestorPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
@@ -387,14 +396,14 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 //            manager.setJustifyContent(JustifyContent.CENTER);
             rv_experience.setLayoutManager(manager );
             ArrayList<String> array = new ArrayList<>();
-            array.addAll(meetingListPOJO.getRequestorExperienceTags());
+          //  array.addAll(meetingListPOJO.getRequestorExperienceTags());
             array.addAll(meetingListPOJO.getRequestorDesignationTags());
            // array.addAll(meetingListPOJO.getRequestorDesignationTags());
             rv_experience.setAdapter(new ExperienceListAdapter(NotificationListActivity.this,array));
 
             FlexboxLayoutManager manager1 = new FlexboxLayoutManager(NotificationListActivity.this);
-            manager1.setFlexWrap(FlexWrap.WRAP);
-            manager1.setJustifyContent(JustifyContent.CENTER);
+//            manager1.setFlexWrap(FlexWrap.WRAP);
+//            manager1.setJustifyContent(JustifyContent.CENTER);
             rv_expertise.setLayoutManager(manager1 );
             ArrayList<String> array1 = new ArrayList<>();
             array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
@@ -473,7 +482,9 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                             if (reasonPOJO != null){
                                 if (reasonPOJO.getOK()) {
                                     if (reasonPOJO.getEntitySlotList() != null){
-                                        meetingAvailability(reasonPOJO.getEntitySlotList());
+                                       // meetingAvailability(reasonPOJO.getEntitySlotList());
+
+                                        meetingEditSlot(reasonPOJO.getEntitySlotList());
                                     }
                                     //.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -690,6 +701,83 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         linearLayout.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.reactangle_grey_outline));
 
     }
+    public void meetingEditSlot(List<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_availability, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(getApplicationContext(), R.style.SheetDialog);
+        Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
+        ImageView img_close = dialogView.findViewById(R.id.img_close);
+        RecyclerView rv_slots = dialogView.findViewById(R.id.rv_slots);
+        SlotListAdapter adapter  = new SlotListAdapter(getApplicationContext(), (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) entitySlotList);
+        rv_slots.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        rv_slots.setAdapter(adapter);
+//        SwipeableRecyclerView rv = dialogView.findViewById(R.id.rv);
+//        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        rv.setAdapter(adapter);
+//
+//        rv.setListener(new SwipeLeftRightCallback.Listener() {
+//            @Override
+//            public void onSwipedLeft(int position) {
+////                mList.remove(position);
+//                adapter.notifyItemChanged(position);
+//            }
+//
+//            @Override
+//            public void onSwipedRight(int position) {
+////                mList.remove(position);
+//                adapter.notifyItemChanged(position);
+//            }
+//        });
+
+
+        SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+                dialog.dismiss();
+                meetingEditDate();
+                //adapter.players.remove(position);
+                //adapter.notifyItemRemoved(position);
+                // adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+            }
+        });
+//
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(rv_slots);
+        // p.setColor(Color.rgb(16,133,104));
+
+        rv_slots.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
+            }
+        });
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (entitySlotList.size() == 0) {
+                    dialog.dismiss();
+                    //  getMeetingSlote();
+                    meetingEditDate();
+                } else {
+                    if (adapter.endTime.equals("")){
+                        Toast.makeText(getApplicationContext(), "Please choose slot", Toast.LENGTH_SHORT).show();
+                    } else {
+                        startTime = adapter.startTime;
+                        endTime = adapter.endTime;
+                        dialog.dismiss();
+                        getAcceptMeeting();
+                    }
+                }
+            }
+        });
+        dialog.setContentView(dialogView);
+        dialog.show();
+    }
 
     public void meetingEditDate() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
@@ -773,8 +861,15 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                getAcceptMeeting();
+                if(Utility.getCallJoin(startTime)){
+                    Toast.makeText(getApplicationContext(), "Please choose current or future time.", Toast.LENGTH_SHORT).show();
+                } else {
+                    getAcceptMeeting();
+                    dialog.dismiss();
+
+                }
+//                dialog.dismiss();
+//                getAcceptMeeting();
             }
         });
         dialog.setContentView(dialogView);

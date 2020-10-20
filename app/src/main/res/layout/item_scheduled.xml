@@ -176,6 +176,13 @@
                             android:src="@drawable/ic_email"
                             android:layout_margin="5dp"
                             android:layout_weight="0"></ImageView>
+                        <ImageView
+                            android:id="@+id/iv_calender"
+                            android:layout_width="@dimen/_37dp"
+                            android:layout_height="@dimen/_37dp"
+                            android:src="@drawable/add_calendar_circle"
+                            android:layout_margin="5dp"
+                            android:layout_weight="0"></ImageView>
 
                     </LinearLayout>
                     <LinearLayout

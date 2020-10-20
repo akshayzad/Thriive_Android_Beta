@@ -1,14 +1,20 @@
 package com.thriive.app.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.res.ResourcesCompat;
@@ -45,7 +51,12 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         CircleImageView img_user;
         @BindView(R.id.ratingBar)
         RatingBar ratingBar;
-
+        @BindView(R.id.txt_reason)
+        TextView txt_reason;
+        @BindView(R.id.iv_linkdin)
+        ImageView iv_linkdin;
+        @BindView(R.id.iv_email)
+        ImageView iv_email;
         public RecyclerAdapterHolder(View itemView) {
             super( itemView );
             ButterKnife.bind(this, itemView);
@@ -71,6 +82,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         Log.d("Rating", item.getRequestorResponseInt() +" "+item.getGiverResponseInt() );
         if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
             holder.txt_name.setText(item.getGiverName());
+            holder.txt_reason.setText("Meeting for "+ item.getMeetingReason());
             Log.d("Rating", item.getGiverResponseInt() +" "+item.getGiverResponseInt().floatValue() );
 //            holder.ratingBar.setStepSize(1.0f);
 //            holder.ratingBar.setMax(5);
@@ -126,6 +138,116 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         }
         holder.txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
                 Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
+
+        holder.iv_linkdin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    if (item.getGiverLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        try {
+
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            view.getContext().startActivity(intent);
+                        } catch (Exception e) {
+                            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl())));
+                        } finally {
+
+                        }
+
+                    }
+
+                } else {
+                    if (item.getRequestorLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            view.getContext().startActivity(intent);
+                        } catch (Exception e) {
+                            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
+                        } finally {
+
+                        }
+                    }
+                }
+
+            }
+        });
+
+        holder.iv_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    if (item.getGiverEmailId().equals("")){
+                        Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                        emailIntent.setType("text/plain");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                        final PackageManager pm = context.getPackageManager();
+                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                        ResolveInfo best = null;
+                        for(final ResolveInfo info : matches)
+                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                best = info;
+                        if (best != null)
+                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                        view.getContext().startActivity(emailIntent);
+
+//                Intent intent = new Intent(Intent.ACTION_SEND);
+//                intent.setType("*/*");
+//                intent.putExtra(Intent.EXTRA_EMAIL,new String[]{ meetingListPOJO.getGiverEmailId()});
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                    getActivity().startActivity(intent);
+//                }
+                    }
+
+                } else {
+                    if (item.getRequestorEmailId().equals("")){
+                        Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                        emailIntent.setType("text/plain");
+                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                        final PackageManager pm = context.getPackageManager();
+                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                        ResolveInfo best = null;
+                        for(final ResolveInfo info : matches)
+                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                best = info;
+                        if (best != null)
+                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+
+                        view.getContext().startActivity(emailIntent);
+
+//                Intent intent = new Intent(Intent.ACTION_SEND);
+//                intent.setType("*/*");
+//                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{meetingListPOJO.getRequestorEmailId()});
+//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                    getActivity().startActivity(intent);
+//                }
+                    }
+                }
+            }
+        });
     }
 
     @Override

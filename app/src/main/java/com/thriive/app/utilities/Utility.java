@@ -225,8 +225,8 @@ public class Utility {
 
     }
 
-    public static String getCallJoin(String datetime) {
-        String call = "";
+    public static boolean getCallJoin(String datetime) {
+        boolean call = false;
         SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         sourceFormat.setTimeZone(TimeZone.getDefault());
 
@@ -261,24 +261,24 @@ public class Utility {
         Log.d("time", "D " + diffDays + " H " + diffHours + " M "
                 + diffMinutes + " S " + diffSeconds);
         if (diffDays == 0){
-            if (diffHours == 0){
-                if (diffMinutes == 0) {
+            if (diffHours <= 0) {
+                if (diffMinutes <= 0) {
                     if (diffSeconds <= 0) {
-                        call = "called";
+                        call = true;
                     } else {
-                        call =  "Meeting is yet to start.";
+                        call = false;
                     }
-
                 } else {
-
-//                    call = String.format("%1$02d", hours) + ":" + String.format("%1$02d", minutes)
-//                            + ":" + String.format("%1$02d", seconds);
-
+                    call = false;
                 }
+            } else {
+                call = false;
             }
+        } else {
+            call = false;
         }
 
-        return  call;
+        return call;
     }
 
     public static String getMeetingDate(String date){
@@ -455,7 +455,7 @@ public class Utility {
         cal.setTime(myDateTime);
 
         //Adding 21 Hours to your Date
-        cal.add(Calendar.HOUR_OF_DAY, 1);
+        cal.add(Calendar.MINUTE, 30);
         System.out.println("This is Hours Added Date:"+cal.getTime());
 
 

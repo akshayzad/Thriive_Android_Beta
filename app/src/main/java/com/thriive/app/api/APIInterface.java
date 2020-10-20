@@ -14,6 +14,7 @@ import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.CommonPersonaPOJO;
 import com.thriive.app.models.CommonReasonPOJO;
 import com.thriive.app.models.CommonRequesterPOJO;
+import com.thriive.app.models.CommonScheduleMeetingPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
@@ -103,7 +104,9 @@ APIInterface {
 
     @FormUrlEncoded
     @POST("Meeting/get-scheduled-meetings")
-    Call<CommonMeetingListPOJO> getScheduledMeeting(@Header("Authorization") String authorization, @Field("rowcode") String rowcode);
+    Call<CommonScheduleMeetingPOJO> getScheduledMeeting(@Header("Authorization") String authorization, @Field("rowcode") String rowcode,
+                                                        @Field("push_token") String push_token,
+                                                        @Field("time_zone_name") String time_zone_name, @Field("time_stamp") String time_stamp);
 
     @FormUrlEncoded
     @POST("Meeting/accept-meeting")

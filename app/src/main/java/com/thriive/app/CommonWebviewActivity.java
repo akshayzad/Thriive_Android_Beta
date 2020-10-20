@@ -51,12 +51,22 @@ public class CommonWebviewActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                progressHUD.show();
+                try {
+                    progressHUD.show();
+                } catch (Exception e){
+                    e.getMessage();
+                }
+
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                progressHUD.dismiss();
+                try {
+                    progressHUD.dismiss();
+                } catch (Exception e){
+                    e.getMessage();
+                }
+                //progressHUD.dismiss();
             }
         });
 

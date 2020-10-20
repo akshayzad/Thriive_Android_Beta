@@ -1,11 +1,19 @@
 package com.thriive.app.adapters;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
+import android.os.CountDownTimer;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -32,7 +41,10 @@ import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -77,6 +89,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
         TextView txt_reason = view.findViewById(R.id.txt_reason);
         ImageView iv_linkdin = view.findViewById(R.id.iv_linkdin);
         ImageView iv_email = view.findViewById(R.id.iv_email);
+        ImageView iv_calender= view.findViewById(R.id.iv_calender);
         TextView txt_tag = view.findViewById(R.id.txt_tag);
 
         txt_tag.setText(""+item.getMeetingLabel());
@@ -216,12 +229,18 @@ public class SchedulePagerAdapter extends PagerAdapter {
         layout_join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime())).equals("called")) {
+                if (Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()))) {
                     ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
                  //   startMeeting();
                 } else {
-
-                    Toast.makeText(context, "Meeting is yet to start", Toast.LENGTH_LONG).show();
+                    final Toast toast = Toast.makeText(context, "Meeting is yet to start",Toast.LENGTH_SHORT);
+                    toast.show();
+                    new CountDownTimer(2000, 1000)
+                    {
+                        public void onTick(long millisUntilFinished) {toast.show();}
+                        public void onFinish() {toast.cancel();}
+                    }.start();
+             //   ..    Toast.makeText(context, "Meeting is yet to start", Toast.LENGTH_LONG).show();
 
                     //      Toast.makeText(context, ""+Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime())), Toast.LENGTH_SHORT).show();
                 }
@@ -330,6 +349,67 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         }
                     }
                 }
+            }
+        });
+        iv_calender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String title = "";
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    title = "Thriive Meet with "+ item.getGiverName() ;
+                } else {
+                    title = "Thriive Meet with "+ item.getRequestorName() ;
+                }
+                SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                long lnsTime = 0, lneTime = 0;
+                Date dateObject;
+                try {
+                    dateObject = in_format.parse(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()));
+                    lnsTime = dateObject.getTime();
+                    Log.e("null", Long.toString(lnsTime));
+
+                    dateObject = in_format.parse(Utility.ConvertUTCToUserTimezone(item.getPlanEndTime()));
+                    lneTime = dateObject.getTime();
+                    Log.e("null", Long.toString(lneTime));
+                }
+
+                catch (java.text.ParseException e) {
+                    // TODO Auto-generated catch block
+                }
+//
+
+               ((MeetingsFragment)fragment).getAddCalenderEvent(title, item.getMeetingReason(), lnsTime, lneTime);
+
+//                    Log.i("E11111111111", e.toString());
+//                }
+//
+//                String  title = "" ;
+
+//                if (Build.VERSION.SDK_INT >= 14) {
+//                    Intent intent = new Intent(Intent.ACTION_INSERT)
+//                            .setData(Events.CONTENT_URI)
+//                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, lnsTime)
+//                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, lneTime)
+//                            .putExtra(Events.TITLE, title)
+//                            .putExtra(Events.DESCRIPTION, title)
+//                         //   .putExtra(Events.EVENT_LOCATION, "The gym")
+//                            .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+//                          //  .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+//                    view.getContext().startActivity(intent);
+//                } else {
+//                //    Calendar cal = Calendar.getInstance();
+//                    Intent intent = new Intent(Intent.ACTION_EDIT);
+//                    intent.setType("vnd.android.cursor.item/event");
+//                    intent.putExtra("beginTime", lnsTime);
+//                    intent.putExtra("allDay", true);
+//                    intent.putExtra("rrule", "FREQ=YEARLY");
+//                    intent.putExtra("endTime", lneTime);
+//                    intent.putExtra("title", title);
+////                    view.getContext().startActivity(intent);
+////                }
+
+
+
             }
         });
 

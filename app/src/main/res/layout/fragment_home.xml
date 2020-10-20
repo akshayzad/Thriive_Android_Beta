@@ -71,7 +71,7 @@
                     android:textAlignment="center"
                     android:visibility="gone"
                     android:textColor="@color/slateGrey"
-                    android:text=""
+                    android:text="@string/no_meeting"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -105,7 +105,7 @@
                     android:padding="@dimen/_25dp"
                     android:textAlignment="center"
                     android:visibility="gone"
-                    android:text=""
+                    android:text="@string/no_request"
                     android:textColor="@color/slateGrey"
                     android:textSize="@dimen/_18dp" />
                 <androidx.recyclerview.widget.RecyclerView

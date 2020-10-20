@@ -34,6 +34,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.JsonObject;
 import com.onesignal.OneSignal;
 import com.thriive.app.adapters.ExperienceAdapter;
+import com.thriive.app.adapters.RequesterListAdapter;
+import com.thriive.app.adapters.ScheduleListAdapter;
 import com.thriive.app.adapters.ViewPagerAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
@@ -42,12 +44,15 @@ import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.fragments.MeetingsFragment;
 
+import com.thriive.app.fragments.ProfileFragment;
+import com.thriive.app.models.CommonHomePOJO;
 import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
@@ -59,6 +64,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private SharedData sharedData;
 
-    private   String meetingId = "";
+    private   String meetingId = "", UUID = "", time_stamp = "";
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
@@ -116,7 +122,24 @@ public class HomeActivity extends AppCompatActivity {
        // showMeetingDialog(meetingId);
 
 
-        String UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                try{
+                    time_stamp =""+ Utility.getTimeStamp();
+                } catch (Exception e){
+
+                }
+            } else {
+                TimeZone timeZone = TimeZone.getDefault();
+                Log.d(TAG, "time zone "+ timeZone.getID());
+                time_stamp = timeZone.getID();
+            }
+        } catch(Exception e){
+            e.getMessage();
+        }
+
+
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
         Log.d(TAG, " UUID "+ UUID);
 
@@ -124,11 +147,13 @@ public class HomeActivity extends AppCompatActivity {
         spaceNavigationView1.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));
         spaceNavigationView1.setCentreButtonIconColorFilterEnabled(false);
 
+
         spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
         spaceNavigationView.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));
         Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
         spaceNavigationView.setFont(typeface);
         spaceNavigationView.setCentreButtonIconColorFilterEnabled(false);
+       // spaceNavigationView.showIconOnly();
         setupViewPager(viewPager);
 
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
@@ -232,12 +257,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+
     public void getLogoutApp() {
-        progressHUD = KProgressHUD.create(this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
+//        progressHUD = KProgressHUD.create(this)
+//                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+//                .setLabel("Please wait")
+//                .setCancellable(false)
+//                .show();
         sharedData.addBooleanData(SharedData.isFirstVisit, false);
         sharedData.addBooleanData(SharedData.isLogged, false);
         sharedData.clearPref(getApplicationContext());
@@ -247,7 +273,7 @@ public class HomeActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                progressHUD.dismiss();
+               // progressHUD.dismiss();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finishAffinity();
@@ -373,7 +399,53 @@ public class HomeActivity extends AppCompatActivity {
             meetingId = sharedData.getStringData(SharedData.MEETING_ID);
             showMeetingDialog(meetingId);
         }
+        //getMeetingHome();
     }
+
+
+    private void getMeetingHome() {
+        TimeZone timeZone = TimeZone.getDefault();
+        Log.d(TAG, "time zone "+ timeZone.getID());
+        UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+        if (UUID  == null) {
+            UUID = "";
+        }
+        Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
+        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getActiveToken(),
+                loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
+        call.enqueue(new Callback<CommonHomePOJO>() {
+            @Override
+            public void onResponse(Call<CommonHomePOJO> call, Response<CommonHomePOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, " "+ response.toString());
+                    CommonHomePOJO pojo = response.body();
+                    try {
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                setNoti(pojo.getPendingRequestCount());
+                                // recycler_requested.setAdapter(requestedAdapter);
+                                // Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                //Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e){
+                        e.getMessage();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonHomePOJO> call, Throwable t) {
+                //   progressHUD.dismiss();
+                Toast.makeText(getApplicationContext(), ""+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 
     public void showMeetingDialog(String meeting_Id) {
         meetingId = meeting_Id;
@@ -542,7 +614,7 @@ public class HomeActivity extends AppCompatActivity {
                         if (reasonPOJO != null){
                             Log.d(TAG,""+reasonPOJO.getMessage());
                             if (reasonPOJO.getOK()) {
-                                Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             }

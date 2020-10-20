@@ -107,10 +107,28 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_close:
-                finish();
+
+                onBackPressed();
                 break;
 
 
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        try {
+            if (progressHUD != null){
+                if (progressHUD.isShowing()){
+                    progressHUD.dismiss();
+                }
+            }
+            super.onBackPressed();
+        } catch (Exception e){
+            e.getMessage();
+            super.onBackPressed();
+        }
+
     }
 }

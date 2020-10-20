@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_7dp"
+    app:cardElevation="@null"
+    android:focusable="true"
+    android:clickable="true"
+    android:layout_margin="@dimen/_5dp">
+    <LinearLayout
+        android:id="@+id/layout_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/reactangle_grey_outline"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5dp">
+
+            <ImageView
+                android:id="@+id/img_date"
+                android:layout_width="@dimen/_16dp"
+                android:layout_height="@dimen/_16dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5dp"
+                android:src="@drawable/ic_time"></ImageView>
+
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="30-8-2020"
+                android:textColor="@color/darkGreyBlue"
+                android:textSize="15dp"></TextView>
+
+            <ImageView
+                android:id="@+id/img_time"
+                android:layout_width="@dimen/_16dp"
+                android:layout_height="@dimen/_16dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5dp"
+                android:src="@drawable/ic_calender"></ImageView>
+
+            <TextView
+                android:id="@+id/txt_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="09:00 - 10:00 AM"
+                android:textColor="@color/darkGreyBlue"
+                android:textSize="15dp"></TextView>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

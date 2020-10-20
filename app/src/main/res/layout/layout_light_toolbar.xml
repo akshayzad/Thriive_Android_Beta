@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <RelativeLayout
         android:id="@+id/layout_notification"
         android:layout_width="match_parent"
@@ -26,33 +27,37 @@
             android:layout_width="13dp"
             android:layout_height="13dp"
             android:layout_marginLeft="-12dp"
-            android:layout_marginRight="0dp"
             android:layout_marginTop="2dp"
             android:layout_toEndOf="@id/img_notification"
             android:background="@drawable/circle_white"
             android:fontFamily="@font/roboto_medium"
-            android:gravity="center"
-            android:padding="1dp"
             android:text=" "
             android:textAlignment="center"
+            android:padding="1dp"
             android:textColor="@color/darkGreyBlue"
-            android:textSize="9dp"
+            android:textSize="8dp"
             android:visibility="invisible" />
     </RelativeLayout>
+
+
 
     <ImageView
         android:id="@+id/img_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/thriive"
-        android:layout_margin="5dp"
+        android:paddingLeft="@dimen/_20dp"
+        android:paddingRight="@dimen/_20dp"
         android:backgroundTint="@null"
         android:layout_weight="2"></ImageView>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/_10dp"
         android:gravity="right"
+        android:visibility="visible"
         android:layout_gravity="right|center"
         android:layout_weight="2">
         <ImageView
@@ -63,5 +68,4 @@
             android:layout_margin="5dp"
             android:src="@drawable/ic_profile"></ImageView>
     </LinearLayout>
-
 </LinearLayout>

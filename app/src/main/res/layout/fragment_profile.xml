@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp">
+        android:layout_marginTop="@dimen/_40dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -89,10 +89,11 @@
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
+                    android:layout_gravity="center"
                     android:layout_margin="@dimen/_5dp">
 
                 </ImageView>
@@ -124,10 +125,11 @@
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
+                    android:layout_gravity="center"
                     android:layout_margin="@dimen/_5dp">
 
                 </ImageView>
@@ -160,23 +162,24 @@
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_25dp"
+                    android:layout_height="@dimen/_25dp"
                     android:src="@drawable/ic_next"
                     android:layout_weight="0"
+                    android:layout_gravity="center"
                     android:layout_margin="@dimen/_5dp">
 
                 </ImageView>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/help"
+                android:id="@+id/service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="horizontal"
                 >
                 <ImageView
@@ -193,7 +196,7 @@
                     android:textSize="@dimen/_16dp"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/help"
+                    android:text="Terms of Service"
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
@@ -207,13 +210,13 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/about"
+                android:id="@+id/policy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="horizontal"
                 >
                 <ImageView
@@ -230,7 +233,7 @@
                     android:textSize="@dimen/_16dp"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/about"
+                    android:text="@string/privacy"
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView

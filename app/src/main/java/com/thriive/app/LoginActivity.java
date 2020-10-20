@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
@@ -61,6 +63,10 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     EditText edt_password;
     @BindView(R.id.edt_email)
     EditText edt_email;
+    @BindView(R.id.txt_terms)
+    TextView txt_terms;
+    @BindView(R.id.txt_privacy)
+    TextView txt_privacy;
 
     private static final int GOOGLE_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
@@ -98,7 +104,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
         apiInterface = APIClient.getApiInterface();
 
-
+        txt_terms.setText(Html.fromHtml("<u>" + getResources().getString(R.string.terms) + "</u>"));
+        txt_privacy.setText(Html.fromHtml("<u>" + getResources().getString(R.string.privacy) + "</u>"));
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
         Log.d(TAG, " UUID "+ UUID);
@@ -188,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
 
 
-    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linklined, R.id.txt_forgetPassword})
+    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linklined, R.id.txt_forgetPassword, R.id.txt_terms, R.id.txt_privacy})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_forgetPassword:
@@ -223,6 +230,23 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         .authenticate(100);
              //   linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY);
              //  signInWithLinkLined();
+                break;
+
+            case  R.id.txt_privacy:
+
+                Intent intent4 = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+                intent4.putExtra("intent_type", Utility.PRIVACY_POLICY);
+                startActivity(intent4);
+
+                break;
+
+
+            case R.id.txt_terms:
+
+                Intent intent3 = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+                intent3.putExtra("intent_type", Utility.TERMS);
+                startActivity(intent3);
+
                 break;
         }
     }

@@ -638,12 +638,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
         Utility.hideKeyboard(getActivity());
        // scrollView.scrollTo(0,scrollView.getBottom());
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"  to be from?");
         subDomainId = ""+s_id;
         domainId = ""+d_id;
         sdomainName = subDomainName;
         txt_domains.setText(subDomainName);
         label_domain.setVisibility(View.GONE);
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"?");
         layout_domain.setVisibility(View.GONE);
         rv_persona.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.VISIBLE);
@@ -659,7 +659,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void setExpertise(Integer expertise_id, String expertiseName) {
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"?");
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"  to be from?");
         txt_expertise.setText(""+expertiseName);
         label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
@@ -678,16 +678,13 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         final View view1 = layoutInflater.inflate(R.layout.dialog_request_meeting_success, null);
         TextView label_close = view1.findViewById(R.id.label_close);
         TextView label_title = view1.findViewById(R.id.label_title);
-//        Hey Samir, Thriive is now at work to find you the right business guru.
-//
-//                Expect a notification for your match within 48 hrs."
-
-//        Hey Samir,
+//        Text should say
+//        "Hey Samir,
 //        Thriive is now at work to find you the right business guru.
 //
-//        Expect a notification for your match within 48 hrs.
+//        Expect a meeting confirmation from your match within 48 hrs."
 
-        label_title.setText(Html.fromHtml("Hey <b>"+ loginPOJO.getFirstName() + ",</b> " + getResources().getString(R.string.label_success_meeting) + " "
+        label_title.setText(Html.fromHtml("<b>Hey "+ loginPOJO.getFirstName() + ",</b> " + getResources().getString(R.string.label_success_meeting) + " "
         + personaName + ".<br> <br /> "+ getResources().getString(R.string.label_success_meeting1) + "<b>  48 hrs. </b>"));
         //    tv_msg.setText("Session Added Successfully.");
         builder.setView(view1);

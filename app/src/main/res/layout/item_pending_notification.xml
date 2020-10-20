@@ -93,8 +93,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Area of expertise"
-                    android:textSize="@dimen/_16dp"
+                    android:text="@string/areas_expertise"
+                    android:textSize="@dimen/_15dp"
                     android:layout_marginRight="@dimen/_10dp"
                     android:layout_marginLeft="@dimen/_10dp"
                     android:textColor="@color/darkGreyBlue"

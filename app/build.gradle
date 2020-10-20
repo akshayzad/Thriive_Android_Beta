@@ -104,4 +104,6 @@ dependencies {
     // 'me.tankery.lib:circularSeekBar:1.3.0'
 
     implementation 'io.agora.rtc:full-sdk:3.0.0'
+    //implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    //implementation 'com.github.tsuryo:Swipeable-RecyclerView:1.1'
 }

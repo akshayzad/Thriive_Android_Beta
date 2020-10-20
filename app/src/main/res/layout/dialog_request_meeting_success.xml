@@ -13,8 +13,8 @@
         android:orientation="vertical">
         <ImageView
             android:id="@+id/img_02"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_30dp"
             android:layout_gravity="center"
@@ -29,8 +29,8 @@
             android:layout_below="@id/img_02"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
-            android:padding="@dimen/_16dp"
-            android:layout_marginBottom="@dimen/_30dp"
+            android:padding="@dimen/_13dp"
+            android:layout_marginBottom="@dimen/_25dp"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:textColor="@color/darkGreyBlue"

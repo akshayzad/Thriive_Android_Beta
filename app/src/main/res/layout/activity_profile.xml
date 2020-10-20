@@ -231,7 +231,7 @@
                     android:textSize="@dimen/_16dp"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="Terms of Service"
+                    android:text="@string/terms"
                     android:textColor="@color/darkGreyBlue"
                     android:fontFamily="@font/roboto_regular"></TextView>
                 <ImageView
