@@ -306,7 +306,7 @@ public class Utility {
     }
 
     public static String getMeetingTime(String date, String endDate){
-        String dtStart = "2019-08-15T09:27:37Z";
+        String dtStart = "";
         SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
        // SimpleDateFormat out_format = new SimpleDateFormat("d MMM, yyyy");
 

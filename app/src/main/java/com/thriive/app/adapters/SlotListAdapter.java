@@ -1,7 +1,6 @@
 package com.thriive.app.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,19 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
+import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
-import com.thriive.app.fragments.MeetingDetailsFragment;
+import com.thriive.app.fragments.MeetingsFragment;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
-import com.thriive.app.models.CommonMeetingListPOJO;
-import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
-import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
 
@@ -35,8 +29,8 @@ public class SlotListAdapter extends RecyclerView.Adapter<SlotListAdapter.Recycl
     private ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList;
     private SharedData sharedData;
     private int select = -1;
-    public String startTime = "", endTime = "";
-
+    public String startTime = "", endTime = "", meetingReason = "", personaName = "";
+private  String intent_type ;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_date)
@@ -54,9 +48,10 @@ public class SlotListAdapter extends RecyclerView.Adapter<SlotListAdapter.Recycl
             ButterKnife.bind(this, itemView);
         }
     }
-    public SlotListAdapter(Context context, ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList){
+    public SlotListAdapter(Context context, ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList, String intent_type){
         this.context = context;
         this.slotList = slotList;
+        this.intent_type = intent_type;
         sharedData = new SharedData(context);
     }
     @Override
@@ -86,7 +81,15 @@ public class SlotListAdapter extends RecyclerView.Adapter<SlotListAdapter.Recycl
                 select = position;
                 startTime = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
                 endTime = Utility.ConvertUTCToUserTimezone(item.getPlanEndTime());
-                notifyDataSetChanged();
+                //personaName = item.
+
+                //notifyDataSetChanged();
+                if (intent_type.equals("ACCEPT")){
+                    NotificationListActivity.start_time = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
+                    NotificationListActivity.end_time = Utility.ConvertUTCToUserTimezone(item.getPlanEndTime());
+                    ((NotificationListActivity)context).meetingConfirmation();
+                }
+
             }
         });
     }

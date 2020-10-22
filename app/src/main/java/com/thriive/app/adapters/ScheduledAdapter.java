@@ -24,12 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.fragments.MeetingsFragment;
 import com.thriive.app.models.CommonMeetingListPOJO;
-import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
@@ -49,8 +47,6 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
 
     private  SharedData sharedData;
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.layout_tags)
-        public FlexboxLayout layout_tags;
         @BindView(R.id.layout_avail)
         LinearLayout layout_avail;
         @BindView(R.id.layout_join)
@@ -209,7 +205,7 @@ public class ScheduledAdapter extends RecyclerView.Adapter<ScheduledAdapter.Recy
         holder.layout_avail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode());
+             //   ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getRequestorPersonaTags().get(0), item.getMeetingCode(), item.getGiverCountryName());
             }
         });
 

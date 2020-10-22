@@ -130,21 +130,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginBottom="3dp"
                     android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"
-                    ></androidx.recyclerview.widget.RecyclerView>
-                <com.google.android.flexbox.FlexboxLayout
-                    android:id="@+id/layout_tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:flexWrap="wrap"
-                    app:alignItems="stretch"
-                    app:alignContent="space_between"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="@dimen/_10dp"
-                    android:layout_marginRight="@dimen/_10dp"></com.google.android.flexbox.FlexboxLayout>
-
-
+                    android:layout_marginRight="@dimen/_10dp"></androidx.recyclerview.widget.RecyclerView>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

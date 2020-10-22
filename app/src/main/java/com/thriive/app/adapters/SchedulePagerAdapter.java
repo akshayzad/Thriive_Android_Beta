@@ -1,7 +1,5 @@
 package com.thriive.app.adapters;
 
-import android.Manifest;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,8 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Events;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -43,14 +37,10 @@ import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
-
 public class SchedulePagerAdapter extends PagerAdapter {
-
     Context context;
     ArrayList<CommonMeetingListPOJO.MeetingListPOJO> arrayList;
     SharedData sharedData;
@@ -78,7 +68,6 @@ public class SchedulePagerAdapter extends PagerAdapter {
         View view = LayoutInflater.from(context).inflate(R.layout.item_scheduled, container, false);
         CommonMeetingListPOJO.MeetingListPOJO item  = arrayList.get(position);
 
-        FlexboxLayout layout_tags = view.findViewById(R.id.layout_tags);
         LinearLayout layout_avail = view.findViewById(R.id.layout_avail);
         LinearLayout layout_join = view.findViewById(R.id.layout_join);
         TextView txt_giverName = view.findViewById(R.id.txt_giverName);
@@ -222,7 +211,17 @@ public class SchedulePagerAdapter extends PagerAdapter {
         layout_avail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode());
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID)))
+                {
+
+                    ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getGiverPersonaTags().get(0),
+                            item.getMeetingReason(), item.getGiverCountryName(), item.getRequestorCountryName());
+
+                } else {
+                    ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getRequestorPersonaTags().get(0),
+                            item.getMeetingReason(), item.getRequestorCountryName() , item.getGiverCountryName());
+
+                }
             }
         });
 
@@ -257,21 +256,22 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                        emailIntent.setType("text/plain");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-                        final PackageManager pm = context.getPackageManager();
-                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
-                        ResolveInfo best = null;
-                        for(final ResolveInfo info : matches)
-                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
-                                best = info;
-                        if (best != null)
-                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                        try {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                            final PackageManager pm = context.getPackageManager();
+                            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                            ResolveInfo best = null;
+                            for(final ResolveInfo info : matches)
+                                if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                    best = info;
+                            if (best != null)
+                                emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
 
-                        context.startActivity(emailIntent);
+                            context.startActivity(emailIntent);
 //                        Intent intent = new Intent(Intent.ACTION_SEND);
 //                        intent.setType("*/*");
 //                        intent.putExtra(Intent.EXTRA_EMAIL, item.getGiverEmailId());
@@ -279,6 +279,10 @@ public class SchedulePagerAdapter extends PagerAdapter {
 //                        if (intent.resolveActivity(context.getPackageManager()) != null) {
 //                            context.startActivity(intent);
 //                        }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+
                     }
 
                 } else {
@@ -286,21 +290,26 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                        emailIntent.setType("text/plain");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-                        final PackageManager pm = context.getPackageManager();
-                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
-                        ResolveInfo best = null;
-                        for(final ResolveInfo info : matches)
-                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
-                                best = info;
-                        if (best != null)
-                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                        try {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                            final PackageManager pm = context.getPackageManager();
+                            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                            ResolveInfo best = null;
+                            for(final ResolveInfo info : matches)
+                                if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                    best = info;
+                            if (best != null)
+                                emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
 
-                        context.startActivity(emailIntent);
+                            context.startActivity(emailIntent);
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+
                     }
                 }
             }
@@ -377,37 +386,12 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     // TODO Auto-generated catch block
                 }
 //
-
                ((MeetingsFragment)fragment).getAddCalenderEvent(title, item.getMeetingReason(), lnsTime, lneTime);
 
 //                    Log.i("E11111111111", e.toString());
 //                }
 //
 //                String  title = "" ;
-
-//                if (Build.VERSION.SDK_INT >= 14) {
-//                    Intent intent = new Intent(Intent.ACTION_INSERT)
-//                            .setData(Events.CONTENT_URI)
-//                            .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, lnsTime)
-//                            .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, lneTime)
-//                            .putExtra(Events.TITLE, title)
-//                            .putExtra(Events.DESCRIPTION, title)
-//                         //   .putExtra(Events.EVENT_LOCATION, "The gym")
-//                            .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
-//                          //  .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-//                    view.getContext().startActivity(intent);
-//                } else {
-//                //    Calendar cal = Calendar.getInstance();
-//                    Intent intent = new Intent(Intent.ACTION_EDIT);
-//                    intent.setType("vnd.android.cursor.item/event");
-//                    intent.putExtra("beginTime", lnsTime);
-//                    intent.putExtra("allDay", true);
-//                    intent.putExtra("rrule", "FREQ=YEARLY");
-//                    intent.putExtra("endTime", lneTime);
-//                    intent.putExtra("title", title);
-////                    view.getContext().startActivity(intent);
-////                }
-
 
 
             }

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_20dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/_10dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_10dp"
+                android:src="@drawable/meeting_cancel"></ImageView>
+            <TextView
+                android:id="@+id/txt_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:textSize="@dimen/_18dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/darkGreyBlue"
+                android:padding="@dimen/_1dp"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:text="You’re confirming a meeting with" />
+
+            <TextView
+                android:id="@+id/txt_subTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_18dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                android:padding="1dp"
+                android:gravity="center"
+                android:textColor="@color/darkGreyBlue"
+                android:text=" Business Professional for Fundraising from India " />
+            <TextView
+                android:id="@+id/txt_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:textSize="@dimen/_18dp"
+                android:padding="1dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/darkGreyBlue"
+                android:text="You’re confirming a meeting with" />
+
+
+            <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_15dp"
+            android:layout_marginRight="@dimen/_10dp"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:orientation="horizontal"
+            android:padding="@dimen/_2dp">
+
+            <ImageView
+                android:id="@+id/img_date"
+                android:layout_width="@dimen/_16dp"
+                android:layout_height="@dimen/_16dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:src="@drawable/ic_calender"></ImageView>
+
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_5dp"
+                android:layout_marginRight="@dimen/_5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="30-8-2020"
+                android:textColor="@color/darkGreyBlue"
+                android:textSize="15dp"></TextView>
+        </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:orientation="horizontal"
+                android:padding="@dimen/_2dp">
+
+                <ImageView
+                    android:id="@+id/img_time"
+                    android:layout_width="@dimen/_16dp"
+                    android:layout_height="@dimen/_16dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_5dp"
+                   android:layout_marginRight="@dimen/_5dp"
+                    android:src="@drawable/ic_time"></ImageView>
+
+                <TextView
+                    android:id="@+id/txt_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_5dp"
+                    android:layout_marginRight="@dimen/_5dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="30-8-2020"
+                    android:textColor="@color/darkGreyBlue"
+                    android:textSize="15dp"></TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/_10dp">
+
+                <LinearLayout
+                    android:id="@+id/no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1.2"
+                    android:layout_marginRight="@dimen/_5dp"
+                    android:layout_marginLeft="@dimen/_5dp"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/btn_no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_14dp"
+                        android:background="@drawable/filled_circle_grey"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5dp"
+                        android:gravity="center"
+                        android:textColor="@color/battleshipGrey"
+                        android:text="NO" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/yes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_5dp"
+                    android:layout_marginRight="@dimen/_5dp"
+                    android:orientation="vertical">
+                    <Button
+                        android:id="@+id/btn_yes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textSize="@dimen/_14dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:background="@drawable/circle_white"
+                        android:layout_margin="@dimen/_5dp"
+                        android:textColor="@color/terracota"
+                        android:text="YES" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_07"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_14dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="#9A9A9A"
+                android:layout_margin="@dimen/_10dp"
+                android:visibility="gone"
+                android:text="Remember - only one cancellation is allowed each month." />
+
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

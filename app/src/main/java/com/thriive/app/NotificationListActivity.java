@@ -15,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,10 +88,13 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     private SharedData sharedData;
     private LoginPOJO.ReturnEntity loginPOJO;
     private KProgressHUD progressHUD;
+    String region_name = "", user_region = "";
+    String meetingCode ="", startTime ="", endTime ="", cancelReason = "", selectedDate = "", personaName, meetingReason;
 
-    String meetingCode ="", startTime ="", endTime ="", cancelReason = "", selectedDate = "";
-
-    public static String TAG = NotificationListActivity.class.getName();
+    public static final String TAG = NotificationListActivity.class.getName();
+    public static String start_time  , end_time;
+    private BottomSheetDialog dialogEditSlot;
+    private AlertDialog dialogDetails ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,63 +117,6 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             getMeetingRequestById();
         }
         //getMeetingRequest();
-    }
-
-    private void getMeetingRequestById() {
-        try {
-            progressHUD = KProgressHUD.create(this)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("Please wait")
-                    .setCancellable(false)
-                    .show();
-            Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
-                    getIntent().getStringExtra("meeting_id"));
-            call.enqueue(new Callback<CommonMeetingPOJO>() {
-                @Override
-                public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
-                    if(response.isSuccessful()) {
-                        Log.d(TAG, response.toString());
-                        progressHUD.dismiss();
-                        CommonMeetingPOJO pojo = response.body();
-                        try {
-                            Log.d(TAG,""+pojo.getMessage());
-                            if (pojo != null){
-                                if (pojo.getOK()) {
-                                    if (pojo.getMeetingObject() != null){
-
-                                        detailsMeeting(pojo.getMeetingObject());
-                                    }
-                                } else {
-                                    Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (Exception e){
-                            e.getMessage();
-                        }
-
-                    }
-                }
-                @Override
-                public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
-                    progressHUD.dismiss();
-                    Toast.makeText(getApplicationContext(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e){
-            e.getMessage();
-        }
-
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (getIntent().getStringExtra("intent_type").equals("FLOW")){
-            getMeetingRequest();
-        }
-
     }
 
     private void getMeetingRequest() {
@@ -228,104 +176,63 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 
     }
 
-    private void getAcceptMeeting() {
-        try {
-            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
-            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
-            Log.d(TAG, "Accept meeting start" + startTime + " end  "+ endTime );
-            progressHUD = KProgressHUD.create(this)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("Please wait")
-                    .setCancellable(false)
-                    .show();
-            Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
-                    meetingCode, loginPOJO.getRowcode(), startTime, endTime);
-            call.enqueue(new Callback<CommonPOJO>() {
-                @Override
-                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                    if(response.isSuccessful()) {
-                        Log.d(TAG, response.toString());
-                        CommonPOJO reasonPOJO = response.body();
-                        progressHUD.dismiss();
-                        try {
-                            Log.d(TAG,""+reasonPOJO.getMessage());
-                            if (reasonPOJO.getOK()) {
-                             //   Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
 
-                                successDialog();
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e){
-                            e.getMessage();
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                    progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, " " +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e){
-            e.getMessage();
-        }
-
-
-    }
-
-    public void getDeclineMeeting(String meetingCode) {
+    private void getMeetingRequestById() {
         try {
             progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
-                    meetingCode, loginPOJO.getRowcode());
-            call.enqueue(new Callback<CommonPOJO>() {
+            Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
+                    getIntent().getStringExtra("meeting_id"));
+            call.enqueue(new Callback<CommonMeetingPOJO>() {
                 @Override
-                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
                     if(response.isSuccessful()) {
                         Log.d(TAG, response.toString());
-                        CommonPOJO reasonPOJO = response.body();
                         progressHUD.dismiss();
+                        CommonMeetingPOJO pojo = response.body();
                         try {
-                            Log.d(TAG,""+reasonPOJO.getMessage());
-                            if (reasonPOJO != null){
-                                if (reasonPOJO.getOK()) {
-                              //      Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                    finish();
+                            Log.d(TAG,""+pojo.getMessage());
+                            if (pojo != null){
+                                if (pojo.getOK()) {
+                                    if (pojo.getMeetingObject() != null){
 
+                                        detailsMeeting(pojo.getMeetingObject());
+                                    }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         } catch (Exception e){
                             e.getMessage();
                         }
+
                     }
                 }
                 @Override
-                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
                     progressHUD.dismiss();
-                    Toast.makeText(NotificationListActivity.this, "" +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "" + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
             e.getMessage();
         }
 
-
     }
+
 
     public void detailsMeeting(CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO) {
         try {
             meetingCode = meetingListPOJO.getMeetingCode();
             startTime = meetingListPOJO.getPlanStartTime();
             endTime = meetingListPOJO.getPlanEndTime();
+            meetingReason = meetingListPOJO.getMeetingReason();
+            personaName = meetingListPOJO.getRequestorPersonaTags().get(0);
+            region_name = meetingListPOJO.getRequestorCountryName();
+            user_region = meetingListPOJO.getGiverCountryName();
         } catch (Exception e ){
             e.getMessage();
         }
@@ -346,8 +253,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             CircleImageView img_user = view1.findViewById(R.id.img_user);
             //    tv_msg.setText("Session Added Successfully.");
             builder.setView(view1);
-            final AlertDialog dialogs = builder.create();
-            dialogs.setCancelable(false);
+            dialogDetails = builder.create();
+            dialogDetails.setCancelable(false);
 //            if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
 //                txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
 //            } else {
@@ -396,9 +303,9 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 //            manager.setJustifyContent(JustifyContent.CENTER);
             rv_experience.setLayoutManager(manager );
             ArrayList<String> array = new ArrayList<>();
-          //  array.addAll(meetingListPOJO.getRequestorExperienceTags());
+            //  array.addAll(meetingListPOJO.getRequestorExperienceTags());
             array.addAll(meetingListPOJO.getRequestorDesignationTags());
-           // array.addAll(meetingListPOJO.getRequestorDesignationTags());
+            // array.addAll(meetingListPOJO.getRequestorDesignationTags());
             rv_experience.setAdapter(new ExperienceListAdapter(NotificationListActivity.this,array));
 
             FlexboxLayoutManager manager1 = new FlexboxLayoutManager(NotificationListActivity.this);
@@ -414,10 +321,10 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                 @Override
                 public void onClick(View view) {
                     if (getIntent().getStringExtra("intent_type").equals("NOTI")){
-                        dialogs.dismiss();
+                        dialogDetails.dismiss();
                         getMeetingRequest();
                     } else {
-                        dialogs.dismiss();
+                        dialogDetails.dismiss();
                         getMeetingRequest();
                     }
                     //   ratingDialog();
@@ -426,39 +333,27 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             decline.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialogs.dismiss();
+                    dialogDetails.dismiss();
                     getDeclineMeeting(meetingCode);
                 }
             });
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialogs.dismiss();
+                    //dialogs.dismiss();
                     getMeetingSlote();
 
 
                     //s successDialog();
                 }
             });
-            dialogs.show();
+            dialogDetails.show();
         } catch(Exception e){
             e.getMessage();
         }
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot()) {
-            Intent i = new Intent(NotificationListActivity.this, HomeActivity.class);
-            i.putExtra("intent_type", "FLOW");
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-            super.onBackPressed();
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     private void getMeetingSlote() {
         try {
@@ -512,271 +407,45 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void meetingAvailability(List<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList) {
-        try {
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_availability, null);
-            BottomSheetDialog dialog = new BottomSheetDialog(NotificationListActivity.this, R.style.SheetDialog);
-
-            Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
-            ImageView img_close = dialogView.findViewById(R.id.img_close);
-            LinearLayout edit = dialogView.findViewById(R.id.edit);
-            LinearLayout layout1 = dialogView.findViewById(R.id.layout1);
-            LinearLayout layout2 = dialogView.findViewById(R.id.layout2);
-            LinearLayout layout3 = dialogView.findViewById(R.id.layout3);
-
-
-
-            ImageView img_date1 = dialogView.findViewById(R.id.img_date1);
-            ImageView img_date2 = dialogView.findViewById(R.id.img_date2);
-            ImageView img_date3 = dialogView.findViewById(R.id.img_date3);
-            ImageView img_time1 = dialogView.findViewById(R.id.img_time1);
-            ImageView img_time2 = dialogView.findViewById(R.id.img_time2);
-            ImageView img_time3 = dialogView.findViewById(R.id.img_time3);
-
-
-            TextView txt_date1 = dialogView.findViewById(R.id.txt_date1);
-            TextView txt_date2 = dialogView.findViewById(R.id.txt_date2);
-            TextView txt_date3 = dialogView.findViewById(R.id.txt_date3);
-            TextView txt_time1 = dialogView.findViewById(R.id.txt_time1);
-            TextView txt_time2 = dialogView.findViewById(R.id.txt_time2);
-            TextView txt_time3 = dialogView.findViewById(R.id.txt_time3);
-
-
-            layout1.setVisibility(View.GONE);
-            layout2.setVisibility(View.GONE);
-            layout3.setVisibility(View.GONE);
-            try {
-                if (entitySlotList.size() == 0) {
-                    edit.setVisibility(View.GONE);
-                } else if (entitySlotList.size() == 1){
-                    edit.setVisibility(View.VISIBLE);
-                    for (int i = 0; i < entitySlotList.size(); i++)
-                    {
-
-                        CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                        layout2.setVisibility(View.VISIBLE);
-                        txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                        txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-
-                        startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                        endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-                    }
-                } else {
-                    edit.setVisibility(View.VISIBLE);
-                    for (int i = 0; i < entitySlotList.size(); i++)
-                    {
-                        CommonEntitySlotsPOJO.EntitySlotList slotList = entitySlotList.get(i);
-                        if(i == 0){
-                            layout1.setVisibility(View.VISIBLE);
-                            txt_date1.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                            txt_time1.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-                        } else  if(i == 1){
-                            layout2.setVisibility(View.VISIBLE);
-                            txt_date2.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                            txt_time2.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-
-                            startTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime());
-                            endTime = Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime());
-                            //txt_time2.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
-
-                        } else  if(i == 2){
-                            layout3.setVisibility(View.VISIBLE);
-                            txt_date3.setText(Utility.getSlotDate(Utility.ConvertUTCToUserTimezone(slotList.getSlotDate())));
-                            txt_time3.setText(Utility.getSlotTime(Utility.ConvertUTCToUserTimezone(slotList.getPlanStartTime()),
-                                    Utility.ConvertUTCToUserTimezone(slotList.getPlanEndTime())));
-
-                            // txt_time3.setText(slotList.getFromHour() + ":" + slotList.getFromMin() +"-" +slotList.getToHour() + ":" + slotList.getToMin());
-
-                        }
-                    }
-                }
-            } catch (Exception e){
-                e.getMessage();
-            }
-
-
-
-            layout1.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onClick(View view) {
-                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
-                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-//                startTime = entitySlotList.get(0).getPlanStartTime();
-//                endTime = entitySlotList.get(0).getPlanEndTime();
-                    setUnSelectedDate(txt_date3, txt_time3, img_date3, img_time3, layout3);
-                    selectDate(txt_date1, txt_time1, img_date1, img_time1, layout1);
-                    setUnSelectedDate(txt_date2, txt_time2, img_date2, img_time2, layout2);
-
-                }
-            });
-
-
-            layout2.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onClick(View view) {
-                    if (entitySlotList.size() == 1)
-                    {
-                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanStartTime());
-                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(0).getPlanEndTime());
-                    } else {
-                        startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanStartTime());
-                        endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(1).getPlanEndTime());
-                    }
-                    setUnSelectedDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                    selectDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
-
-                }
-            });
-
-
-            layout3.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("NewApi")
-                @Override
-                public void onClick(View view) {
-                    startTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanStartTime());
-                    endTime = Utility.ConvertUTCToUserTimezone(entitySlotList.get(2).getPlanEndTime());
-                    selectDate(txt_date3,txt_time3, img_date3, img_time3, layout3);
-                    setUnSelectedDate(txt_date1,txt_time1, img_date1, img_time1, layout1);
-                    setUnSelectedDate(txt_date2,txt_time2, img_date2, img_time2, layout2);
-                }
-            });
-
-            img_close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            edit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    //  getMeetingSlote();
-                    meetingEditDate();
-                }
-            });
-            btn_confirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (entitySlotList.size() == 0) {
-                        dialog.dismiss();
-                        //  getMeetingSlote();
-                        meetingEditDate();
-                    } else {
-                        dialog.dismiss();
-
-                        getAcceptMeeting();
-                    }
-
-                }
-            });
-            dialog.setContentView(dialogView);
-            dialog.show();
-        } catch (Exception e){
-            e.getMessage();
-        }
-    }
-
-    private void selectDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
-        textDate.setTextColor(getApplicationContext().getResources().getColor(R.color.terracota));
-        textTime.setTextColor(getApplicationContext().getResources().getColor(R.color.terracota));
-        imageDate.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_calender_t));
-        imageTime.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_time_t));
-        linearLayout.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.rectangle_tarccoto_outline));
-
-    }
-
-    private void setUnSelectedDate(TextView textDate,  TextView textTime, ImageView imageDate, ImageView imageTime, LinearLayout linearLayout){
-        textDate.setTextColor(getApplicationContext().getResources().getColor(R.color.darkGreyBlue));
-        textTime.setTextColor(getApplicationContext().getResources().getColor(R.color.darkGreyBlue));
-        imageDate.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_calender));
-        imageTime.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_time));
-        linearLayout.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.reactangle_grey_outline));
-
-    }
     public void meetingEditSlot(List<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_availability, null);
-        BottomSheetDialog dialog = new BottomSheetDialog(getApplicationContext(), R.style.SheetDialog);
-        Button btn_confirm = dialogView.findViewById(R.id.btn_confirm);
+        dialogEditSlot = new BottomSheetDialog(NotificationListActivity.this, R.style.SheetDialog);
+        Button btn_confirm = dialogView.findViewById(R.id.btn_newSlot);
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         RecyclerView rv_slots = dialogView.findViewById(R.id.rv_slots);
-        SlotListAdapter adapter  = new SlotListAdapter(getApplicationContext(), (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) entitySlotList);
-        rv_slots.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+
+        ArrayList<CommonEntitySlotsPOJO.EntitySlotList> arrayList = new ArrayList<>();
+
+        if (entitySlotList.size() > 3){
+            for (int i = 0; i <= 2; i++) {
+                arrayList.add(entitySlotList.get(i));
+            }
+        } else {
+            arrayList.addAll(entitySlotList);
+        }
+
+        SlotListAdapter adapter  = new SlotListAdapter(NotificationListActivity.this,
+                (ArrayList<CommonEntitySlotsPOJO.EntitySlotList>) entitySlotList, "ACCEPT");
+        rv_slots.setLayoutManager(new LinearLayoutManager(NotificationListActivity.this,
+                LinearLayoutManager.VERTICAL, false));
         rv_slots.setAdapter(adapter);
-//        SwipeableRecyclerView rv = dialogView.findViewById(R.id.rv);
-//        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        rv.setAdapter(adapter);
-//
-//        rv.setListener(new SwipeLeftRightCallback.Listener() {
-//            @Override
-//            public void onSwipedLeft(int position) {
-////                mList.remove(position);
-//                adapter.notifyItemChanged(position);
-//            }
-//
-//            @Override
-//            public void onSwipedRight(int position) {
-////                mList.remove(position);
-//                adapter.notifyItemChanged(position);
-//            }
-//        });
 
-
-        SwipeController swipeController = new SwipeController(new SwipeControllerActions() {
-            @Override
-            public void onRightClicked(int position) {
-                dialog.dismiss();
-                meetingEditDate();
-                //adapter.players.remove(position);
-                //adapter.notifyItemRemoved(position);
-                // adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-            }
-        });
-//
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
-        itemTouchhelper.attachToRecyclerView(rv_slots);
-        // p.setColor(Color.rgb(16,133,104));
-
-        rv_slots.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                swipeController.onDraw(c);
-            }
-        });
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialogEditSlot.dismiss();
             }
         });
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (entitySlotList.size() == 0) {
-                    dialog.dismiss();
-                    //  getMeetingSlote();
-                    meetingEditDate();
-                } else {
-                    if (adapter.endTime.equals("")){
-                        Toast.makeText(getApplicationContext(), "Please choose slot", Toast.LENGTH_SHORT).show();
-                    } else {
-                        startTime = adapter.startTime;
-                        endTime = adapter.endTime;
-                        dialog.dismiss();
-                        getAcceptMeeting();
-                    }
-                }
+              //  dialogEditSlot.dismiss();
+                //  getMeetingSlote();
+                meetingEditDate();
             }
         });
-        dialog.setContentView(dialogView);
-        dialog.show();
+        dialogEditSlot.setContentView(dialogView);
+        dialogEditSlot.show();
     }
 
     public void meetingEditDate() {
@@ -864,9 +533,12 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                 if(Utility.getCallJoin(startTime)){
                     Toast.makeText(getApplicationContext(), "Please choose current or future time.", Toast.LENGTH_SHORT).show();
                 } else {
-                    getAcceptMeeting();
+                    start_time = startTime;
+                    end_time  = endTime;
+                    //getAcceptMeeting();
                     dialog.dismiss();
 
+                    meetingConfirmation();
                 }
 //                dialog.dismiss();
 //                getAcceptMeeting();
@@ -879,16 +551,184 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     }
 
 
+
+    public void meetingConfirmation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_confirmation, null);
+
+        Button accept = view1.findViewById(R.id.btn_yes);
+        Button decline = view1.findViewById(R.id.btn_no);
+        TextView txt_title = view1.findViewById(R.id.txt_title);
+        TextView txt_subTitle = view1.findViewById(R.id.txt_subTitle);
+        TextView txt_date = view1.findViewById(R.id.txt_date);
+        TextView txt_time = view1.findViewById(R.id.txt_time);
+        TextView txt_country = view1.findViewById(R.id.txt_country);
+
+
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+
+        txt_title.setText(Html.fromHtml("You’re confirming a meeting with"));
+        txt_subTitle.setText(Html.fromHtml(personaName + " for " + meetingReason + ""));
+        txt_time.setText(Utility.getMeetingTime(start_time, end_time) + " (" + user_region + " time)");
+        txt_date.setText(Utility.getMeetingDate(start_time));
+
+        txt_country.setText("from "+ region_name);
+
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                startTime = start_time;
+                endTime = end_time;
+                getAcceptMeeting();
+            }
+        });
+        dialogs.show();
+    }
+
+
+
     @OnClick({R.id.img_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.img_close:
                 finish();
                 break;
-
-
         }
     }
+
+
+    private void getAcceptMeeting() {
+        try {
+            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
+            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
+            Log.d(TAG, "Accept meeting start" + startTime + " end  "+ endTime );
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
+                    meetingCode, loginPOJO.getRowcode(), startTime, endTime);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                if (dialogDetails != null){
+                                    dialogDetails.dismiss();
+                                }
+
+                                if (dialogEditSlot != null){
+                                    dialogEditSlot.dismiss();
+                                }
+                                //   Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                successDialog();
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, " " +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+    }
+
+    public void getDeclineMeeting(String meetingCode) {
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
+                    meetingCode, loginPOJO.getRowcode());
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO != null){
+                                if (reasonPOJO.getOK()) {
+                                    //      Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    finish();
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(NotificationListActivity.this, "" +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getStringExtra("intent_type").equals("FLOW")){
+            getMeetingRequest();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            Intent i = new Intent(NotificationListActivity.this, HomeActivity.class);
+            i.putExtra("intent_type", "FLOW");
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            super.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void successDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
         LayoutInflater layoutInflater = this.getLayoutInflater();

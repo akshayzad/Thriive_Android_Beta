@@ -129,6 +129,28 @@ public class CommonMeetingListPOJO {
             return meetingLabel;
         }
 
+        @SerializedName("requestor_country_name")
+        private String requestorCountryName;
+
+        @SerializedName("giver_country_name")
+        private String giverCountryName;
+
+        public String getRequestorCountryName() {
+            return requestorCountryName;
+        }
+
+        public void setRequestorCountryName(String requestorCountryName) {
+            this.requestorCountryName = requestorCountryName;
+        }
+
+        public String getGiverCountryName() {
+            return giverCountryName;
+        }
+
+        public void setGiverCountryName(String giverCountryName) {
+            this.giverCountryName = giverCountryName;
+        }
+
         public void setMeetingLabel(String meetingLabel) {
             this.meetingLabel = meetingLabel;
         }
