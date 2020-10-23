@@ -5,10 +5,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.multidex.BuildConfig;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 
 import android.text.Html;
@@ -16,21 +20,26 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.onesignal.OneSignal;
 import com.ssw.linkedinmanager.dto.LinkedInAccessToken;
 import com.ssw.linkedinmanager.dto.LinkedInEmailAddress;
@@ -39,13 +48,21 @@ import com.ssw.linkedinmanager.events.LinkedInManagerResponse;
 import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
+import com.thriive.app.fragments.LoginFragment;
+import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.models.CommonPOJO;
+import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.Validation;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +72,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements  LinkedInManagerResponse {
+
+    @BindView(R.id.viewPager_login)
+    ViewPager viewPager;
+    @BindView(R.id.layout_dot)
+    LinearLayout dotsLayout;
+
+    private TextView[] dots;
+    private int currentPage = 0;
+    private Timer timer;
+    final long DELAY_MS = 500;//delay in milliseconds before task is to be executed
+    final long PERIOD_MS = 3000;
+
+    private int[] imageArray;
+    private MyViewPagerAdapter myViewPagerAdapter;
+
 
     private static final String TAG = "LoginActivity" ;
     @BindView(R.id.btn_login)
@@ -109,6 +141,39 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
         Log.d(TAG, " UUID "+ UUID);
+
+        imageArray = new int[]{
+                R.drawable.login_intro_one,
+                R.drawable.login_intro_two,
+                R.drawable.login_intro_three,
+                R.drawable.login_intro_four,
+                R.drawable.login_intro_five};
+        myViewPagerAdapter = new MyViewPagerAdapter();
+        viewPager.setAdapter(myViewPagerAdapter);
+        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        addBottomDots(0);
+
+
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+                if (currentPage == imageArray.length - 0) {
+                    currentPage = 0;
+                }
+                viewPager.setCurrentItem(currentPage++, true);
+
+            }
+        };
+
+        timer = new Timer(); // This will create a new Thread
+        timer.schedule(new TimerTask() { // task to be scheduled
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, DELAY_MS, PERIOD_MS);
+
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -186,6 +251,43 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
     }
 
+    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+        @Override
+        public void onPageSelected(int position) {
+            currentPage = position;
+            addBottomDots(position);
+        }
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+
+    };
+
+    private void addBottomDots(int currentPage) {
+        dots = new TextView[imageArray.length];
+
+        int[] colorsActive = getResources().getIntArray(R.array.view_dot_active);
+        int[] colorsInactive = getResources().getIntArray(R.array.view_dot_inactive);
+
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(this);
+            dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setTextSize(30);
+            dots[i].setTextColor(colorsInactive[currentPage]);
+            dots[i].setPadding(5, 0, 5, 0);
+            dotsLayout.addView(dots[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(colorsActive[currentPage]);
+    }
+
     boolean isValidateLogin() {
         boolean isValid = true;
         if (!Validation.validEmail(edt_email)) isValid = false;
@@ -195,7 +297,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
 
 
-    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linklined, R.id.txt_forgetPassword, R.id.txt_terms, R.id.txt_privacy})
+    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linkedin, R.id.txt_forgetPassword, R.id.txt_terms, R.id.txt_privacy, R.id.btn_custom})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_forgetPassword:
@@ -208,7 +310,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                     password = edt_password.getText().toString();
                     //();
 
-                    getLogin();
+                    getLogin(email, password, login_method);
 
                 }
 
@@ -220,7 +322,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
                 break;
 
-            case R.id.btn_linklined:
+            case R.id.btn_linkedin:
 
                 login_method = "linkedin";
                 LinkedInFromActivityBuilder.getInstance(LoginActivity.this)
@@ -248,8 +350,17 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                 startActivity(intent3);
 
                 break;
+
+            case R.id.btn_custom:
+
+                LoginFragment loginFragment =
+                        (LoginFragment) LoginFragment.newInstance();
+                loginFragment.show(getSupportFragmentManager(), "LoginFragment");
+
+                break;
         }
     }
+
 
 
     @Override
@@ -264,7 +375,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                 Log.d(TAG,"LinkedInLogin" + user.getFirstName());
                 Log.d(TAG,"LinkedInLogin" + user.getEmail());
                 email = user.getEmail();
-                getLogin();
+                getLogin(email, "" , login_method);
 
             } else {
                 if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_USER_DENIED) {
@@ -285,7 +396,48 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
     }
 
-    private void getLogin() {
+
+    public class MyViewPagerAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+
+        public MyViewPagerAdapter() {
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = layoutInflater.inflate(R.layout.view_pager_login, container, false);
+            container.addView(view);
+
+            ImageView textView = view.findViewById(R.id.viewPager_image);
+            Glide.with(view.getContext())
+                    .load(imageArray[position])
+                    .into(textView);
+
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return imageArray.length;
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view == obj;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            View view = (View) object;
+            container.removeView(view);
+        }
+    }
+
+
+
+    public void getLogin(String l_email, String l_password, String l_login_method) {
         try {
             TimeZone timeZone = TimeZone.getDefault();
             Log.d(TAG, "time zone "+ timeZone.getID());
@@ -298,7 +450,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<LoginPOJO> call = apiInterface.login(email, password, login_method, BuildConfig.VERSION_NAME,
+            Call<LoginPOJO> call = apiInterface.login(l_email, l_password, l_login_method, BuildConfig.VERSION_NAME,
                     ""+android.os.Build.VERSION.SDK_INT, UUID,
                     UUID, "android",  ""+timeZone.getID(), time_stamp);
             call.enqueue(new Callback<LoginPOJO>() {
@@ -392,7 +544,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 //            Uri personPhoto = acct.getPhotoUrl();
             login_method = "google";
             Log.d(TAG, email);
-            getLogin();
+            getLogin(email, "", login_method);
 
         }
     }

@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
-import com.thriive.app.fragments.MeetingsFragment;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;

@@ -251,6 +251,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             TextView txt_experience = view1.findViewById(R.id.txt_experience);
             TextView txt_profession = view1.findViewById(R.id.txt_profession);
             CircleImageView img_user = view1.findViewById(R.id.img_user);
+            TextView txt_country = view1.findViewById(R.id.txt_country);
+
             //    tv_msg.setText("Session Added Successfully.");
             builder.setView(view1);
             dialogDetails = builder.create();
@@ -262,6 +264,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 //            }
             txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
             txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
+            txt_country.setText(""+meetingListPOJO.getRequestorCountryName());
             try {
                 txt_name.setText(Utility.getEncodedName(meetingListPOJO.getRequestorName()));
             } catch (Exception e){
@@ -314,7 +317,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             rv_expertise.setLayoutManager(manager1 );
             ArrayList<String> array1 = new ArrayList<>();
             array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
-            //array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
+            array1.addAll(meetingListPOJO.getMeetingTag());
+
             // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
             rv_expertise.setAdapter(new ExpertiseAdapter(NotificationListActivity.this, array1));
             img_close.setOnClickListener(new View.OnClickListener() {

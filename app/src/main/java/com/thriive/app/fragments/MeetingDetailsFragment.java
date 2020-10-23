@@ -121,6 +121,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     TextView txt_tag;
     @BindView(R.id.label_experience)
     TextView label_experience;
+    @BindView(R.id.txt_country)
+    TextView txt_country;
 
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
     private CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO;
@@ -229,13 +231,17 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 //                }
 
                 txt_profession.setText(""+meetingListPOJO.getGiverSubTitle());
+                txt_country.setText(""+meetingListPOJO.getGiverCountryName());
+
                 ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.addAll(meetingListPOJO.getGiverDomainTags());
-                arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
+                arrayList.addAll(meetingListPOJO.getGiverExpertiseTags());
+                //arrayList.addAll(meetingListPOJO.getGiverDomainTags());
+               // arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
+                arrayList.addAll(meetingListPOJO.getMeetingTag());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout );
                 if (meetingListPOJO.getGiverExpertiseTags() != null){
-                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getGiverExpertiseTags()));
+                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
                 }
 
                 txt_email.setText(meetingListPOJO.getGiverEmailId());
@@ -292,18 +298,22 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 //                    txt_profession.setText("");
 //                }
                 txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
+                txt_country.setText(""+meetingListPOJO.getRequestorCountryName());
+
                 //0));
                 ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.addAll(meetingListPOJO.getRequestorDomainTags());
-                arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
+                arrayList.addAll(meetingListPOJO.getRequestorExpertiseTags());
+                //arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
+                arrayList.addAll( meetingListPOJO.getMeetingTag());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
+                rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
 //                if (meetingListPOJO.getMeetingTag() != null){
-//                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+//
 //                }
-                if (meetingListPOJO.getRequestorExpertiseTags() != null){
-                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getRequestorExpertiseTags()));
-                }
+//                if (meetingListPOJO.getRequestorExpertiseTags() != null){
+//                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getRequestorExpertiseTags()));
+//                }
 
 
              //   rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));

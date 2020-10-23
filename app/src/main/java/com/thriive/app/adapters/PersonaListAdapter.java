@@ -42,11 +42,6 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
         }
     }
 
-    public PersonaListAdapter(Context context, ArrayList<PersonaListPOJO> personaList) {
-        this.context = context;
-        this.fragment = fragment;
-        this.personaList = personaList;
-    }
 
     public PersonaListAdapter(Context context, Fragment fragment, ArrayList<PersonaListPOJO> personaList) {
         this.context = context;

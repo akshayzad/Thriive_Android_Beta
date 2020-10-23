@@ -122,12 +122,12 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     private KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
 
-    private  ArrayList<CommonMeetingListPOJO.MeetingListPOJO> meetingListSchedule = new ArrayList<>();
-    private ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> meetingListRequest = new ArrayList<>();
+    private ArrayList<CommonMeetingListPOJO.MeetingListPOJO> meetingListSchedule;
+    private ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> meetingListRequest;
 
     private String schedule_date = "", request_date = "", time_stamp = "";
 
-    private  SchedulePagerAdapter schedulePagerAdapter;
+    private SchedulePagerAdapter schedulePagerAdapter;
     private RequestPagerAdapter requestPagerAdapter;
     private SwipeController swipeController = null;
     public MeetingsFragment() {
@@ -211,8 +211,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onResume() {
         super.onResume();
-        getScheduledMeeting();
-        getMeetingRequest();
+        getCallData();
     }
 
     @Override
@@ -220,72 +219,12 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (refreshView != null){
             refreshView.setRefreshing(true);
         }
-
-        onResume();
+        getCallData();
     }
 
-    private void getScheduledMeeting() {
-        try {
-            TimeZone timeZone = TimeZone.getDefault();
-            Log.d(TAG, "time zone "+ timeZone.getID());
-            String UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
-            if (UUID  == null) {
-                UUID = "";
-            }
-            meetingListSchedule.clear();
-            Call<CommonScheduleMeetingPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
-                    loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
-            call.enqueue(new Callback<CommonScheduleMeetingPOJO>() {
-                @Override
-                public void onResponse(Call<CommonScheduleMeetingPOJO> call, Response<CommonScheduleMeetingPOJO> response) {
-                    if(response.isSuccessful()) {
-                        Log.d(TAG, response.toString());
-                        //  progressHUD.dismiss();
-                        CommonScheduleMeetingPOJO pojo = response.body();
-                        Log.d(TAG,""+pojo.getMessage());
-                        if (pojo != null){
-                            if (pojo.getOK()) {
-                                if (pojo.getMeetingList() != null){
-                                    if (pojo.getMeetingList().size() == 0){
-                                        txt_noSchedule.setVisibility(View.VISIBLE);
-                                        txt_schedule.setText("");
-                                        viewpager_schedule.setVisibility(View.GONE);
-                                        layout_dotSchedule.setVisibility(View.GONE);
-                                    }else {
-                                        meetingListSchedule.clear();
-                                        meetingListSchedule.addAll(pojo.getMeetingList());
-                                        schedulePagerAdapter = new SchedulePagerAdapter(getActivity(), MeetingsFragment.this, meetingListSchedule);
-                                        viewpager_schedule.setAdapter(schedulePagerAdapter);
-                                        viewpager_schedule.setVisibility(View.VISIBLE);
-                                        layout_dotSchedule.setVisibility(View.VISIBLE);
-                                        txt_noSchedule.setVisibility(View.GONE);
-                                        schedule_date = schedulePagerAdapter.getDate(0);
-                                        txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
-                                        setScheduleData();
-                                    }
-
-                                }
-                              //  ((HomeActivity)getActivity()).setNoti(pojo.getPendingRequestCount());
-                                //    Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-
-                            }  // recycler_requested.setAdapter(requestedAdapter);
-
-                        }
-                    }
-                }
-                @Override
-                public void onFailure(Call<CommonScheduleMeetingPOJO> call, Throwable t) {
-                    //  progressHUD.dismiss();
-                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e){
-            e.getMessage();
-        }
-
-
+    private void getCallData(){
+        getScheduledMeeting();
+        getMeetingRequest();
     }
 
     private void setScheduleData() {
@@ -341,76 +280,6 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-
-    private void getMeetingRequest() {
-        Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
-                loginPOJO.getRowcode());
-        call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
-            @Override
-            public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    // progressHUD.dismiss();
-                    PendingMeetingRequestPOJO pojo = response.body();
-                    Log.d(TAG,""+pojo.getMessage());
-                    if (pojo != null){
-                        if (pojo.getOK()) {
-                            if (pojo.getMeetingRequestList() != null){
-
-                                meetingListRequest.clear();
-                                meetingListRequest.addAll(pojo.getMeetingRequestList());
-                                requestPagerAdapter = new RequestPagerAdapter(getActivity(), MeetingsFragment.this, meetingListRequest);
-                                viewpager_request.setAdapter(requestPagerAdapter);
-
-//
-//                                requestedAdapter = new RequestedAdapter(getActivity(), MeetingsFragment.this,
-//                                        (ArrayList<PendingMeetingRequestPOJO.MeetingRequestList>) pojo.getMeetingRequestList());
-//                                recycler_requested.setLayoutManager(layoutManagerRequested);
-//                                recycler_requested.setAdapter(requestedAdapter);
-//                                recyclerIndicator.attachToRecyclerView(recycler_requested);
-                            }
-                        } else {
-                            Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        if (pojo.getMeetingRequestList() == null){
-                            viewpager_request.setVisibility(View.GONE);
-                            layout_dotRequest.setVisibility(View.GONE);
-                            txt_noRequest.setVisibility(View.VISIBLE);
-                            txt_request.setText("");
-                        } else {
-                            if (pojo.getMeetingRequestList().size() == 0)
-                            {
-                                txt_noRequest.setVisibility(View.VISIBLE);
-                                txt_request.setText("");
-                                viewpager_request.setVisibility(View.GONE);
-                                layout_dotRequest.setVisibility(View.GONE);
-                            } else {
-                                viewpager_request.setVisibility(View.VISIBLE);
-                                layout_dotRequest.setVisibility(View.VISIBLE);
-                                txt_noRequest.setVisibility(View.GONE);
-                                request_date = requestPagerAdapter.getDate(0);
-                                txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
-
-                                setRequestData();
-
-                            }
-                        }
-                    }
-                    if (refreshView != null) {
-                        refreshView.setRefreshing(false);
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
-                //progressHUD.dismiss();
-                Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
     private void setRequestData() {
         viewpager_request.setClipToPadding(false);
         viewpager_request.setPadding(0, 0, 30, 0);
@@ -455,6 +324,136 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
             e.getMessage();
         }
     }
+
+    private void getScheduledMeeting() {
+        try {
+            TimeZone timeZone = TimeZone.getDefault();
+            Log.d(TAG, "time zone "+ timeZone.getID());
+            String UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
+            if (UUID  == null) {
+                UUID = "";
+            }
+            Call<CommonScheduleMeetingPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
+            call.enqueue(new Callback<CommonScheduleMeetingPOJO>() {
+                @Override
+                public void onResponse(Call<CommonScheduleMeetingPOJO> call, Response<CommonScheduleMeetingPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonScheduleMeetingPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingList() != null){
+                                    meetingListSchedule = new ArrayList<>();
+                                    meetingListSchedule.addAll(pojo.getMeetingList());
+                                    viewpager_schedule.setVisibility(View.VISIBLE);
+                                    layout_dotSchedule.setVisibility(View.VISIBLE);
+                                    schedulePagerAdapter = new SchedulePagerAdapter(getActivity(),
+                                            MeetingsFragment.this, meetingListSchedule);
+                                    viewpager_schedule.setAdapter(schedulePagerAdapter);
+//                                    schedulePagerAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                            if (pojo.getMeetingList() == null){
+                                txt_noSchedule.setVisibility(View.VISIBLE);
+                                txt_schedule.setText("");
+                                viewpager_schedule.setVisibility(View.GONE);
+                                layout_dotSchedule.setVisibility(View.GONE);
+                            } else if (pojo.getMeetingList().size() == 0){
+                                txt_noSchedule.setVisibility(View.VISIBLE);
+                                txt_schedule.setText("");
+                                viewpager_schedule.setVisibility(View.GONE);
+                                layout_dotSchedule.setVisibility(View.GONE);
+                            } else {
+                                txt_noSchedule.setVisibility(View.GONE);
+                                schedule_date = schedulePagerAdapter.getDate(0);
+                                txt_schedule.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(schedule_date)));
+                                setScheduleData();
+                            }
+
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonScheduleMeetingPOJO> call, Throwable t) {
+                    //  progressHUD.dismiss();
+                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+
+    }
+
+    private void getMeetingRequest() {
+        try {
+            Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode());
+            call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
+                @Override
+                public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        PendingMeetingRequestPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingRequestList() != null){
+                                    meetingListRequest = new ArrayList<>();
+                                    meetingListRequest.addAll(pojo.getMeetingRequestList());
+                                    requestPagerAdapter = new RequestPagerAdapter(getActivity(), MeetingsFragment.this, meetingListRequest);
+                                    viewpager_request.setAdapter(requestPagerAdapter);
+                                 //   requestPagerAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (pojo.getMeetingRequestList() == null){
+                                viewpager_request.setVisibility(View.GONE);
+                                layout_dotRequest.setVisibility(View.GONE);
+                                txt_noRequest.setVisibility(View.VISIBLE);
+                                txt_request.setText("");
+                            } else {
+                                if (pojo.getMeetingRequestList().size() == 0) {
+                                    txt_noRequest.setVisibility(View.VISIBLE);
+                                    txt_request.setText("");
+                                    viewpager_request.setVisibility(View.GONE);
+                                    layout_dotRequest.setVisibility(View.GONE);
+                                } else {
+                                    viewpager_request.setVisibility(View.VISIBLE);
+                                    layout_dotRequest.setVisibility(View.VISIBLE);
+                                    txt_noRequest.setVisibility(View.GONE);
+                                    request_date = requestPagerAdapter.getDate(0);
+                                    txt_request.setText(Utility.getScheduleMeetingDate(Utility.ConvertUTCToUserTimezone(request_date)));
+                                    setRequestData();
+
+                                }
+                            }
+                        }
+                        if (refreshView != null) {
+                            refreshView.setRefreshing(false);
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
+                    //progressHUD.dismiss();
+                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch(Exception e){
+            e.getMessage();
+        }
+
+    }
+
 
     public void startMeeting(int meeting_id) {
         progressHUD = KProgressHUD.create(getActivity())

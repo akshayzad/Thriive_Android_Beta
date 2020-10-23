@@ -4,13 +4,156 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
     tools:context=".LoginActivity">
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/darkGrey">
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_50dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginLeft="@dimen/_50dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_25dp"
+                android:layout_marginLeft="@dimen/_25dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:orientation="horizontal"
+                android:backgroundTint="@color/blue80"
+                android:background="@drawable/rectangle_white"
+                >
+                <ImageView
+                    android:id="@+id/img_01"
+                    android:layout_width="@dimen/_20dp"
+                    android:layout_height="@dimen/_20dp"
+                    android:src="@drawable/linkedln"
+                    android:layout_gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:layout_marginLeft="@dimen/_20dp"
+                    app:tint="@color/whiteTwo"></ImageView>
+
+                <Button
+                    android:id="@+id/btn_linkedin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:textColor="@color/whiteTwo"
+                    android:textSize="@dimen/_14dp"
+                    android:layout_gravity="left"
+                    android:gravity="left|center"
+                    android:layout_toRightOf="@id/img_01"
+                    android:background="@null"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Login with Linkedin"></Button>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_25dp"
+                android:layout_marginLeft="@dimen/_25dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:orientation="horizontal"
+                android:backgroundTint="@color/terracota80"
+                android:background="@drawable/rectangle_white"
+                >
+                <ImageView
+                    android:id="@+id/img_02"
+                    android:layout_width="@dimen/_20dp"
+                    android:layout_height="@dimen/_20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/gmail"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:layout_marginLeft="@dimen/_20dp"></ImageView>
+                <Button
+                    android:id="@+id/btn_google"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:background="@null"
+                    android:layout_gravity="left"
+                    android:gravity="left|center"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:layout_toRightOf="@id/img_02"
+                    android:textColor="@color/whiteTwo"
+                    android:textSize="@dimen/_14dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Login with Gmail"></Button>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/_25dp"
+                android:layout_marginLeft="@dimen/_25dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_5dp"
+                android:orientation="horizontal"
+                android:backgroundTint="@color/butterscotch80"
+                android:background="@drawable/rectangle_white"
+                >
+                <ImageView
+                    android:id="@+id/img_03"
+                    android:layout_width="@dimen/_20dp"
+                    android:layout_height="@dimen/_20dp"
+                    android:src="@drawable/ic_at_login"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:layout_marginLeft="@dimen/_20dp"></ImageView>
+                <Button
+                    android:id="@+id/btn_custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteTwo"
+                    android:textSize="@dimen/_14dp"
+                    android:gravity="left|center"
+                    android:background="@null"
+                    android:layout_toRightOf="@id/img_03"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Login with Email"></Button>
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_dot"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="1dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+        </LinearLayout>
+    </LinearLayout>
+
+
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/layout_bottom"
+        android:visibility="gone"
         android:scrollbars="none">
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +207,7 @@
                     android:layout_marginLeft="@dimen/_20dp"
                     android:layout_marginTop="@dimen/_5dp">
                     <ImageView
-                        android:id="@+id/btn_linklined"
+                        android:id="@+id/img_linkedin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
@@ -85,7 +228,7 @@
                     app:cardElevation="1dp">
 
                     <ImageView
-                        android:id="@+id/btn_google"
+                        android:id="@+id/img_google"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
@@ -125,7 +268,6 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="@dimen/_10dp"
                 app:cardElevation="1dp"
-
                 android:layout_marginLeft="@dimen/_20dp"
                 android:layout_marginRight="@dimen/_20dp"
                 android:layout_marginBottom="@dimen/_10dp"
@@ -217,7 +359,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
+
         android:layout_margin="@dimen/_10dp"
         android:layout_alignParentBottom="true">
 

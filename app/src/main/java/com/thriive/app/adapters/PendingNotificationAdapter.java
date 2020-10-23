@@ -139,6 +139,8 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
        // arrayList.addAll(item.getRequestorDomainTags());
     //    arrayList.addAll(item.getRequestorSubDomainTags());
         arrayList.addAll(item.getRequestorExpertiseTags());
+        arrayList.addAll(item.getMeetingTag());
+
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout);
         holder.rv_tags.setAdapter(new ExpertiseAdapter(context, arrayList));

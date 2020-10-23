@@ -24,20 +24,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.thriive.app.models.LoginPOJO;
-import com.thriive.app.models.SelectBusinessPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class QuickGuideActivity extends AppCompatActivity {
 
     @BindView(R.id.viewPager)

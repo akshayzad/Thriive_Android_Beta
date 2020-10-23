@@ -33,7 +33,7 @@
     <color name="space_transparent">#00000000</color>
     <color name="space_white">#ffffff</color>
     <color name="space_default_color">#2A3137</color>
-    <color name="centre_button_color">#4285F4</color>
+    <color name="centre_button_color">#0077B5</color>
     <color name="default_inactive_item_color">#9e9e9e</color>
     <color name="default_active_item_color">#262626</color>
     <color name="selected_item_color">#3fffffff</color>
@@ -48,19 +48,28 @@
     <color name="pinkishGreyTwo">#CACACA</color>
     <color name="white78">#C7FFFFFF</color>
     <color name="beige">#1FFBB04C</color>
+<!--    LinkedIn - 1B64BE-->
+<!--    Gmail - CE593F-->
+<!--    Email - F8AE4D-->
+    <color name="blue80">#1B64BE</color>
+    <color name="terracota80">#CE593F</color>
+    <color name="butterscotch80">#F8AE4D</color>
+    <color name="white90">#E6FFFFFF</color>
 
     <array name="view_dot_active">
-        <item>@color/colorAccent</item>
-        <item>@color/colorAccent</item>
-        <item>@color/colorAccent</item>
-        <item>@color/colorAccent</item>
+        <item>@color/butterscotch</item>
+        <item>@color/butterscotch</item>
+        <item>@color/butterscotch</item>
+        <item>@color/butterscotch</item>
+        <item>@color/butterscotch</item>
     </array>
 
 
     <array name="view_dot_inactive">
-        <item>@color/pinkishGrey</item>
-        <item>@color/pinkishGrey</item>
-        <item>@color/pinkishGrey</item>
-        <item>@color/pinkishGrey</item>
+        <item>@color/whiteTwo</item>
+        <item>@color/whiteTwo</item>
+        <item>@color/whiteTwo</item>
+        <item>@color/whiteTwo</item>
+        <item>@color/whiteTwo</item>
     </array>
 </resources>
