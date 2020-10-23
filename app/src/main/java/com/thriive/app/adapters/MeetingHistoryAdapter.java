@@ -82,7 +82,6 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         Log.d("Rating", item.getRequestorResponseInt() +" "+item.getGiverResponseInt() );
         if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
             holder.txt_name.setText(item.getGiverName());
-            holder.txt_reason.setText("Meeting for "+ item.getMeetingReason());
             Log.d("Rating", item.getGiverResponseInt() +" "+item.getGiverResponseInt().floatValue() );
 //            holder.ratingBar.setStepSize(1.0f);
 //            holder.ratingBar.setMax(5);
@@ -116,7 +115,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
             holder.txt_name.setText(item.getRequestorName());
             holder.ratingBar.setRating((float)item.getGiverResponseInt());
             holder.ratingBar.setIsIndicator(true);
-            if (item.getGiverPicUrl().equals("")){
+            if (item.getRequestorPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
                         .beginConfig()
@@ -138,7 +137,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
         }
         holder.txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
                 Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
-
+        holder.txt_reason.setText("Meeting for "+ item.getMeetingReason());
         holder.iv_linkdin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
