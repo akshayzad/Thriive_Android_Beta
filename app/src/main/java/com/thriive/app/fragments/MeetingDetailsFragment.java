@@ -358,7 +358,18 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             case R.id.join_meeting:
                 if (Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()))) {
-                    startMeeting();
+                    if (Utility.getCallEdJoinJoin(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime()))){
+                        final Toast toast = Toast.makeText(getContext(), "Meeting session has been ended",Toast.LENGTH_SHORT);
+                        toast.show();
+                        new CountDownTimer(2000, 1000)
+                        {
+                            public void onTick(long millisUntilFinished) {toast.show();}
+                            public void onFinish() {toast.cancel();}
+                        }.start();
+                    } else {
+                        startMeeting();
+                    }
+
                 } else {
 
                     final Toast toast = Toast.makeText(getContext(), "Meeting is yet to start",Toast.LENGTH_SHORT);
@@ -906,7 +917,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Utility.getCallJoin(startTime)){
+                if(Utility.getCheckSlotTime(startTime)){
                     Toast.makeText(getContext(), "Please choose current or future time.", Toast.LENGTH_LONG).show();
                 } else {
                     //getResheduledMeeting();

@@ -110,7 +110,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                         drawable = TextDrawable.builder()
                                 .beginConfig()
-                                .textColor(context.getColor(R.color.darkGreyBlue))
+                                .textColor(context.getResources().getColor(R.color.darkGreyBlue))
                                 .useFont(typeface)
                                 .fontSize(55) /* size in px */
                                 .bold()
@@ -118,7 +118,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                                 .width(130)  // width in px
                                 .height(130) // height in px
                                 .endConfig()
-                                .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
+                                .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getResources().getColor(R.color.whiteTwo));
                     }
                     img_giver.setImageDrawable(drawable);
                 } catch (Exception e ){
@@ -155,7 +155,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     drawable = TextDrawable.builder()
                             .beginConfig()
-                            .textColor(context.getColor(R.color.darkGreyBlue))
+                            .textColor(context.getResources().getColor(R.color.darkGreyBlue))
                             .useFont(typeface)
                             .fontSize(55) /* size in px */
                             .bold()
@@ -163,7 +163,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                             .width(130)  // width in px
                             .height(130) // height in px
                             .endConfig()
-                            .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.whiteTwo));
+                            .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getResources().getColor(R.color.whiteTwo));
                 }
                 img_giver.setImageDrawable(drawable);
             } else {
@@ -217,7 +217,18 @@ public class SchedulePagerAdapter extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 if (Utility.getCallJoin(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()))) {
-                    ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
+                    if (Utility.getCallEdJoinJoin(Utility.ConvertUTCToUserTimezone(item.getPlanEndTime()))){
+                        final Toast toast = Toast.makeText(context, "Meeting session has been ended",Toast.LENGTH_SHORT);
+                        toast.show();
+                        new CountDownTimer(2000, 1000)
+                        {
+                            public void onTick(long millisUntilFinished) {toast.show();}
+                            public void onFinish() {toast.cancel();}
+                        }.start();
+                    } else {
+
+                        ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
+                    }
                  //   startMeeting();
                 } else {
                     final Toast toast = Toast.makeText(context, "Meeting is yet to start",Toast.LENGTH_SHORT);

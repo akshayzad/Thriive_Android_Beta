@@ -60,7 +60,7 @@
             android:id="@+id/txt_noData"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto_regular"
             android:textSize="@dimen/_18dp"
             android:paddingTop="@dimen/_10dp"
             android:gravity="center"
@@ -71,7 +71,7 @@
             android:layout_marginRight="@dimen/_10dp"
             android:layout_marginTop="@dimen/_10dp"
             android:visibility="gone"
-            android:text="No Meeting Request Received" />
+            android:text="No meeting requests received" />
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresh_view"
             android:layout_width="match_parent"
@@ -87,7 +87,4 @@
                 ></androidx.recyclerview.widget.RecyclerView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
-
-
-
 </LinearLayout>

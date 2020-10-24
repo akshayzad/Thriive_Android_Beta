@@ -74,7 +74,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
                         .beginConfig()
-                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .textColor(context.getResources().getColor(R.color.darkGreyBlue))
                         .useFont(typeface)
                         .fontSize(55) /* size in px */
                         .bold()
@@ -82,7 +82,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                         .width(130)  // width in px
                         .height(130) // height in px
                         .endConfig()
-                        .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getColor(R.color.whiteTwo));
+                        .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getResources().getColor(R.color.whiteTwo));
                 holder.img_user.setImageDrawable(drawable);
             } else {
                 holder.img_user.setMaxWidth(80);
@@ -101,7 +101,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
                         .beginConfig()
-                        .textColor(context.getColor(R.color.darkGreyBlue))
+                        .textColor(context.getResources().getColor(R.color.darkGreyBlue))
                         .useFont(typeface)
                         .fontSize(50) /* size in px */
                         .bold()
@@ -109,7 +109,7 @@ public class ScheduleListAdapter extends RecyclerView.Adapter<ScheduleListAdapte
                         .width(130)  // width in px
                         .height(130) // height in px
                         .endConfig()
-                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.whiteTwo));
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getResources().getColor(R.color.whiteTwo));
                 holder.img_user.setImageDrawable(drawable);
             } else {
                 holder.img_user.setMaxWidth(80);

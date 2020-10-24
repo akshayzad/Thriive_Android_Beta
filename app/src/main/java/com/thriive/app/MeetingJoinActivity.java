@@ -63,6 +63,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.media.MediaExtractor.MetricsConstants.FORMAT;
+
 public class MeetingJoinActivity extends AppCompatActivity {
     private static final String TAG = MeetingJoinActivity.class.getSimpleName();
 
@@ -81,6 +83,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
     private RelativeLayout mRemoteContainer;
     private SurfaceView mLocalView;
     private SurfaceView mRemoteView;
+    private TextView txtTimer;
 
     private ImageView mCallBtn;
     private ImageView mMuteBtn;
@@ -95,9 +98,9 @@ public class MeetingJoinActivity extends AppCompatActivity {
     private Handler popupHandler;
     private Runnable popupRunnable;
 
+    private long seconds = 0, minutes = 0, hours = 0, call_time;
 
-
-    private String rating_int = "";
+    private String rating_int = "", call_duration = "";
     private  KProgressHUD progressHUD;
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
@@ -128,6 +131,16 @@ public class MeetingJoinActivity extends AppCompatActivity {
                     onRemoteUserLeft();
                 }
             });
+        }
+
+        @Override
+        public void onActiveSpeaker(int uid) {
+            super.onActiveSpeaker(uid);
+        }
+
+        @Override
+        public void onAudioEffectFinished(int soundId) {
+            super.onAudioEffectFinished(soundId);
         }
     };
 
@@ -174,6 +187,8 @@ public class MeetingJoinActivity extends AppCompatActivity {
         meeting_channel =  getIntent().getStringExtra("meeting_channel");
         meeting_token = getIntent().getStringExtra("meeting_token");
         meeting_id = getIntent().getStringExtra("meeting_id");
+        start_time = getIntent().getStringExtra("start_time");
+        end_time = getIntent().getStringExtra("end_time");
         meeting_token = sharedData.getStringData(SharedData.MEETING_TOKEN);
         loginPOJO = Utility.getLoginData(getApplicationContext());
         apiInterface = APIClient.getApiInterface();
@@ -190,9 +205,13 @@ public class MeetingJoinActivity extends AppCompatActivity {
                     checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
                 initEngineAndJoinChannel();
             }
-            startTimer();
-            preciseCountdown.start();
+            getStartTimer();
+
+//            startTimer();
+//            preciseCountdown.start();
         }
+
+
 
 
 
@@ -202,7 +221,13 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
 
     }
+    private void getStartTimer(){
+        call_time = Utility.getTimeDifferenceWithCurrentTime(Utility.ConvertUTCToUserTimezone(end_time));
 
+        txtTimer.setVisibility(View.VISIBLE);
+        startTimer();
+        preciseCountdown.start();
+    }
     private void getStartMeeting() {
         try {
             progressHUD = KProgressHUD.create(this)
@@ -228,11 +253,11 @@ public class MeetingJoinActivity extends AppCompatActivity {
                                         checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
                                     initEngineAndJoinChannel();
                                 }
-                                startTimer();
-                                preciseCountdown.start();
+                                end_time = reasonPOJO.getMeetingData().getPlanEndTime();
+                                start_time = reasonPOJO.getMeetingData().getPlanStartTime();
+                                getStartTimer();
                                 //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
-
                                 //Toast.makeText(MeetingJoinActivity.this, " Meeting has already ended", Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                 if (isTaskRoot()) {
@@ -277,6 +302,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mCallBtn = findViewById(R.id.btn_call);
         mMuteBtn = findViewById(R.id.btn_mute);
         mSwitchCameraBtn = findViewById(R.id.btn_switch_camera);
+        txtTimer = findViewById(R.id.txt_timer);
 
        // mLogView = findViewById(R.id.log_recycler_view);
 
@@ -562,18 +588,53 @@ public class MeetingJoinActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
+       // TimeUnit.MINUTES.toMillis(30)
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                preciseCountdown = new PreciseCountdown(TimeUnit.MINUTES.toMillis(30), 1000, 0) {
+                preciseCountdown = new PreciseCountdown(call_time, 1000, 0) {
                     @Override
                     public void onTick(long timeLeft) {
-                        if (TimeUnit.MINUTES.toMillis(5) == timeLeft){
-                            showCustomToast(getResources().getString(R.string.call_message));
-                          //  ratingDialog();
-                            Log.d(TAG, "!1 min");
-                    }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                seconds ++;
+                                if(seconds == 60) {
+                                    seconds = 0;
+                                    minutes ++;
+                                }
+                                if(minutes == 60) {
+                                    seconds = 0;
+                                    minutes = 0;
+                                    hours ++;
+                                }
+                                int seconds = (int) (timeLeft / 1000);
+                                int minutes = seconds / 60;
+                                seconds = seconds % 60;
+                                txtTimer.setText("" + String.format("%02d", minutes)
+                                        + ":" + String.format("%02d", seconds));
 
+//                                call_duration = String.format("%1$02d", minutes)
+//                                        + ":" + String.format("%1$02d", seconds);
+//                                txtTimer.setText(call_duration);
+                                if (TimeUnit.MINUTES.toMillis(10) == timeLeft){
+                                    txtTimer.setTextColor(getResources().getColor(R.color.whiteTwo));
+                                    txtTimer.setBackground(getResources().getDrawable(R.drawable.calling_terracota_bg));
+                                    //showCustomToast(getResources().getString(R.string.call_message));
+                                    //  ratingDialog();
+                                    Log.d(TAG, "!10 min");
+                                    showCustomToast("Your call is going to end in 10 mins.");
+
+                                }
+                                if (TimeUnit.MINUTES.toMillis(10) >= timeLeft){
+                                    txtTimer.setTextColor(getResources().getColor(R.color.whiteTwo));
+                                    txtTimer.setBackground(getResources().getDrawable(R.drawable.calling_terracota_bg));
+                                    // showCustomToast(getResources().getString(R.string.call_message));
+                                    //  ratingDialog();
+                                    Log.d(TAG, "!1 min");
+                                }
+                            }
+                        });
                     }
                     @Override
                     public void onFinished() {

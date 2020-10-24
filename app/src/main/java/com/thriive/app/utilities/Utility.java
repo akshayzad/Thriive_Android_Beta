@@ -225,7 +225,7 @@ public class Utility {
 
     }
 
-    public static boolean getCallJoin(String datetime) {
+    public static boolean getCheckSlotTime(String datetime) {
         boolean call = false;
         SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         sourceFormat.setTimeZone(TimeZone.getDefault());
@@ -280,6 +280,120 @@ public class Utility {
 
         return call;
     }
+
+
+    public static boolean getCallJoin(String datetime) {
+        boolean call = false;
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getDefault());
+
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        format.setTimeZone(TimeZone.getDefault());
+
+        Calendar calendar = Calendar.getInstance();
+        Date parsed = null;
+        try {
+            parsed = sourceFormat.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String server_date = sourceFormat.format(parsed);
+        String system_date = sourceFormat.format(calendar.getTime());
+        Date d1 = null;
+        Date d2 = null;
+        try {
+            d1 = sourceFormat.parse(server_date);
+            d2 = sourceFormat.parse(system_date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("D1", " "+ d1);
+        Log.d("D2", " "+ d2);
+        long diff = d1.getTime() - d2.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        Log.d("time", "D " + diffDays + " H " + diffHours + " M "
+                + diffMinutes + " S " + diffSeconds);
+        if (diffDays == 0){
+            if (diffHours <= 0) {
+                if (diffMinutes <= 0) {
+                    if (diffSeconds <= 0) {
+                        call = true;
+                    } else {
+                        call = true;
+                    }
+                } else {
+                    call = false;
+                }
+            } else {
+                call = false;
+            }
+        } else {
+            call = false;
+        }
+
+        return call;
+    }
+
+    public static boolean getCallEdJoinJoin(String datetime) {
+        boolean call = false;
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getDefault());
+
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        format.setTimeZone(TimeZone.getDefault());
+
+        Calendar calendar = Calendar.getInstance();
+        Date parsed = null;
+        try {
+            parsed = sourceFormat.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String server_date = sourceFormat.format(parsed);
+        String system_date = sourceFormat.format(calendar.getTime());
+        Date d1 = null;
+        Date d2 = null;
+        try {
+            d1 = sourceFormat.parse(server_date);
+            d2 = sourceFormat.parse(system_date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("D1", " "+ d1);
+        Log.d("D2", " "+ d2);
+        long diff = d1.getTime() - d2.getTime();
+
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        Log.d("time", "D " + diffDays + " H " + diffHours + " M "
+                + diffMinutes + " S " + diffSeconds);
+        if (diffDays == 0){
+            if (diffHours <= 0) {
+                if (diffMinutes <= 0) {
+                    if (diffSeconds <= 0) {
+                        call = true;
+                    } else {
+                        call = false;
+                    }
+                } else {
+                    call = false;
+                }
+            } else {
+                call = false;
+            }
+        } else {
+            call = false;
+        }
+
+        return call;
+    }
+
 
     public static String getMeetingDate(String date){
         String dtStart = "";
@@ -512,4 +626,61 @@ public class Utility {
         return ""+date;
 
     }
+
+    public static long getTimeDifferenceWithCurrentTime(String datetime){
+        boolean call = false;
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getDefault());
+
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        format.setTimeZone(TimeZone.getDefault());
+
+        Calendar calendar = Calendar.getInstance();
+        Date parsed = null;
+        try {
+            parsed = sourceFormat.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String server_date = sourceFormat.format(parsed);
+        String system_date = sourceFormat.format(calendar.getTime());
+        Date d1 = null;
+        Date d2 = null;
+        try {
+            d1 = sourceFormat.parse(server_date);
+            d2 = sourceFormat.parse(system_date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("D1", " "+ d1);
+        Log.d("D2", " "+ d2);
+        long diff = d1.getTime() - d2.getTime();
+
+//        long diffSeconds = diff / 1000 % 60;
+//        long diffMinutes = diff / (60 * 1000) % 60;
+//        long diffHours = diff / (60 * 60 * 1000) % 24;
+//        long diffDays = diff / (24 * 60 * 60 * 1000);
+//        Log.d("time", "D " + diffDays + " H " + diffHours + " M "
+//                + diffMinutes + " S " + diffSeconds);
+//        if (diffDays == 0){
+//            if (diffHours <= 0) {
+//                if (diffMinutes <= 0) {
+//                    if (diffSeconds <= 0) {
+//                        call = true;
+//                    } else {
+//                        call = false;
+//                    }
+//                } else {
+//                    call = false;
+//                }
+//            } else {
+//                call = false;
+//            }
+//        } else {
+//            call = false;
+//        }
+
+        return diff;
+    }
+
 }

@@ -143,16 +143,17 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                                     //    Toast.makeText(getApplicationContext(), "Success "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                     rv_notification.setAdapter(new PendingNotificationAdapter(NotificationListActivity.this,
                                             reasonPOJO.getMeetingList()));
-
-                                    if (reasonPOJO.getMeetingList().size() == 0){
-                                        txt_noData.setVisibility(View.VISIBLE);
-                                    } else {
-                                        txt_noData.setVisibility(View.GONE);
-                                    }
                                 }
 
                             } else {
                                 Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                            if (reasonPOJO.getMeetingList() == null){
+                                txt_noData.setVisibility(View.VISIBLE);
+                            }else if (reasonPOJO.getMeetingList().size() == 0){
+                                txt_noData.setVisibility(View.VISIBLE);
+                            } else {
+                                txt_noData.setVisibility(View.GONE);
                             }
                         } catch (Exception e){
                             e.getMessage();
@@ -534,7 +535,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Utility.getCallJoin(startTime)){
+                if(Utility.getCheckSlotTime(startTime)){
                     Toast.makeText(getApplicationContext(), "Please choose current or future time.", Toast.LENGTH_SHORT).show();
                 } else {
                     start_time = startTime;

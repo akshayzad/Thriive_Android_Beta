@@ -717,7 +717,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(Utility.getCallJoin(startTime)){
+                if(Utility.getCheckSlotTime(startTime)){
                     Toast.makeText(getContext(), "Please choose current or future time.", Toast.LENGTH_LONG).show();
                 } else {
                     //getResheduledMeeting();

@@ -52,7 +52,7 @@
                     android:id="@+id/img_bg"
                     android:layout_width="match_parent"
                     android:layout_height="780dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_marginTop="-50dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/meeting_details_background"></ImageView>
