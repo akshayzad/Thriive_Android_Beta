@@ -89,11 +89,11 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private SharedData sharedData;
 
-    private   String meetingId = "", UUID = "", time_stamp = "";
+    private   String meetingId = "", UUID = "", time_stamp = "", reason = "";;
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
-    private static String TAG = HomeActivity.class.getName();
+    private static final String TAG = HomeActivity.class.getName();
 
     private int rating_int = 0;
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -463,19 +463,27 @@ public class HomeActivity extends AppCompatActivity {
         TextView txt_reason3 = view1.findViewById(R.id.txt_reason3);
         TextView txt_reason4 = view1.findViewById(R.id.txt_reason4);
         TextView txt_didntMeet = view1.findViewById(R.id.txt_didntMeet);
+        Button btn_submit = view1.findViewById(R.id.btn_submit);
         RatingBar rating = view1.findViewById(R.id.rating);
         final AlertDialog dialogs = builder.create();
         dialogs.setCancelable(false);
         sharedData.addBooleanData(SharedData.SHOW_DIALOG, false);
         txt_name.setText(Html.fromHtml((getResources().getString(R.string.rate_meeting))+
                 " <font color='#108568'>" + "</font>" + ""));
+
         builder.setView(view1);
         rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 rating_int = (int) ratingBar.getRating();
+                if (rating.getRating() != 0.0 && !reason.equals("")){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_transparent_darkseacolor));
+                }
             }
         });
+
         txt_didntMeet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -484,10 +492,12 @@ public class HomeActivity extends AppCompatActivity {
                 setUnSelectedReason(txt_reason2);
                 setUnSelectedReason(txt_reason3);
                 setUnSelectedReason(txt_reason4);
-
-                dialogs.dismiss();
-                String reason = txt_didntMeet.getText().toString();
-                getSaveMeetingReview(reason, 0);
+                if (rating.getRating() != 0.0){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
+                }
+                //dialogs.dismiss();
+                reason = txt_didntMeet.getText().toString();
+               // getSaveMeetingReview(reason, 0);
             }
         });
 
@@ -499,14 +509,15 @@ public class HomeActivity extends AppCompatActivity {
                 setUnSelectedReason(txt_reason2);
                 setUnSelectedReason(txt_reason3);
                 setUnSelectedReason(txt_didntMeet);
-                if (rating.getRating() == 0.0){
-                    Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
-                } else {
-                    dialogs.dismiss();
-                    rating_int = (int) rating.getRating();
-                    String reason = txt_reason1.getText().toString();
-                    getSaveMeetingReview(reason, rating_int);
-                }
+                reason = txt_reason1.getText().toString();
+//                if (rating.getRating() == 0.0){
+//                    Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    dialogs.dismiss();
+//                    rating_int = (int) rating.getRating();
+//                    String reason = txt_reason1.getText().toString();
+//                    getSaveMeetingReview(reason, rating_int);
+//                }
 
             }
         });
@@ -519,13 +530,9 @@ public class HomeActivity extends AppCompatActivity {
                 setUnSelectedReason(txt_reason4);
                 setUnSelectedReason(txt_reason3);
                 setUnSelectedReason(txt_didntMeet);
-                if (rating.getRating() == 0.0){
-                    Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
-                } else {
-                    dialogs.dismiss();
-                    rating_int = (int) rating.getRating();
-                    String reason = txt_reason2.getText().toString();
-                    getSaveMeetingReview(reason, rating_int);
+                reason = txt_reason2.getText().toString();
+                if (rating.getRating() != 0.0){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
                 }
             }
         });
@@ -537,15 +544,18 @@ public class HomeActivity extends AppCompatActivity {
                 setUnSelectedReason(txt_reason2);
                 setUnSelectedReason(txt_reason4);
                 setUnSelectedReason(txt_didntMeet);
-
-                if (rating.getRating() == 0.0){
-                    Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
-                } else {
-                    dialogs.dismiss();
-                    rating_int = (int) rating.getRating();
-                    String reason = txt_reason3.getText().toString();
-                    getSaveMeetingReview(reason, rating_int);
+                reason = txt_reason3.getText().toString();
+                if (rating.getRating() != 0.0){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
                 }
+//                if (rating.getRating() == 0.0){
+//                    Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    dialogs.dismiss();
+//                    rating_int = (int) rating.getRating();
+//                    String reason = txt_reason3.getText().toString();
+//                    getSaveMeetingReview(reason, rating_int);
+//                }
             }
         });
         txt_reason4.setOnClickListener(new View.OnClickListener() {
@@ -556,14 +566,27 @@ public class HomeActivity extends AppCompatActivity {
                 setUnSelectedReason(txt_reason2);
                 setUnSelectedReason(txt_reason3);
                 setUnSelectedReason(txt_didntMeet);
+                reason = txt_reason4.getText().toString();
+                if (rating.getRating() != 0.0){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
+                }
+            }
+        });
 
-                if (rating.getRating() == 0.0){
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (rating.getRating() == 0.0 && reason.equals("")){
+                    Toast.makeText(HomeActivity.this, "Please select rating and experience", Toast.LENGTH_SHORT).show();
+                } else if (reason.equals("")) {
+                    Toast.makeText(HomeActivity.this, "Please select experience", Toast.LENGTH_SHORT).show();
+                } else if (rating.getRating() == 0.0 ){
                     Toast.makeText(HomeActivity.this, "Please select rating", Toast.LENGTH_SHORT).show();
                 } else {
                     dialogs.dismiss();
                     rating_int = (int) rating.getRating();
                     Log.d(TAG,""+ rating_int);
-                    String reason = txt_reason4.getText().toString();
+                    //String reason = txt_reason4.getText().toString();
                     getSaveMeetingReview(reason, rating_int);
                 }
             }

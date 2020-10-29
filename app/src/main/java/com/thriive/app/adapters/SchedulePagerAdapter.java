@@ -107,20 +107,20 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 try {
                     Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                     TextDrawable drawable = null;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                        drawable = TextDrawable.builder()
-                                .beginConfig()
-                                .textColor(context.getResources().getColor(R.color.darkGreyBlue))
-                                .useFont(typeface)
-                                .fontSize(55) /* size in px */
-                                .bold()
-                                .toUpperCase()
-                                .width(130)  // width in px
-                                .height(130) // height in px
-                                .endConfig()
-                                .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getResources().getColor(R.color.whiteTwo));
-                    }
+                    drawable = TextDrawable.builder()
+                            .beginConfig()
+                            .textColor(context.getResources().getColor(R.color.darkGreyBlue))
+                            .useFont(typeface)
+                            .fontSize(55) /* size in px */
+                            .bold()
+                            .toUpperCase()
+                            .width(130)  // width in px
+                            .height(130) // height in px
+                            .endConfig()
+                            .buildRect(Utility.getInitialsName(item.getGiverName()) , context.getResources().getColor(R.color.whiteTwo));
+
                     img_giver.setImageDrawable(drawable);
+               //     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 } catch (Exception e ){
                     e.getMessage();
                 }
@@ -152,19 +152,18 @@ public class SchedulePagerAdapter extends PagerAdapter {
             if (item.getRequestorPicUrl().equals("")){
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    drawable = TextDrawable.builder()
-                            .beginConfig()
-                            .textColor(context.getResources().getColor(R.color.darkGreyBlue))
-                            .useFont(typeface)
-                            .fontSize(55) /* size in px */
-                            .bold()
-                            .toUpperCase()
-                            .width(130)  // width in px
-                            .height(130) // height in px
-                            .endConfig()
-                            .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getResources().getColor(R.color.whiteTwo));
-                }
+                drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(context.getResources().getColor(R.color.darkGreyBlue))
+                        .useFont(typeface)
+                        .fontSize(55) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(130)  // width in px
+                        .height(130) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getResources().getColor(R.color.whiteTwo));
+
                 img_giver.setImageDrawable(drawable);
             } else {
                 img_giver.setMinimumWidth(120);

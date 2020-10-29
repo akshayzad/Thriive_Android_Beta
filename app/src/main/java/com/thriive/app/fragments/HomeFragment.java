@@ -1,6 +1,7 @@
 package com.thriive.app.fragments;
 
 import android.annotation.SuppressLint;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -48,6 +49,8 @@ import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.thriive.app.utilities.Utility.checkInternet;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -195,8 +198,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (refreshView != null){
             refreshView.setRefreshing(true);
         }
+        NetworkInfo networkInfo = checkInternet(getActivity());
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
 
-        getMeetingHome();
+            getMeetingHome();
+        } else {
+            Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void getMeetingHome() {

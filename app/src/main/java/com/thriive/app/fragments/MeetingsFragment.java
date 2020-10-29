@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -73,6 +74,8 @@ import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.thriive.app.utilities.Utility.checkInternet;
 
 
 public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -216,15 +219,25 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        if (refreshView != null){
-            refreshView.setRefreshing(true);
+        NetworkInfo networkInfo = checkInternet(getActivity());
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            if (refreshView != null){
+                refreshView.setRefreshing(true);
+            }
+            getCallData();
         }
-        getCallData();
+
     }
 
     private void getCallData(){
-        getScheduledMeeting();
-        getMeetingRequest();
+        NetworkInfo networkInfo = checkInternet(getActivity());
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            getScheduledMeeting();
+            getMeetingRequest();
+        } else {
+            Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void setScheduleData() {
@@ -380,7 +393,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 @Override
                 public void onFailure(Call<CommonScheduleMeetingPOJO> call, Throwable t) {
                     //  progressHUD.dismiss();
-                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -444,7 +457,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 @Override
                 public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
                     //progressHUD.dismiss();
-                    Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Getting Error", Toast.LENGTH_SHORT).show();
                 }
             });
 

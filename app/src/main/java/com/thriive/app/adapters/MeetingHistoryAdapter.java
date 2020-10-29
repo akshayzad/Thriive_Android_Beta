@@ -119,7 +119,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                 Typeface typeface = ResourcesCompat.getFont(context, R.font.roboto_medium);
                 TextDrawable drawable = TextDrawable.builder()
                         .beginConfig()
-                        .textColor(context.getColor(R.color.whiteTwo))
+                        .textColor(context.getResources().getColor(R.color.whiteTwo))
                         .useFont(typeface)
                         .fontSize(40) /* size in px */
                         .bold()
@@ -127,7 +127,7 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                         .width(100)  // width in px
                         .height(100) // height in px
                         .endConfig()
-                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getColor(R.color.butterscotch));
+                        .buildRect(Utility.getInitialsName(item.getRequestorName()) , context.getResources().getColor(R.color.butterscotch));
                 holder.img_user.setImageDrawable(drawable);
             } else {
                 Glide.with(context)

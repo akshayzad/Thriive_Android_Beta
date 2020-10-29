@@ -101,6 +101,9 @@
     <string name="terms">Terms of Service</string>
     <string name="edit">Edit</string>
     <string name="add">Add</string>
+    <string name="submit">submit</string>
+    <string name="internet_dissconnect">Unstable internet connection. Please rejoin the call once your connection stabilises.</string>
+    <string name="user_offline">Looks like the other person is having internet issues. Please rejoin once you receive our notification.</string>
 
 
 </resources>

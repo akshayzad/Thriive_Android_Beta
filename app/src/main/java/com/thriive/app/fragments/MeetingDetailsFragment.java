@@ -10,6 +10,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,6 +87,8 @@ import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.thriive.app.utilities.Utility.checkInternet;
 
 /**
  */
@@ -993,52 +996,56 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
 
     private void startMeeting() {
-        try {
-            progressHUD = KProgressHUD.create(getActivity())
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("Please wait")
-                    .setCancellable(false)
-                    .show();
-            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
-                    meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
-            call.enqueue(new Callback<CommonStartMeetingPOJO>() {
-                @Override
-                public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
-                    if(response.isSuccessful()) {
-                        Log.d("TAG", response.toString());
-                        CommonStartMeetingPOJO reasonPOJO = response.body();
-                        progressHUD.dismiss();
-                        try {
-                            Log.d(TAG,""+reasonPOJO.getMessage());
-                            // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
-                            if (reasonPOJO.getOK()) {
-                                meetingDataPOJO = reasonPOJO.getMeetingData();
-                                sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+        NetworkInfo networkInfo = checkInternet(getActivity());
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            try {
+                progressHUD = KProgressHUD.create(getActivity())
+                        .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                        .setLabel("Please wait")
+                        .setCancellable(false)
+                        .show();
+                Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                        meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
+                call.enqueue(new Callback<CommonStartMeetingPOJO>() {
+                    @Override
+                    public void onResponse(Call<CommonStartMeetingPOJO> call, Response<CommonStartMeetingPOJO> response) {
+                        if(response.isSuccessful()) {
+                            Log.d("TAG", response.toString());
+                            CommonStartMeetingPOJO reasonPOJO = response.body();
+                            progressHUD.dismiss();
+                            try {
+                                Log.d(TAG,""+reasonPOJO.getMessage());
+                                // Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                                if (reasonPOJO.getOK()) {
+                                    meetingDataPOJO = reasonPOJO.getMeetingData();
+                                    sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
 
-                                sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
-                                callMeeting();
+                                    sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+                                    callMeeting();
 
-                                //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                dismiss();
-                                EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                                    //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    dismiss();
+                                    EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
+                                }
+                            } catch (Exception e){
+                                e.getMessage();
                             }
-                        } catch (Exception e){
-                            e.getMessage();
                         }
                     }
-                }
-                @Override
-                public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
-                    progressHUD.dismiss();
-                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e){
-            e.getMessage();
+                    @Override
+                    public void onFailure(Call<CommonStartMeetingPOJO> call, Throwable t) {
+                        progressHUD.dismiss();
+                        //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e){
+                e.getMessage();
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 

@@ -638,7 +638,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
         Utility.hideKeyboard(getActivity());
        // scrollView.scrollTo(0,scrollView.getBottom());
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"  to be from?");
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         subDomainId = ""+s_id;
         domainId = ""+d_id;
         sdomainName = subDomainName;
@@ -659,7 +659,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void setExpertise(Integer expertise_id, String expertiseName) {
-        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+"  to be from?");
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         txt_expertise.setText(""+expertiseName);
         label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);

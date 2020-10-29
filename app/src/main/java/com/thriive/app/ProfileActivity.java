@@ -92,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .height(120) // height in px
                     .endConfig()
                     .buildRect(Utility.getInitialsName(loginPOJO.getEntityName()) ,
-                            getResources().getColor( R.color.pale48));
+                            getResources().getColor( R.color.whiteTwo));
 
             img_profile.setImageDrawable(drawable);
         } else {
