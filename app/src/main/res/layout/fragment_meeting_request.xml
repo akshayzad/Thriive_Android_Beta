@@ -267,6 +267,41 @@
                                 android:layout_marginRight="2dp"
                                 android:src="@drawable/ic_edit"></ImageView>
                         </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_lsdomain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/_5dp"
+                            android:paddingTop="@dimen/_5dp"
+                            android:paddingLeft="@dimen/_10dp"
+                            android:paddingRight="@dimen/_10dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:background="@drawable/background_bubble"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/txt_sdomains"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_medium"
+                                android:textColor="@color/terracota"
+                                android:textSize="@dimen/_12dp"
+                                android:layout_weight="01"
+                                android:textAlignment="center"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_2dp"
+                                android:text=""></TextView>
+                            <ImageView
+                                android:layout_width="@dimen/_12dp"
+                                android:layout_height="@dimen/_12dp"
+                                android:layout_weight="0"
+                                android:layout_marginRight="2dp"
+                                android:src="@drawable/ic_edit"></ImageView>
+                        </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/layout_lexpertise"
                             android:layout_width="wrap_content"
@@ -462,6 +497,136 @@
                             android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
                     </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/layout_meta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20dp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/edt_meta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_7dp"
+                            android:textSize="@dimen/_13dp"
+                            android:drawablePadding="@dimen/_5dp"
+                            android:fitsSystemWindows="true"
+                            android:hint="Enter the domain name"
+                            android:drawableLeft="@drawable/ic_search"
+                            android:textColorHint="@color/darkGreyBlue"
+                            android:fontFamily="@font/roboto_regular"
+                            android:background="@drawable/reactangle_grey_outline"
+                            android:layout_marginLeft="@dimen/_0dp"></EditText>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_meta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_5dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+
+                        <TextView
+                            android:id="@+id/label_noMeta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_regular"
+                            android:textSize="@dimen/_14dp"
+                            android:padding="@dimen/_5dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            android:layout_marginBottom="@dimen/_10dp"
+                            android:textColor="@color/darkGreyBlue"
+                            android:text="@string/no_domains" />
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cv_meta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="#17000000"
+                            app:cardElevation="@null"
+                            android:visibility="gone"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:layout_marginTop="@dimen/_10dp"
+                            app:cardCornerRadius="@dimen/_10dp"
+                            android:layout_marginLeft="@dimen/_5dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_margin="@dimen/_5dp">
+
+                                <TextView
+                                    android:id="@+id/txt_label"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textSize="@dimen/_13dp"
+                                    android:padding="@dimen/_5dp"
+                                    android:textColor="@color/darkGreyBlue"
+                                    android:text="Select one speciality" />
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rv_metaChild"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_5dp"
+                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+                                <TextView
+                                    android:id="@+id/txt_seeMore"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textSize="@dimen/_13dp"
+                                    android:padding="@dimen/_5dp"
+                                    android:visibility="gone"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/darkSeaGreen"
+                                    android:text="@string/seemore" />
+
+                                <TextView
+                                    android:id="@+id/txt_seeLess"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textSize="@dimen/_13dp"
+                                    android:padding="@dimen/_5dp"
+                                    android:visibility="gone"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/darkSeaGreen"
+                                    android:text="@string/seeless" />
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+
+
+
+
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/btn_meta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="NEXT"
+                        android:textColor="@color/whiteTwo"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="@dimen/_13dp"
+                        android:paddingTop="@dimen/_7dp"
+                        android:visibility="gone"
+                        android:paddingBottom="@dimen/_7dp"
+                        android:paddingRight="@dimen/_25dp"
+                        android:paddingLeft="@dimen/_25dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_10dp"
+                        android:background="@drawable/bg_darkseacolor"></TextView>
+
+
                     <LinearLayout
                         android:id="@+id/layout_region"
                         android:layout_width="match_parent"

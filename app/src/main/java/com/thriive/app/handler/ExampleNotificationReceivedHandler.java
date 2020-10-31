@@ -25,6 +25,7 @@ import androidx.core.app.NotificationCompat;
 import com.onesignal.OSNotification;
 import com.onesignal.OneSignal;
 import com.thriive.app.HomeActivity;
+import com.thriive.app.MeetingConfirmedActivity;
 import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
@@ -83,7 +84,7 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
 
                     case "meeting_confirmed":
                         meeting_id = data.getString("meeting_id");
-                        HomeIntentNotification(title, message, meeting_id);
+                        MeetingConfirmedIntentNotification(title, message, meeting_id);
                         break;
 
                     case "giver_meeting_request":
@@ -271,6 +272,48 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+        PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),R.drawable.app_logo);
+
+        Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
+                .setSmallIcon(R.drawable.small_icon)
+                .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(message))
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setLargeIcon(largeIcon)
+                .setColor(context.getResources().getColor(R.color.whiteTwo))
+                .setSound(notificationSoundUri)
+                .setContentIntent(pendingIntent)
+                .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                .setPriority(Notification.PRIORITY_HIGH);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            notificationBuilder.setLargeIcon(largeIcon);
+            notificationBuilder.setColor(context.getResources().getColor(R.color.whiteTwo));
+        }
+        notificationManager.notify(notificationID, notificationBuilder.build());
+
+    }
+
+
+    private void MeetingConfirmedIntentNotification( String title,String message, String meeting_id ) {
+        String ADMIN_CHANNEL_ID ="Thriive_APP";
+
+
+        NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+        int notificationID = new Random().nextInt(3000);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setupChannels(notificationManager);
+        }
+        Intent intent = new Intent(context, MeetingConfirmedActivity.class);
+        intent.setAction(meeting_id+""+notificationID);
+        intent.putExtra("intent_type", "NOTI");
+        intent.putExtra("meeting_id", meeting_id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),R.drawable.app_logo);

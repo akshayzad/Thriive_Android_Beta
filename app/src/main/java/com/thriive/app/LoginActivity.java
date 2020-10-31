@@ -33,6 +33,7 @@ import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
 import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
 import com.bumptech.glide.Glide;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -60,6 +61,9 @@ import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -125,7 +129,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
     private SharedData sharedData;
     private  String UUID = "";
-
+    CleverTapAPI clevertapDefaultInstance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +177,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             }
         }, DELAY_MS, PERIOD_MS);
 
+        clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -466,6 +471,27 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                                 if (loginPOJO.getOK()) {
                                     if (loginPOJO.getReturnEntity() != null){
                                         Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+
+
+
+                                        HashMap<String, Object> profile = new HashMap<String, Object>();
+
+                                        profile.put("Name", loginPOJO.getReturnEntity().getEntityName());
+                                        profile.put("Email", loginPOJO.getReturnEntity().getEmailId());
+                                        profile.put("Platform", "android");
+                                        profile.put("Type", l_login_method);
+                                        // clevertapDefaultInstance.pushProfile(profileUpdate);
+                                        clevertapDefaultInstance.onUserLogin(profile);
+
+
+                                        HashMap<String, Object> loginEvent = new HashMap<String, Object>();
+                                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                                        String currentDateandTime = sdf.format(new Date());
+                                        loginEvent.put("email_id", l_email);
+                                        loginEvent.put("time_stamp", currentDateandTime);
+                                        clevertapDefaultInstance.pushEvent("Thriive_Login",loginEvent);
+
+
                                      //   Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                         sharedData.addBooleanData(SharedData.isLogged, true);
                                         Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);

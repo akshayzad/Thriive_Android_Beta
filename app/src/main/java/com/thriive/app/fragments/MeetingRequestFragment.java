@@ -1,14 +1,8 @@
 package com.thriive.app.fragments;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -22,7 +16,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,21 +26,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
-import com.thriive.app.RequestMeetingGuideActivity;
-import com.thriive.app.adapters.DomainAdapter;
+import com.thriive.app.adapters.DomainListAdapter;
 import com.thriive.app.adapters.ExpertiseListAdapter;
+import com.thriive.app.adapters.MetaChildListAdapter;
+import com.thriive.app.adapters.MetaListAdapter;
 import com.thriive.app.adapters.PersonaListAdapter;
 import com.thriive.app.adapters.ReasonListAdapter;
 import com.thriive.app.adapters.RegionAdapter;
-import com.thriive.app.adapters.SubDomainListAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonDomainPOJO;
@@ -57,22 +50,23 @@ import com.thriive.app.models.CommonPersonaPOJO;
 import com.thriive.app.models.CommonReasonPOJO;
 import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CountryListPOJO;
-import com.thriive.app.models.DomainListPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.ExpertiseListPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.MetaListPOJO;
 import com.thriive.app.models.PersonaListPOJO;
 import com.thriive.app.models.ReasonListPOJO;
-import com.thriive.app.models.SubDomainListPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
 
 import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -173,9 +167,35 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     TextView txt_meetingCount;
     @BindView(R.id.txt_message)
     TextView txt_message;
-    private DomainAdapter domainAdapter;
+    private DomainListAdapter domainAdapter;
 
 
+    @BindView(R.id.layout_meta)
+    LinearLayout layout_meta;
+    @BindView(R.id.rv_meta)
+    RecyclerView rv_meta;
+    @BindView(R.id.edt_meta)
+    EditText edt_meta;
+    @BindView(R.id.label_noMeta)
+    TextView label_noMeta;
+    @BindView(R.id.rv_metaChild)
+    RecyclerView rv_metaChild;
+
+    @BindView(R.id.layout_lsdomain)
+    LinearLayout layout_lsdomain;
+    @BindView(R.id.txt_sdomains)
+    TextView txt_sdomains;
+
+    @BindView(R.id.btn_meta)
+    TextView btn_meta;
+    @BindView(R.id.cv_meta)
+    CardView cv_meta;
+
+    MetaListAdapter metaListAdapter;
+    MetaChildListAdapter metaChildListAdapter;
+
+
+    ArrayList<MetaListPOJO.Child> tagLists = new ArrayList<>();
     public MeetingRequestFragment() {
         // Required empty public constructor
     }
@@ -183,6 +203,14 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     public static MeetingRequestFragment newInstance() {
         return new MeetingRequestFragment();
     }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NORMAL, R.style.SheetDialog);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -230,19 +258,35 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
             }
         });
+
+        edt_meta.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().length() > 2){
+                    getSearchMetaList(charSequence.toString());
+                }
+
+                if (charSequence.toString().length() < 2){
+                    setClearDataDomain();
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         return  view;
     }
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setStyle(STYLE_NORMAL, R.style.SheetDialog);
-    }
-
-
     public void init(){
-
         txt_message.setText("You can request only "+ sharedData.getIntData(SharedData.MEETING_TOTAL) + " meetings a week.");
         int count_m = sharedData.getIntData(SharedData.MEETING_DONE) + 1;
         txt_meetingCount.setText(count_m+ "/" + sharedData.getIntData(SharedData.MEETING_TOTAL));
@@ -250,7 +294,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_lreason.setVisibility(View.GONE);
         layout_lpersona.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.GONE);
+        layout_lsdomain.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
+
 
 
         //labels
@@ -262,6 +308,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         label_region.setVisibility(View.GONE);
         label_noDomain.setVisibility(View.GONE);
         layout_domain.setVisibility(View.GONE);
+        layout_meta.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
         layout_subdomain.setVisibility(View.GONE);
         layout_region.setVisibility(View.GONE);
@@ -272,10 +319,44 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         rv_expertise.setVisibility(View.GONE);
         rv_domain.setVisibility(View.GONE);
         rv_region.setVisibility(View.GONE);
+        rv_meta.setVisibility(View.GONE);
+        rv_metaChild.setVisibility(View.GONE);
 
         layout_subdomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.GONE);
+        btn_meta.setVisibility(View.GONE);
     }
+
+
+
+    private void setClearDataDomain() {
+        label_domain.setText(getResources().getText(R.string.tag_domain) + " "+ personaName + "?");
+       // layout_domain.setVisibility(View.GONE);
+       // rv_domain.setVisibility(View.GONE);
+        label_domain.setVisibility(View.VISIBLE);
+        label_region.setVisibility(View.GONE);
+       // layout_meta.setVisibility(View.VISIBLE);
+      //  rv_meta.setVisibility(View.VISIBLE);
+       // label_noMeta.setVisibility(View.GONE);
+       // layout_lexpertise.setVisibility(View.GONE);
+
+
+        if (metaListAdapter != null){
+            metaListAdapter.clearData();
+            metaListAdapter.notifyDataSetChanged();
+        }
+        if (metaChildListAdapter != null){
+            metaChildListAdapter.clearData();
+            metaChildListAdapter.notifyDataSetChanged();
+        }
+        cv_meta.setVisibility(View.GONE);
+        btn_meta.setVisibility(View.GONE);
+        label_noMeta.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.GONE);
+        layout_lsdomain.setVisibility(View.GONE);
+
+    }
+
 
     private void getReason() {
         progressHUD = KProgressHUD.create(getActivity())
@@ -324,39 +405,88 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         });
     }
 
-    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona, R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_request_meeting:
-                getSubmitRequestMeeting();
-                // successDialog();
-                break;
+    public void getPersona(String reason_id, String reason_name) {
+        txt_reason.setText(""+reason_name);
+        progressHUD = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        reasonId = reason_id;
+        reasonName = reason_name;
+        Call<CommonPersonaPOJO> call = apiInterface.getPersona(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
+                loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
+                loginPOJO.getReqPersonaName(), reason_id);
+        call.enqueue(new Callback<CommonPersonaPOJO>() {
+            @Override
+            public void onResponse(Call<CommonPersonaPOJO> call, Response<CommonPersonaPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    CommonPersonaPOJO reasonPOJO = response.body();
+                    progressHUD.dismiss();
+                    Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
+                    if (reasonPOJO.getOK()) {
+                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
 
-            case R.id.img_close:
-                dismiss();
-                //onCancel();
-                break;
+                    rv_persona.setVisibility(View.VISIBLE);
+                    rv_persona.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+                    rv_persona.setAdapter(new PersonaListAdapter(getActivity(), MeetingRequestFragment.this,
+                            (ArrayList<PersonaListPOJO>) reasonPOJO.getMrParams().getPersonaList()));
 
-            case R.id.layout_lreason:
-                init();
-                getReason();
-                break;
+                    setPersona();
 
-            case R.id.layout_lpersona:
-                getPersona(reasonId,reasonName);
-                break;
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonPersonaPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-            case R.id.layout_ldomain:
+    private void setPersona() {
+        txt_lpersona.setText(getResources().getString(R.string.label_meeting_request) + " for "+ reasonName + "?");
+        //selected tag
+        layout_lreason.setVisibility(View.VISIBLE);
+        layout_lpersona.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.GONE);
+        layout_lexpertise.setVisibility(View.GONE);
+        label_noDomain.setVisibility(View.GONE);
+        layout_lsdomain.setVisibility(View.GONE);
+        //labels
+        layout_reason.setVisibility(View.GONE);
+        layout_persona.setVisibility(View.VISIBLE);
+        label_expertise.setVisibility(View.GONE);
+        label_domain.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
+        label_region.setVisibility(View.GONE);
+        layout_meta.setVisibility(View.GONE);
 
-                getMetaData(personaId, personaName);
 
-                break;
 
-            case R.id.layout_lexpertise:
-                getMetaData(personaId, personaName);
-                break;
+        layout_domain.setVisibility(View.GONE);
+        layout_expertise.setVisibility(View.GONE);
+        layout_subdomain.setVisibility(View.GONE);
+        layout_region.setVisibility(View.GONE);
+        //rv
+        rv_reason.setVisibility(View.GONE);
+        rv_persona.setVisibility(View.VISIBLE);
+        rv_expertise.setVisibility(View.GONE);
+        rv_domain.setVisibility(View.GONE);
+        rv_region.setVisibility(View.GONE);
+        rv_meta.setVisibility(View.GONE);
+        rv_metaChild.setVisibility(View.GONE);
+        cv_meta.setVisibility(View.GONE);
 
-        }
+        btn_meta.setVisibility(View.GONE);
+
+
+        layout_meeting_preference.setVisibility(View.GONE);
+
     }
 
     private void getSearchDomain(String s) {
@@ -377,8 +507,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                                 } else {
                                     label_noDomain.setVisibility(View.GONE);
                                 }
-                                domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
-                                        (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
+                               // domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
+                                   //     (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
                                 rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 rv_domain.setAdapter(domainAdapter);
 
@@ -404,125 +534,88 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
     }
 
-    private void getSubmitRequestMeeting() {
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
-                loginPOJO.getEntityId()
-                ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
-        call.enqueue(new Callback<CommonPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMessage());
-                    if (reasonPOJO.getOK()) {
-                        successDialog();
-                      //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+    private void getSearchMetaList(String s) {
+        try {
+            sharedData.addIntData(SharedData.domainId, 0);
+            sharedData.addIntData(SharedData.subDomainId, 0);
+            Call<MetaListPOJO> call = apiInterface.getSearchDomainV2(loginPOJO.getActiveToken(),s,"10", "0");
+            call.enqueue(new Callback<MetaListPOJO>() {
+                @Override
+                public void onResponse(Call<MetaListPOJO> call, Response<MetaListPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        MetaListPOJO reasonPOJO = response.body();
+                        try {
+                            if (reasonPOJO.getTagList() != null){
+                                if (reasonPOJO.getTagList().size() == 0 ){
+                                    label_noMeta.setVisibility(View.VISIBLE);
+                                } else {
+                                    label_noMeta.setVisibility(View.GONE);
+                                }
+
+                                metaListAdapter = new MetaListAdapter(getActivity(), MeetingRequestFragment.this,
+                                     (ArrayList<MetaListPOJO.TagList>) reasonPOJO.getTagList());
+                                FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
+                                manager.setFlexWrap(FlexWrap.WRAP);
+                                manager.setJustifyContent(JustifyContent.FLEX_START);
+                                rv_meta.setLayoutManager(manager );
+
+//                                rv_meta.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                rv_meta.setAdapter(metaListAdapter);
+
+                            } else {
+                                label_noMeta.setVisibility(View.VISIBLE);
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                        setMetaDomain();
+
                     }
-
-
-
                 }
-            }
-            @Override
-            public void onFailure(Call<CommonPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<MetaListPOJO> call, Throwable t) {
+                    //  progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
     }
 
-
-
-    public void getPersona(String reason_id, String reason_name) {
-        txt_reason.setText(""+reason_name);
-        progressHUD = KProgressHUD.create(getActivity())
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel("Please wait")
-                .setCancellable(false)
-                .show();
-        reasonId = reason_id;
-        reasonName = reason_name;
-        Call<CommonPersonaPOJO> call = apiInterface.getPersona(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
-                loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
-                loginPOJO.getReqPersonaName(), reason_id);
-        call.enqueue(new Callback<CommonPersonaPOJO>() {
-            @Override
-            public void onResponse(Call<CommonPersonaPOJO> call, Response<CommonPersonaPOJO> response) {
-                if(response.isSuccessful()) {
-                    Log.d(TAG, response.toString());
-                    CommonPersonaPOJO reasonPOJO = response.body();
-                    progressHUD.dismiss();
-                    Log.d(TAG,""+reasonPOJO.getMrParams().getReasonName());
-                    if (reasonPOJO.getOK()) {
-                      //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                     //   Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    rv_persona.setVisibility(View.VISIBLE);
-                    rv_persona.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-                    rv_persona.setAdapter(new PersonaListAdapter(getActivity(), MeetingRequestFragment.this,
-                            (ArrayList<PersonaListPOJO>) reasonPOJO.getMrParams().getPersonaList()));
-
-                    setPersona();
-
-                }
-            }
-            @Override
-            public void onFailure(Call<CommonPersonaPOJO> call, Throwable t) {
-                progressHUD.dismiss();
-                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    private void setPersona() {
-        txt_lpersona.setText(getResources().getString(R.string.label_meeting_request) + " for "+ reasonName + "?");
-
-        //selected tag
+    private void setMetaDomain() {
         layout_lreason.setVisibility(View.VISIBLE);
-        layout_lpersona.setVisibility(View.GONE);
+        layout_lpersona.setVisibility(View.VISIBLE);
         layout_ldomain.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
-        label_noDomain.setVisibility(View.GONE);
+        // label_noDomain.setVisibility(View.GONE);
         //labels
         layout_reason.setVisibility(View.GONE);
-        layout_persona.setVisibility(View.VISIBLE);
-        label_expertise.setVisibility(View.GONE);
-        label_domain.setVisibility(View.GONE);
-        layout_region.setVisibility(View.GONE);
+        layout_persona.setVisibility(View.GONE);
+//        label_expertise.setVisibility(View.GONE);
         label_region.setVisibility(View.GONE);
-
-
-        layout_domain.setVisibility(View.GONE);
-        layout_expertise.setVisibility(View.GONE);
-        layout_subdomain.setVisibility(View.GONE);
         layout_region.setVisibility(View.GONE);
-        //rv
-        rv_reason.setVisibility(View.GONE);
-        rv_persona.setVisibility(View.VISIBLE);
-        rv_expertise.setVisibility(View.GONE);
-        rv_domain.setVisibility(View.GONE);
+
+        rv_persona.setVisibility(View.GONE);
         rv_region.setVisibility(View.GONE);
 
-
+        layout_subdomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.GONE);
+        btn_meta.setVisibility(View.GONE);
 
     }
 
 
-    public void getMetaData(String persona_id, String persona_name) {
+    public void getMetaDomain(String persona_id, String persona_name) {
         // ddapter.re();omainA
+        label_noMeta.setVisibility(View.GONE);
+        layout_lexpertise.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.GONE);
         txt_persona.setText(""+persona_name);
         edt_domain.setText("");
+        edt_meta.setText("");
         sharedData.addIntData(SharedData.domainId, 0);
         sharedData.addIntData(SharedData.subDomainId, 0);
         progressHUD = KProgressHUD.create(getActivity())
@@ -535,8 +628,16 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         if (domainAdapter != null){
             domainAdapter.clearData();
         }
+        if (metaListAdapter != null){
+            metaListAdapter.clearData();
+        }
+        if (metaChildListAdapter != null){
+            metaChildListAdapter.clearData();
+        }
+        cv_meta.setVisibility(View.GONE);
+        Log.d(TAG, reasonId + "persono " + persona_id);
 
-        Call<CommonMetaPOJO> call = apiInterface.getMeta(loginPOJO.getActiveToken(), ""+loginPOJO.getEntityId(),
+        Call<CommonMetaPOJO> call = apiInterface.getMetaList(loginPOJO.getActiveToken(), ""+loginPOJO.getEntityId(),
                 loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
                 loginPOJO.getReqPersonaName(), reasonId, persona_id);
         call.enqueue(new Callback<CommonMetaPOJO>() {
@@ -552,20 +653,24 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     } else {
                       //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
-
                     if (reasonPOJO.getMrParams().getFlagDomain()){
                         label_domain.setText(getResources().getText(R.string.tag_domain) + " "+ persona_name + "?");
-                        layout_domain.setVisibility(View.VISIBLE);
-                        rv_domain.setVisibility(View.VISIBLE);
+                        layout_domain.setVisibility(View.GONE);
+                        rv_domain.setVisibility(View.GONE);
                         label_domain.setVisibility(View.VISIBLE);
-                        domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
-                                (ArrayList<DomainListPOJO>) reasonPOJO.getMrParams().getDomainList());
-                        rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        rv_domain.setAdapter(domainAdapter);
+                        layout_meta.setVisibility(View.VISIBLE);
+                        rv_meta.setVisibility(View.VISIBLE);
+                        label_noMeta.setVisibility(View.GONE);
+                        layout_lexpertise.setVisibility(View.GONE);
+//                        domainAdapter = new DomainListAdapter(getActivity(), MeetingRequestFragment.this,
+//                                (ArrayList<CommonMetaListPOJO.DomainList>) reasonPOJO.getMrParams().getDomainList());
+//                        rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                        rv_domain.setAdapter(domainAdapter);
                     } else {
                         label_domain.setVisibility(View.GONE);
                         layout_domain.setVisibility(View.GONE);
+                        layout_meta.setVisibility(View.GONE);
+                        layout_lexpertise.setVisibility(View.GONE);
                     }
 
                     if (domainAdapter != null) {
@@ -577,27 +682,27 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                         layout_expertise.setVisibility(View.VISIBLE);
                         rv_expertise.setVisibility(View.VISIBLE);
                         label_expertise.setVisibility(View.VISIBLE);
-                        layout_region.setVisibility(View.VISIBLE);
-                        rv_region.setVisibility(View.VISIBLE);
                         FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
                         manager.setFlexWrap(FlexWrap.WRAP);
                         manager.setJustifyContent(JustifyContent.FLEX_START);
                         rv_expertise.setLayoutManager(manager );
-                        rv_expertise.setAdapter(new ExpertiseListAdapter(getActivity(),
-                                 MeetingRequestFragment.this, (ArrayList<ExpertiseListPOJO>) reasonPOJO.getMrParams().getExpertiseList()));
+                        if (reasonPOJO.getMrParams().getExpertiseList() != null){
+                            try {
+                                rv_expertise.setAdapter(new ExpertiseListAdapter(getActivity(),
+                                        MeetingRequestFragment.this, (ArrayList<ExpertiseListPOJO>) reasonPOJO.getMrParams().getExpertiseList()));
+                            } catch (Exception e){
+                                e.getMessage();
+                            }
 
+                        }
                     } else {
                         layout_expertise.setVisibility(View.GONE);
                         label_expertise.setVisibility(View.GONE);
                     }
 
-                    if (!reasonPOJO.getMrParams().getFlagDomain() && !reasonPOJO.getMrParams().getFlagExpertise())
-                    {
-                        label_domain.setText(getResources().getText(R.string.tag_domain) + " " + persona_name + "?");
-                        label_domain.setVisibility(View.VISIBLE);
-                        layout_domain.setVisibility(View.VISIBLE);
-                        rv_domain.setVisibility(View.VISIBLE);
-
+                    if (!reasonPOJO.getMrParams().getFlagDomain() && !reasonPOJO.getMrParams().getFlagExpertise()) {
+                        layout_region.setVisibility(View.VISIBLE);
+                        rv_region.setVisibility(View.VISIBLE);
                     }
                     label_noDomain.setVisibility(View.GONE);
                     setMeta();
@@ -630,14 +735,13 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
         layout_subdomain.setVisibility(View.GONE);
         layout_meeting_preference.setVisibility(View.GONE);
+        btn_meta.setVisibility(View.GONE);
 
     }
 
-
-
-    public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
+    public void setSubDomain(Integer d_id, Integer s_id, String subDomainName) {
         Utility.hideKeyboard(getActivity());
-       // scrollView.scrollTo(0,scrollView.getBottom());
+        // scrollView.scrollTo(0,scrollView.getBottom());
         label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         subDomainId = ""+s_id;
         domainId = ""+d_id;
@@ -651,10 +755,37 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         rv_region.setVisibility(View.VISIBLE);
         label_region.setVisibility(View.VISIBLE);
         label_noDomain.setVisibility(View.GONE);
-        layout_meeting_preference.setVisibility(View.VISIBLE);
+        layout_meeting_preference.setVisibility(View.GONE);
+    }
+
+
+    public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
+        Utility.hideKeyboard(getActivity());
+       // scrollView.scrollTo(0,scrollView.getBottom());
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
+        txt_sdomains.setText(""+subDomainName);
+        layout_lsdomain.setVisibility(View.VISIBLE);
+        subDomainId = ""+s_id;
+        domainId = ""+d_id;
+       // sdomainName = subDomainName;
+      //  txt_domains.setText(subDomainName);
+        label_domain.setVisibility(View.GONE);
+        layout_domain.setVisibility(View.GONE);
+        rv_persona.setVisibility(View.GONE);
+        layout_ldomain.setVisibility(View.VISIBLE);
+        layout_region.setVisibility(View.GONE);
+        rv_region.setVisibility(View.GONE);
+        label_region.setVisibility(View.VISIBLE);
+        label_noDomain.setVisibility(View.GONE);
+        btn_meta.setVisibility(View.VISIBLE);
+        layout_meeting_preference.setVisibility(View.GONE);
+
     }
 
     public void getRegion_Id(Integer countryId) {
+        if (layout_meeting_preference.getVisibility() == View.GONE){
+            layout_meeting_preference.setVisibility(View.VISIBLE);
+        }
         regionId = "" + countryId;
     }
 
@@ -669,6 +800,71 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_lexpertise.setVisibility(View.VISIBLE);
         label_region.setVisibility(View.VISIBLE);
         expertiseId = ""+expertise_id;
+    }
+
+
+    @OnClick({R.id.btn_request_meeting, R.id.img_close, R.id.layout_lpersona,
+            R.id.layout_lreason, R.id.layout_ldomain, R.id.layout_lexpertise, R.id.btn_meta, R.id.layout_lsdomain})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_request_meeting:
+                getSubmitRequestMeeting();
+                // successDialog();
+                break;
+
+            case R.id.img_close:
+                dismiss();
+                //onCancel();
+                break;
+
+            case R.id.layout_lreason:
+                init();
+                getReason();
+                break;
+
+            case R.id.layout_lpersona:
+                getPersona(reasonId,reasonName);
+                break;
+
+            case R.id.layout_ldomain:
+
+                getMetaDomain(personaId, personaName);
+
+                break;
+
+            case R.id.layout_lexpertise:
+                getMetaDomain(personaId, personaName);
+                break;
+            case R.id.btn_meta:
+
+                setMetaSubDomain();
+                break;
+
+            case R.id.layout_lsdomain:
+                getTagList(tagLists, Integer.parseInt(domainId), Integer.parseInt(subDomainId), sdomainName);
+
+                break;
+
+        }
+    }
+
+
+
+    private void setMetaSubDomain() {
+        label_expertise.setVisibility(View.GONE);
+        layout_expertise.setVisibility(View.GONE);
+        layout_region.setVisibility(View.VISIBLE);
+        rv_region.setVisibility(View.VISIBLE);
+        layout_meeting_preference.setVisibility(View.VISIBLE);
+        layout_lexpertise.setVisibility(View.GONE);
+        label_region.setVisibility(View.VISIBLE);
+        cv_meta.setVisibility(View.GONE);
+        rv_meta.setVisibility(View.GONE);
+        rv_metaChild.setVisibility(View.VISIBLE);
+        btn_meta.setVisibility(View.GONE);
+        //edt_meta.setText("");
+        layout_meta.setVisibility(View.GONE);
+
     }
 
 
@@ -701,5 +897,124 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         });
         dialogs.show();
     }
+    private void getSubmitRequestMeeting() {
+        progressHUD = KProgressHUD.create(getActivity())
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
+                loginPOJO.getEntityId()
+                ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
+        call.enqueue(new Callback<CommonPOJO>() {
+            @Override
+            public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    CommonPOJO reasonPOJO = response.body();
+                    progressHUD.dismiss();
+                    Log.d(TAG,""+reasonPOJO.getMessage());
+                    if (reasonPOJO.getOK()) {
+                        CleverTapAPI cleverTap = CleverTapAPI.getDefaultInstance(getActivity().getApplicationContext());
+                        HashMap<String, Object> loginEvent = new HashMap<String, Object>();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        String currentDateandTime = sdf.format(new Date());
+                        loginEvent.put("request_string", personaName + "-" + reasonName);
+                        loginEvent.put("time_stamp", currentDateandTime);
+                        loginEvent.put("requestor_email_id", loginPOJO.getEmailId());
+                        cleverTap.pushEvent("Thriive_Meeting_Request",loginEvent);
 
+                        successDialog();
+                        //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getTagList(List<MetaListPOJO.Child> children, Integer d_id, Integer s_id, String tagName) {
+
+        layout_lsdomain.setVisibility(View.GONE);
+        tagLists.clear();
+        //rv_meta.setVisibility(View.GONE);
+        if (children == null){
+            Utility.hideKeyboard(getActivity());
+            // scrollView.scrollTo(0,scrollView.getBottom());
+            label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
+            subDomainId = ""+s_id;
+            domainId = ""+d_id;
+            sdomainName = tagName;
+            txt_domains.setText(tagName);
+            label_domain.setVisibility(View.GONE);
+            layout_domain.setVisibility(View.GONE);
+            rv_persona.setVisibility(View.GONE);
+            layout_ldomain.setVisibility(View.VISIBLE);
+            layout_region.setVisibility(View.GONE);
+            rv_region.setVisibility(View.GONE);
+            label_region.setVisibility(View.VISIBLE);
+            label_noDomain.setVisibility(View.GONE);
+            layout_meeting_preference.setVisibility(View.GONE);
+            cv_meta.setVisibility(View.GONE);
+            btn_meta.setVisibility(View.VISIBLE);
+        } else if (children.size() == 0){
+            Utility.hideKeyboard(getActivity());
+            // scrollView.scrollTo(0,scrollView.getBottom());
+            label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
+            subDomainId = ""+s_id;
+            domainId = ""+d_id;
+            sdomainName = tagName;
+            txt_domains.setText(tagName);
+            label_domain.setVisibility(View.GONE);
+            layout_domain.setVisibility(View.GONE);
+            rv_persona.setVisibility(View.GONE);
+            layout_ldomain.setVisibility(View.VISIBLE);
+            layout_region.setVisibility(View.GONE);
+            rv_region.setVisibility(View.GONE);
+            label_region.setVisibility(View.VISIBLE);
+            label_noDomain.setVisibility(View.GONE);
+            layout_meeting_preference.setVisibility(View.GONE);
+            cv_meta.setVisibility(View.GONE);
+            btn_meta.setVisibility(View.VISIBLE);
+        } else {
+            Utility.hideKeyboard(getActivity());
+            // scrollView.scrollTo(0,scrollView.getBottom());
+            label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
+            subDomainId = ""+s_id;
+            domainId = ""+d_id;
+            sdomainName = tagName;
+            txt_domains.setText(tagName);
+            label_domain.setVisibility(View.GONE);
+            layout_domain.setVisibility(View.GONE);
+            rv_persona.setVisibility(View.GONE);
+            layout_ldomain.setVisibility(View.VISIBLE);
+            layout_region.setVisibility(View.GONE);
+            rv_region.setVisibility(View.GONE);
+            label_region.setVisibility(View.VISIBLE);
+            label_noDomain.setVisibility(View.GONE);
+            layout_meeting_preference.setVisibility(View.GONE);
+            cv_meta.setVisibility(View.VISIBLE);
+            rv_metaChild.setVisibility(View.VISIBLE);
+            btn_meta.setVisibility(View.VISIBLE);
+
+            tagLists.addAll(children);
+            FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
+            manager.setFlexWrap(FlexWrap.WRAP);
+            manager.setJustifyContent(JustifyContent.FLEX_START);
+            rv_metaChild.setLayoutManager(manager );
+            metaChildListAdapter = new MetaChildListAdapter(getActivity(), MeetingRequestFragment.this,
+                    (ArrayList<MetaListPOJO.Child>) tagLists);
+            //  rv_metaChild.setLayoutManager(new LinearLayoutManager(getActivity()));
+            rv_metaChild.setAdapter(metaChildListAdapter);
+        }
+    }
 }

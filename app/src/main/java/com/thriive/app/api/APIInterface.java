@@ -9,6 +9,7 @@ import com.thriive.app.models.CommonHomePOJO;
 import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
+import com.thriive.app.models.CommonMetaListPOJO;
 import com.thriive.app.models.CommonMetaPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.CommonPersonaPOJO;
@@ -17,6 +18,7 @@ import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CommonScheduleMeetingPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.MetaListPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 
 import butterknife.BindView;
@@ -64,10 +66,15 @@ APIInterface {
                                        @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
                                        @Field("reason_id") String reason_id);
 
-
+   // api/MRCalls/get-meta-v2
+   @FormUrlEncoded
+   @POST("MRCalls/get-meta-v2")
+   Call<CommonMetaPOJO> getMetaList(@Header("Authorization") String authorization, @Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
+                                    @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
+                                    @Field("reason_id") String reason_id, @Field("giver_persona_id") String giver_persona_id);
 
     @FormUrlEncoded
-    @POST("MRCalls/get-meta")
+    @POST("MRCalls/get-meta-v2")
     Call<CommonMetaPOJO> getMeta(@Header("Authorization") String authorization,@Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
                                  @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
                                  @Field("reason_id") String reason_id, @Field("giver_persona_id") String giver_persona_id);
@@ -79,7 +86,10 @@ APIInterface {
     @POST("MRCalls/search-domain")
     Call<CommonDomainPOJO> getSearchDomain(@Header("Authorization") String authorization,@Field("query") String query, @Field("pageSize") String pageSize,
                                            @Field("skipCount") String skipCount);
-
+    @FormUrlEncoded
+    @POST("MRCalls/search-domain-v2")
+    Call<MetaListPOJO> getSearchDomainV2(@Header("Authorization") String authorization, @Field("query") String query, @Field("pageSize") String pageSize,
+                                         @Field("skipCount") String skipCount);
 
     @FormUrlEncoded
     @POST("MRCalls/save-meeting-request")

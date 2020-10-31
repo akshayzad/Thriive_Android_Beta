@@ -27,7 +27,7 @@ public class ExpertiseListAdapter extends RecyclerView.Adapter<ExpertiseListAdap
     private ArrayList<ExpertiseListPOJO> domainList;
     private Fragment fragment;
     private  int currentItem = -1;
-    private SharedData sharedData;
+
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_name)
         public TextView txt_name;
@@ -43,7 +43,6 @@ public class ExpertiseListAdapter extends RecyclerView.Adapter<ExpertiseListAdap
         this.context = context;
         this.domainList = domainList;
         this.fragment = fragment;
-        sharedData = new SharedData(context);
     }
 
     @Override

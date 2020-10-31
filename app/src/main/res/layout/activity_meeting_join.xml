@@ -87,19 +87,10 @@
             android:layout_width="match_parent"
             android:id="@+id/control_panel"
             android:gravity="center"
+            android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/_20dp">
 
-
-
-            <ImageView
-                android:layout_height="@dimen/other_button_size"
-                android:layout_width="@dimen/other_button_size"
-                android:id="@+id/btn_video"
-                android:src="@drawable/video_on"
-                android:onClick="onVideoOnOff"
-                android:layout_marginRight="@dimen/_7dp"
-                android:layout_marginLeft="@dimen/_7dp" />
 
             <ImageView
                 android:layout_height="@dimen/other_button_size"
@@ -126,18 +117,52 @@
                 android:layout_marginLeft="@dimen/_7dp"
                 android:onClick="onCallClicked"/>
 
-            <ImageView
-                android:layout_height="@dimen/other_button_size"
-                android:layout_width="@dimen/other_button_size"
-                android:id="@+id/btn_mute"
-                android:src="@drawable/btn_unmute"
-                android:layout_marginRight="@dimen/_7dp"
-                android:layout_marginLeft="@dimen/_7dp"
-                android:scaleType="centerCrop"
-                android:onClick="onLocalAudioMuteClicked"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/btn_call"
-                android:layout_toLeftOf="@id/btn_call"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/_7dp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_height="@dimen/other_button_size"
+                    android:layout_width="@dimen/other_button_size"
+                    android:id="@+id/btn_speaker"
+                    android:scaleType="centerCrop"
+                    android:onClick="onSwitchSpeakerClicked"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_7dp"
+                    android:visibility="visible"
+                    android:src="@drawable/speaker_on"
+                    android:layout_marginRight="@dimen/_7dp"
+                    android:layout_toEndOf="@id/btn_call"
+                    android:layout_toRightOf="@id/btn_call"/>
+
+                <ImageView
+                    android:layout_height="@dimen/other_button_size"
+                    android:layout_width="@dimen/other_button_size"
+                    android:id="@+id/btn_video"
+                    android:src="@drawable/video_on"
+                    android:onClick="onVideoOnOff"
+                    android:layout_marginRight="@dimen/_7dp"
+                    android:layout_marginLeft="@dimen/_7dp" />
+
+                <ImageView
+                    android:layout_height="@dimen/other_button_size"
+                    android:layout_width="@dimen/other_button_size"
+                    android:id="@+id/btn_mute"
+                    android:src="@drawable/btn_unmute"
+                    android:layout_marginRight="@dimen/_7dp"
+                    android:layout_marginLeft="@dimen/_7dp"
+                    android:scaleType="centerCrop"
+                    android:onClick="onLocalAudioMuteClicked"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/btn_call"
+                    android:layout_toLeftOf="@id/btn_call"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

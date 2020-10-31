@@ -86,8 +86,8 @@ public class SubDomainListAdapter extends RecyclerView.Adapter<SubDomainListAdap
                 sharedData.addIntData(SharedData.domainId, item.getDomainId());
 
                // notifyDataSetChanged();
-                ((MeetingRequestFragment) fragment).setMeeting(item.getDomainId(), item.getSubDomainId(), item.getSubDomainName());
-             //   ((MeetingRequestFragment) fragment).refreshList();
+                ((MeetingRequestFragment) fragment).setSubDomain(item.getDomainId(), item.getSubDomainId(), item.getSubDomainName());
+                //   ((MeetingRequestFragment) fragment).refreshList();
 
             }
         });

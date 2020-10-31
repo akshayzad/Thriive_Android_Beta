@@ -21,7 +21,7 @@
     <string name="done">Done</string>
     <string name="profile">Profile</string>
     <string name="preferences">Preferences</string>
-    <string name="history">Your Connections</string>
+    <string name="history">My Connections</string>
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="logout">Logout</string>
@@ -104,6 +104,10 @@
     <string name="submit">submit</string>
     <string name="internet_dissconnect">Unstable internet connection. Please rejoin the call once your connection stabilises.</string>
     <string name="user_offline">Looks like the other person is having internet issues. Please rejoin once you receive our notification.</string>
+    <string name="feedback">Feedback</string>
+    <string name="no_domains">No domains found. Please try with a different domain name.</string>
+    <string name="seemore">Show more</string>
+    <string name="seeless">Show less</string>
 
 
 </resources>

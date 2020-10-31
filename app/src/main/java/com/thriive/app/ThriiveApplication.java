@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.onesignal.OneSignal;
 
 import com.thriive.app.handler.ExampleNotificationOpenedHandler;
@@ -18,6 +19,7 @@ public class ThriiveApplication extends Application {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         // OneSignal Initialization
+        CleverTapAPI clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)

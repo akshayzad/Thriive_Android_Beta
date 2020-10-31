@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -81,7 +82,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
     private RtcEngine mRtcEngine;
     private boolean mCallEnd;
-    private boolean mMuted, mVideo;
+    private boolean mMuted, mVideo, mSpeaker;
 
     private FrameLayout mLocalContainer;
     private RelativeLayout mRemoteContainer;
@@ -90,7 +91,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
     private TextView txtTimer;
 
     private ImageView mCallBtn;
-    private ImageView mMuteBtn, mVideoBtn;
+    private ImageView mMuteBtn, mVideoBtn, mSpeakerBtn;
     private ImageView mSwitchCameraBtn;
 
     private String meeting_code, meeting_token, meeting_id,meeting_channel, start_time, end_time;
@@ -133,11 +134,16 @@ public class MeetingJoinActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG,"User offline, uid: " + uid   + " reason " + reason);
-                    //if(reason == 1)
-                    showCustomToast(getResources().getString(R.string.user_offline));
-                    leaveActivity();
-                  //  getMeetingEnd();
+                    Log.d(TAG, "User offline, uid: " + uid + " reason " + reason);
+                    if (reason == 1){
+                        showCustomToast(getResources().getString(R.string.user_offline));
+                        leaveActivity();
+                    }  else if (reason == 0){
+                        endCall();
+                        closeActivity();
+                    }
+
+                    //  getMeetingEnd();
                    // leaveChannel();
                    //
                     // joinChannel();
@@ -175,13 +181,22 @@ public class MeetingJoinActivity extends AppCompatActivity {
 //                showLongToast("CONNECTION_CHANGED_INVALID_TOKEN");
 //            }
 
-            if (reason == CONNECTION_CHANGED_INTERRUPTED){
+            if (reason == CONNECTION_CHANGED_INTERRUPTED) {
                 //showLongToast("CONNECTION_CHANGED_INTERRUPTED");
-                showCustomToast(getResources().getString(R.string.internet_dissconnect));
-                leaveActivity();
-            } else {
-               // leaveChannel();
-               // joinChannel();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Handler mHandler = new Handler();
+                        mHandler.postDelayed(new Runnable() {
+                            public void run() {
+                                showCustomToast(getResources().getString(R.string.internet_dissconnect));
+                                leaveActivity();
+                            }
+                        }, 5000);
+                    }
+                });
+
+
             }
         }
 
@@ -357,7 +372,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mMuteBtn = findViewById(R.id.btn_mute);
         mSwitchCameraBtn = findViewById(R.id.btn_switch_camera);
         txtTimer = findViewById(R.id.txt_timer);
-
+        mSpeakerBtn = findViewById(R.id.btn_speaker);
         mVideoBtn = findViewById(R.id.btn_video);
     }
 
@@ -837,5 +852,19 @@ public class MeetingJoinActivity extends AppCompatActivity {
         int visi = mVideo ? GONE : VISIBLE;
         mLocalContainer.setVisibility(visi);
 
+    }
+
+    public void onSwitchSpeakerClicked(View view) {
+        if(mRtcEngine != null) {
+
+            mSpeaker = !mSpeaker;
+            // Stops/Resumes sending the local audio stream.
+            mRtcEngine.setEnableSpeakerphone(!mSpeaker);
+            int res = mSpeaker ? R.drawable.speaker_off : R.drawable.speaker_on;
+            mSpeakerBtn.setImageResource(res);
+           // mRtcEngine.setEnableSpeakerphone(view.());
+
+
+        }
     }
 }

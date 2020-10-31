@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/match_bgrnd">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/txt_22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_22dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_1dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginRight="@dimen/_10dp"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:text="Meeting Accepted!" />
+
+        <TextView
+            android:id="@+id/txt_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_light"
+            android:textSize="@dimen/_14dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_1dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:layout_marginRight="@dimen/_10dp"
+            android:text="Michael Thompson has confirmed to meet with you" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_20dp"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <com.thriive.app.utilities.CircleImageView
+                android:id="@+id/img_reciever"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:civ_border_color="@color/terracota"
+                app:civ_border_width="@dimen/_5dp"
+                android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
+            <com.thriive.app.utilities.CircleImageView
+                android:id="@+id/img_requestor"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/user"
+                android:layout_marginTop="-80dp"
+                android:layout_marginLeft="-50dp"
+                app:civ_border_color="@color/darkSeaGreen"
+                app:civ_border_width="@dimen/_5dp"
+                android:layout_below="@id/img_reciever"
+                android:layout_toRightOf="@id/img_reciever"
+                ></com.thriive.app.utilities.CircleImageView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginLeft="-40dp"
+                android:layout_toRightOf="@id/img_reciever"
+                android:layout_below="@id/img_requestor">
+                <TextView
+                    android:id="@+id/txt_reciever"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_13dp"
+                    android:padding="@dimen/_1dp"
+                    android:textColor="@color/whiteTwo"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:text="Michael Thompson" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="@dimen/_20dp"
+                        android:layout_height="@dimen/_20dp"
+                        android:src="@drawable/ic_clock"></ImageView>
+                    <TextView
+                        android:id="@+id/txt_region"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_light"
+                        android:textSize="@dimen/_11dp"
+                        android:padding="@dimen/_1dp"
+                        android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_marginRight="@dimen/_5dp"
+                        android:textColor="@color/whiteTwo"
+                        android:layout_gravity="center"
+                        android:text="India" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#231F20"
+            android:padding="@dimen/_10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/txt_reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_14dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/_5dp"
+                android:textColor="@color/whiteTwo"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"
+                android:text="Meeting for Consulting" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_domain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/whiteTwo"
+            android:textSize="@dimen/_14dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="View"
+            android:layout_margin="@dimen/_20dp"
+            android:background="@drawable/filled_circle_terracota"></Button>
+
+        <TextView
+            android:id="@+id/txt_notNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_15dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_5dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:layout_marginRight="@dimen/_10dp"
+            android:text="Not Now" />
+    </LinearLayout>
+
+</LinearLayout>

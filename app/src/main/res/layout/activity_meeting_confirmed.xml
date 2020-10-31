@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/match_bgrnd"
+    tools:context=".MeetingConfirmedActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/txt_22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_22dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_1dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginRight="@dimen/_10dp"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:text="Meeting Accepted!" />
+
+        <TextView
+            android:id="@+id/txt_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_light"
+            android:textSize="@dimen/_14dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_1dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:layout_marginRight="@dimen/_10dp"
+            android:text="Michael Thompson has confirmed to meet with you" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30dp"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/_20dp"
+            android:layout_marginRight="@dimen/_20dp"
+            android:layout_marginBottom="@dimen/_30dp">
+            <com.thriive.app.utilities.CircleImageView
+                android:id="@+id/img_requestor"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:civ_border_color="@color/terracota"
+                app:civ_border_width="@dimen/_5dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
+            <com.thriive.app.utilities.CircleImageView
+                android:id="@+id/img_giver"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/user"
+                android:layout_marginTop="-70dp"
+                android:layout_marginLeft="-35dp"
+                app:civ_border_color="@color/darkSeaGreen"
+                app:civ_border_width="@dimen/_5dp"
+                android:layout_below="@id/img_requestor"
+                android:layout_toRightOf="@id/img_requestor"
+                ></com.thriive.app.utilities.CircleImageView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="-60dp"
+                android:layout_toRightOf="@id/img_requestor"
+                android:layout_below="@id/img_giver">
+                <TextView
+                    android:id="@+id/txt_giverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/_13dp"
+                    android:padding="@dimen/_1dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/whiteTwo"
+                    android:text="Michael Thompson ghfg fds dsfsfs" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+                    <ImageView
+                        android:layout_width="@dimen/_20dp"
+                        android:layout_height="@dimen/_20dp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_clock"></ImageView>
+                    <TextView
+                        android:id="@+id/txt_region"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_light"
+                        android:textSize="@dimen/_11dp"
+                        android:padding="@dimen/_1dp"
+                        android:textColor="@color/whiteTwo"
+                        android:layout_gravity="center"
+                        android:text="India" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#231F20"
+            android:padding="@dimen/_10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/txt_reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_14dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/_5dp"
+                android:textColor="@color/whiteTwo"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"
+                android:text="Meeting for Consulting" />
+            <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_10dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginLeft="2dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:id="@+id/layout_select"
+                android:background="@drawable/circle_outline_white"
+                android:layout_marginTop="@dimen/_10dp">
+                <TextView
+                    android:id="@+id/txt_expertise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:textAlignment="center"
+                    android:textColor="@color/whiteTwo"
+                    android:textSize="@dimen/_12dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Data Analyst"
+                    android:layout_gravity="center"></TextView>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:visibility="visible"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_view"
+            android:layout_width="120dp"
+            android:layout_height="@dimen/_40dp"
+            android:textColor="@color/whiteTwo"
+            android:textSize="@dimen/_14dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="View"
+            android:textAllCaps="false"
+            android:layout_margin="@dimen/_20dp"
+            android:background="@drawable/filled_circle_terracota"></Button>
+
+        <TextView
+            android:id="@+id/txt_notNow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_15dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_5dp"
+            android:textColor="@color/whiteTwo"
+            android:layout_marginLeft="@dimen/_10dp"
+            android:layout_marginRight="@dimen/_10dp"
+            android:text="Not Now" />
+    </LinearLayout>
+
+</LinearLayout>
