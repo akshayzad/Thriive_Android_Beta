@@ -231,7 +231,8 @@ public class ProfileFragment extends Fragment {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getLogout(loginPOJO.getActiveToken(), loginPOJO.getPrimaryLoginKey());
+            Call<CommonPOJO> call = apiInterface.getLogout(sharedData.getStringData(SharedData.API_URL) +
+                    "api/AppLogin/logout", loginPOJO.getActiveToken(), loginPOJO.getPrimaryLoginKey());
             call.enqueue(new Callback<CommonPOJO>() {
                 @Override
                 public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

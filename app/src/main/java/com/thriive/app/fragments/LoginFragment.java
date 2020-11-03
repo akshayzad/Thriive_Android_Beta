@@ -61,6 +61,7 @@ public class LoginFragment extends BottomSheetDialogFragment {
     @BindView(R.id.txt_privacy)
     TextView txt_privacy;
 
+    SharedData sharedData;
     Unbinder unbinder;
     private String email = "", password = "", login_method = "", time_stamp;
 
@@ -86,6 +87,7 @@ public class LoginFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        sharedData = new SharedData(getActivity());
         txt_terms.setText(Html.fromHtml("<u>" + getResources().getString(R.string.terms) + "</u>"));
         txt_privacy.setText(Html.fromHtml("<u>" + getResources().getString(R.string.privacy) + "</u>"));
        // UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
@@ -211,7 +213,7 @@ public class LoginFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getForgetPassword(email_id);
+        Call<CommonPOJO> call = apiInterface.getForgetPassword(sharedData.getStringData(SharedData.API_URL) + "api/AppLogin/forgot-password",email_id);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

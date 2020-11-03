@@ -189,7 +189,8 @@ public class HomeActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonMeetingCountPOJO> call = apiInterface.getMeetingCount(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
+            Call<CommonMeetingCountPOJO> call = apiInterface.getMeetingCount(sharedData.getStringData(SharedData.API_URL)
+                    + "api/Entity/get-request-count", loginPOJO.getActiveToken(), loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonMeetingCountPOJO>() {
                 @Override
                 public void onResponse(Call<CommonMeetingCountPOJO> call, Response<CommonMeetingCountPOJO> response) {
@@ -288,7 +289,7 @@ public class HomeActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meeting", loginPOJO.getActiveToken(),
                 getIntent().getStringExtra("meeting_id"));
         call.enqueue(new Callback<CommonMeetingPOJO>() {
             @Override
@@ -411,7 +412,7 @@ public class HomeActivity extends AppCompatActivity {
             UUID = "";
         }
         Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
-        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getActiveToken(),
+        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meetings-home", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
         call.enqueue(new Callback<CommonHomePOJO>() {
             @Override
@@ -624,7 +625,8 @@ public class HomeActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingReview(loginPOJO.getActiveToken(),
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingReview(sharedData.getStringData(SharedData.API_URL) +
+                "api/meeting/save-meeting-review", loginPOJO.getActiveToken(),
                 meetingId, loginPOJO.getRowcode(),review_text ,review_text, review_int);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override

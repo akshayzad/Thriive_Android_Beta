@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,8 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
     TextView txt_reason;
     @BindView(R.id.txt_expertise)
     TextView txt_expertise;
+    @BindView(R.id.layout_data)
+    LinearLayout layout_data;
 
     private KProgressHUD progressHUD;
 
@@ -91,14 +94,13 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meeting", loginPOJO.getActiveToken(),
                 getIntent().getStringExtra("meeting_id"));
         call.enqueue(new Callback<CommonMeetingPOJO>() {
             @Override
             public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
                 if(response.isSuccessful()) {
                     Log.d(TAG, response.toString());
-                    progressHUD.dismiss();
                     try {
                         CommonMeetingPOJO pojo = response.body();
                         if (pojo != null){
@@ -107,7 +109,9 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
 
                                 meetingListPOJO  = pojo.getMeetingObject();
                                 setData(pojo.getMeetingObject());
+
                             } else {
+                                progressHUD.dismiss();
                                 Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -207,7 +211,7 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
         gridLayout.setJustifyContent(JustifyContent.CENTER);
         rv_tags.setLayoutManager(gridLayout );
         rv_tags.setAdapter(new MeetingTagAdapter(getApplicationContext(), (ArrayList<String>) meetingObject.getGiverPersonaTags()));
+        progressHUD.dismiss();
+        layout_data.setVisibility(View.VISIBLE);
     }
-
-
 }

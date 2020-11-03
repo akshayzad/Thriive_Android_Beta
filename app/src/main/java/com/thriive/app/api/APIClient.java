@@ -1,7 +1,5 @@
 package com.thriive.app.api;
 
-import com.thriive.app.R;
-
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;

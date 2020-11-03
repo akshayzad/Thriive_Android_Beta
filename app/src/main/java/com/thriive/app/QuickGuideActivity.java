@@ -31,6 +31,8 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class QuickGuideActivity extends AppCompatActivity {
 
     @BindView(R.id.viewPager)
@@ -79,42 +81,42 @@ public class QuickGuideActivity extends AppCompatActivity {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         txt_name.setText(loginPOJO.getFirstName());
-        final Handler handler = new Handler();
-        final Runnable Update = new Runnable() {
-            public void run() {
-//                if (currentPage == languageArray.length - 0) {
-//                    currentPage = 0;
+//        final Handler handler = new Handler();
+//        final Runnable Update = new Runnable() {
+//            public void run() {
+////                if (currentPage == languageArray.length - 0) {
+////                    currentPage = 0;
+////                }
+//                if (currentPage == 0){
+//                    layout_wh1.setVisibility(View.VISIBLE);
+//                    txt_close.setVisibility(View.GONE);
+//                } else {
+//                    layout_wh1.setVisibility(View.GONE);
 //                }
-                if (currentPage == 0){
-                    layout_wh1.setVisibility(View.VISIBLE);
-                    txt_close.setVisibility(View.GONE);
-                } else {
-                    layout_wh1.setVisibility(View.GONE);
-                }
-                if (currentPage == scree_list.length - 0)
-                {
-                    txt_close.setVisibility(View.VISIBLE);
-                    timer.cancel();
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.putExtra("intent_type", "FLOW");
-                    startActivity(intent);
-                    finishAffinity();
-
-                } else {
-                    viewPager.setCurrentItem(currentPage++, true);
-                    txt_close.setVisibility(View.GONE);
-                }
-
-            }
-        };
-
-        timer = new Timer(); // This will create a new Thread
-        timer.schedule(new TimerTask() { // task to be scheduled
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, DELAY_MS, PERIOD_MS);
+//                if (currentPage == scree_list.length - 0)
+//                {
+//                    txt_close.setVisibility(View.VISIBLE);
+//                    timer.cancel();
+//                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//                    intent.putExtra("intent_type", "FLOW");
+//                    startActivity(intent);
+//                    finishAffinity();
+//
+//                } else {
+//                    viewPager.setCurrentItem(currentPage++, true);
+//                    txt_close.setVisibility(View.GONE);
+//                }
+//
+//            }
+//        };
+//
+//        timer = new Timer(); // This will create a new Thread
+//        timer.schedule(new TimerTask() { // task to be scheduled
+//            @Override
+//            public void run() {
+//                handler.post(Update);
+//            }
+//        }, DELAY_MS, PERIOD_MS);
 
     }
 
@@ -123,9 +125,17 @@ public class QuickGuideActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            //if (position =  )
-
-
+            if (position == scree_list.length - 1) {
+                txt_close.setVisibility(View.VISIBLE);
+            } else {
+                txt_close.setVisibility(View.GONE);
+            }
+            if (position == 0){
+                layout_wh1.setVisibility(View.VISIBLE);
+                //txt_close.setVisibility(View.GONE);
+            } else {
+                layout_wh1.setVisibility(View.GONE);
+            }
             //addBottomDots(position);
         }
         @Override
@@ -137,57 +147,20 @@ public class QuickGuideActivity extends AppCompatActivity {
         }
 
     };
-//
-//    @OnClick({R.id.txt_close, R.id.btn_next, R.id.btn_wt2})
-//    public void onViewClicked(View view){
-//        switch (view.getId()) {
-//
-//            case R.id.btn_wt2:
-//                if (currentPage == 1){
-//                    currentPage = 2;
-//                    txt_close.setVisibility(View.GONE);
-//                    viewPager.setCurrentItem(2, true);
-//                }
-//                break;
-//
-//            case R.id.txt_close:
-//                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//                intent.putExtra("intent_type", "FLOW");
-//                startActivity(intent);
-//                finishAffinity();
-//                break;
-//
-//            case R.id.btn_next:
-//                if (currentPage == 0){
-//                    txt_close.setVisibility(View.GONE);
-//                    viewPager.setCurrentItem(1, true);
-//                    layout_wh1.setVisibility(View.GONE);
-//                    currentPage = 1;
-//                } else  if (currentPage == 2){
-//                //   txt_close.setVisibility(View.GONE);
-//                    currentPage = 3;
-//                    viewPager.setCurrentItem(3, true);
-//                    txt_close.setVisibility(View.VISIBLE);
-//                    sharedData.addBooleanData(SharedData.isFirstVisit, true);
-//                    Handler mHandler = new Handler();
-//                    mHandler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//                            intent.putExtra("intent_type", "FLOW");
-//                            startActivity(intent);
-//                            finishAffinity();
-//                        }
-//                    }, 2000);
-//                } else if (currentPage == 3){
-//                    Intent intent1 = new Intent(getApplicationContext(), HomeActivity.class);
-//                    intent1.putExtra("intent_type", "FLOW");
-//                    startActivity(intent1);
-//                    finishAffinity();
-//                }
-//
-//        }
-//    }
+
+    @OnClick({R.id.txt_close})
+    public void onViewClicked(View view){
+        switch (view.getId()) {
+
+            case R.id.txt_close:
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent.putExtra("intent_type", "FLOW");
+                startActivity(intent);
+                finishAffinity();
+
+                break;
+        }
+    }
     public class MyViewPagerAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;
 

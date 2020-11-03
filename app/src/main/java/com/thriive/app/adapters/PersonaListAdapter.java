@@ -17,6 +17,7 @@ import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.models.PersonaListPOJO;
 import com.thriive.app.models.PersonaListPOJO;
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
     private Fragment fragment;
     private ArrayList<PersonaListPOJO> personaList;
     private int currentItem = -1;
+    private SharedData sharedData;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_reasonName)
@@ -47,6 +49,7 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
         this.context = context;
         this.fragment = fragment;
         this.personaList = personaList;
+        sharedData = new SharedData(context);
     }
 
     @Override
@@ -63,7 +66,7 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
         holder.txt_reasonName.setText(item.getPersonaName());
     //    holder.txt_reasonName.setVisibility(View.VISIBLE);
         Glide.with(context)
-                .load(Utility.UTILITY_URL +"persona_button/"+
+                .load(sharedData.getStringData(SharedData.API_URL) +"persona_button/"+
                         item.getRowcode() + ".png" )
                 .into(holder.image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -10,6 +10,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,7 +20,9 @@ import android.text.Editable;
 
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.ArrayMap;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +56,7 @@ import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.fragments.LoginFragment;
 import com.thriive.app.fragments.MeetingDetailsFragment;
+import com.thriive.app.models.BaseUrlPOJo;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
@@ -60,10 +66,12 @@ import com.thriive.app.utilities.Validation;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,6 +79,8 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -112,8 +122,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 //    clientsecret
 //0GfLX8S6YeciFU8x
 
-    private String CLIENT_ID = "86oqo8213yzpzp";
-    private String CLIENT_SECRET = "0GfLX8S6YeciFU8x";
+    private String CLIENT_ID = "7884jv1r7np0qe";
+    private String CLIENT_SECRET = "gaWSVUjMqPu3GU09";
 //
 //    Client Secret: gaWSVUjMqPu3GU09
     //String REDIRECTION_URL = "http://localhost:4200/";
@@ -205,9 +215,10 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
 
 
-
         linkedInRequestManager = new LinkedInRequestManager(LoginActivity.this, this,
                 CLIENT_ID, CLIENT_SECRET, REDIRECTION_URL, true);
+
+        getBaseUrl();
 
         edt_password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -272,6 +283,73 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         }
 
     };
+
+    public void getBaseUrl() {
+        PackageManager manager = this.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "PackageName = " + info.packageName + "\nVersionCode = " + info.versionCode + "\nVersionName = " + info.versionName);
+        Map<String, Object> jsonParams = new ArrayMap<>();
+        jsonParams.put("platform_name", "android");
+        jsonParams.put("internal_app_version", info.versionCode);
+
+        Log.e("params", jsonParams.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                (new JSONObject(jsonParams)).toString());
+
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<BaseUrlPOJo> call = apiInterface.GetBaseUrl("application/json", ""+Utility.BASEURL, body);
+            call.enqueue(new Callback<BaseUrlPOJo>() {
+                @Override
+                public void onResponse(Call<BaseUrlPOJo> call, Response<BaseUrlPOJo> response) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        BaseUrlPOJo urlPOJo = response.body();
+                        try {
+                            if (urlPOJo != null) {
+                                Log.d(TAG, "" + urlPOJo.getMessage());
+                                progressHUD.dismiss();
+                                if (urlPOJo.getOK()) {
+                                    sharedData.addStringData(SharedData.API_URL, urlPOJo.getApiUrl());
+                                    Log.d(TAG, "Base url " + urlPOJo.getApiUrl());
+                                    if (urlPOJo.getEnv().equals("Test")) {
+                                        Toast.makeText(LoginActivity.this, "Test Environment", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "" + urlPOJo.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.getMessage();
+                        }
+
+                    } else {
+                        progressHUD.dismiss();
+                        Log.d(TAG, " FAIL" + response.toString());
+                        Toast.makeText(LoginActivity.this, "" + response.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<BaseUrlPOJo> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(LoginActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
 
     private void addBottomDots(int currentPage) {
         dots = new TextView[imageArray.length];
@@ -455,7 +533,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<LoginPOJO> call = apiInterface.login(l_email, l_password, l_login_method, BuildConfig.VERSION_NAME,
+            Call<LoginPOJO> call = apiInterface.login(sharedData.getStringData(SharedData.API_URL) + "api/AppLogin/app-login",l_email, l_password, l_login_method, BuildConfig.VERSION_NAME,
                     ""+android.os.Build.VERSION.SDK_INT, UUID,
                     UUID, "android",  ""+timeZone.getID(), time_stamp);
             call.enqueue(new Callback<LoginPOJO>() {
@@ -630,7 +708,7 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getForgetPassword(email_id);
+        Call<CommonPOJO> call = apiInterface.getForgetPassword(sharedData.getStringData(SharedData.API_URL) + "api/AppLogin/forgot-password", email_id);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
@@ -639,7 +717,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                     CommonPOJO loginPOJO = response.body();
                     progressHUD.dismiss();
                     if (loginPOJO.getOK()) {
-                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                        showCustomToast(""+loginPOJO.getMessage());
                     } else {
                         Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -655,7 +734,22 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
 
     }
+    private void showCustomToast(final String msg) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast toast=Toast.makeText(getApplicationContext(),msg ,Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL,20,20);
+                View view=toast.getView();
+                TextView view1=(TextView)view.findViewById(android.R.id.message);
+                view1.setPadding(10,10,10,10);
+                view1.setTextColor(Color.WHITE);
+                view.setBackgroundResource(R.drawable.filled_circle_terracota);
+                toast.show();
 
+            }
+        });
+    }
 
     @Override
     public void onGetAccessTokenFailed() {

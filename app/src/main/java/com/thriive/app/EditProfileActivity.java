@@ -379,7 +379,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonEntityImagePOJO> call = apiInterface.getUploadEntityPhoto(loginPOJO.getActiveToken(),
+            Call<CommonEntityImagePOJO> call = apiInterface.getUploadEntityPhoto(sharedData.getStringData(SharedData.API_URL) + "api/Entity/upload-entity-photo",loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode(), base64FromFile);
             call.enqueue(new Callback<CommonEntityImagePOJO>() {
                 @Override
@@ -471,7 +471,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getChangePassword(loginPOJO.getPrimaryLoginKey(), password);
+            Call<CommonPOJO> call = apiInterface.getChangePassword(sharedData.getStringData(SharedData.API_URL) +
+                    "api/AppLogin/change-password", loginPOJO.getPrimaryLoginKey(), password);
             call.enqueue(new Callback<CommonPOJO>() {
                 @Override
                 public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
@@ -679,7 +680,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonEntityPOJO> call = apiInterface.getSaveEntityDesignation(loginPOJO.getActiveToken(),
+            Call<CommonEntityPOJO> call = apiInterface.getSaveEntityDesignation(sharedData.getStringData(SharedData.API_URL) + "api/Entity/save-entity-designation", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode(), toString);
             call.enqueue(new Callback<CommonEntityPOJO>() {
                 @Override
@@ -722,7 +723,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonCountryPOJO> call = apiInterface.getCountryList();
+            Call<CommonCountryPOJO> call = apiInterface.getCountryList(sharedData.getStringData(SharedData.API_URL) +
+                    "api/Entity/get-country-list", loginPOJO.getActiveToken());
             call.enqueue(new Callback<CommonCountryPOJO>() {
                 @Override
                 public void onResponse(Call<CommonCountryPOJO> call, Response<CommonCountryPOJO> response) {
@@ -841,7 +843,8 @@ public class EditProfileActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonEntityPOJO> call = apiInterface.getSaveEntityRegion(loginPOJO.getActiveToken(),
+            Call<CommonEntityPOJO> call = apiInterface.getSaveEntityRegion(sharedData.getStringData(SharedData.API_URL) +
+                    "api/Entity/save-entity-country", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode(), countryCode, countryName);
             call.enqueue(new Callback<CommonEntityPOJO>() {
                 @Override
@@ -920,7 +923,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntityPOJO> call = apiInterface.getSaveEntityName(loginPOJO.getActiveToken(),
+        Call<CommonEntityPOJO> call = apiInterface.getSaveEntityName(sharedData.getStringData(SharedData.API_URL) +
+                "api/Entity/save-entity-name", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode(), f_name, l_name);
         call.enqueue(new Callback<CommonEntityPOJO>() {
             @Override
@@ -1005,7 +1009,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getSaveAppReview(loginPOJO.getActiveToken(),
+        Call<CommonPOJO> call = apiInterface.getSaveAppReview(sharedData.getStringData(SharedData.API_URL) + "api/meeting/save-app-review", loginPOJO.getActiveToken(),
                  loginPOJO.getRowcode(), review_text ,review_text, Integer.parseInt(review_int));
         call.enqueue(new Callback<CommonPOJO>() {
             @Override

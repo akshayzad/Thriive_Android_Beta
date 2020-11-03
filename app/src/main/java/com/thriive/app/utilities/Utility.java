@@ -2,22 +2,23 @@ package com.thriive.app.utilities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.ParseException;
-import android.os.Build;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.multidex.BuildConfig;
 
 import com.google.gson.Gson;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.LoginPOJO;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -26,9 +27,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.TimeZone;
-
-import static java.util.Locale.getDefault;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 public class Utility {
 
@@ -39,9 +41,32 @@ public class Utility {
     public static final int END_CALL_DIALOG = 500;
     public static final String PRIVACY_POLICY = "Privacy Policy";
     public static final String TERMS = "Terms of Service";
+    public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
+    public static RequestBody getJsonEncode() {
 
-    public static String UTILITY_URL = "https://niticode.com/";
+        Map<String, Object> jsonParams = new ArrayMap<>();
+        jsonParams.put("platform_name", "android");
+        jsonParams.put("internal_app_version", BuildConfig.VERSION_CODE);
 
+
+//        Map<String, Object> jsonArrayMap = new ArrayMap<>();
+//        jsonArrayMap.put("phone", edt_phone_no.getText().toString());
+//        jsonArrayMap.put("first_name", edt_fname.getText().toString());
+//        jsonArrayMap.put("last_name", edt_lname.getText().toString());
+//        jsonArrayMap.put("email", email);
+//        jsonArrayMap.put("home_address", jsonMapHomeAddress);
+
+//        Map<String, Object> jsonParams = new HashMap<>();
+//        jsonParams.put("person", jsonArrayMap);
+
+        Log.e("params", jsonParams.toString());
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
+                (new JSONObject(jsonParams)).toString());
+
+        return body;
+
+    }
     public static void saveLoginData(Context context, LoginPOJO.ReturnEntity loginPOJOData){
         SharedPreferences sharedPreferences = context.getSharedPreferences("login_pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor  editor = sharedPreferences.edit();

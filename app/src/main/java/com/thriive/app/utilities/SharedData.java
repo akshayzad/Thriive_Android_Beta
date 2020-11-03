@@ -25,6 +25,7 @@ public class SharedData {
     public static final String MEETING_BOOKED = "MEETING_BOOKED" ;
     public static final String MEETING_DONE = "MEETING_DONE";
     public static final String MEETING_TOTAL = "MEETING_TOTAL";
+    public static final String API_URL = "API_URL";
 
     public static String PREFS_2 = "PREFS_2";
     private SharedPreferences prefs2 ;

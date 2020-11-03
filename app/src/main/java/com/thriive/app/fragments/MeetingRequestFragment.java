@@ -364,7 +364,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonReasonPOJO> call = apiInterface.getReason(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
+        Call<CommonReasonPOJO> call = apiInterface.getReason(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/get-reason",loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
                 loginPOJO.getEntityName(), +loginPOJO.getReqPersonaId(),
                 loginPOJO.getReqPersonaName());
         call.enqueue(new Callback<CommonReasonPOJO>() {
@@ -414,7 +414,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .show();
         reasonId = reason_id;
         reasonName = reason_name;
-        Call<CommonPersonaPOJO> call = apiInterface.getPersona(loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
+        Call<CommonPersonaPOJO> call = apiInterface.getPersona(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/get-persona",loginPOJO.getActiveToken(),""+loginPOJO.getEntityId(),
                 loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
                 loginPOJO.getReqPersonaName(), reason_id);
         call.enqueue(new Callback<CommonPersonaPOJO>() {
@@ -493,7 +493,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         try {
             sharedData.addIntData(SharedData.domainId, 0);
             sharedData.addIntData(SharedData.subDomainId, 0);
-            Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(loginPOJO.getActiveToken(),s,"10", "0");
+            Call<CommonDomainPOJO> call = apiInterface.getSearchDomain(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/search-domain",
+                    loginPOJO.getActiveToken(),s,"10", "0");
             call.enqueue(new Callback<CommonDomainPOJO>() {
                 @Override
                 public void onResponse(Call<CommonDomainPOJO> call, Response<CommonDomainPOJO> response) {
@@ -538,7 +539,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         try {
             sharedData.addIntData(SharedData.domainId, 0);
             sharedData.addIntData(SharedData.subDomainId, 0);
-            Call<MetaListPOJO> call = apiInterface.getSearchDomainV2(loginPOJO.getActiveToken(),s,"10", "0");
+            Call<MetaListPOJO> call = apiInterface.getSearchDomainV2(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/search-domain-v2", loginPOJO.getActiveToken(),s,"10", "0");
             call.enqueue(new Callback<MetaListPOJO>() {
                 @Override
                 public void onResponse(Call<MetaListPOJO> call, Response<MetaListPOJO> response) {
@@ -637,7 +638,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         cv_meta.setVisibility(View.GONE);
         Log.d(TAG, reasonId + "persono " + persona_id);
 
-        Call<CommonMetaPOJO> call = apiInterface.getMetaList(loginPOJO.getActiveToken(), ""+loginPOJO.getEntityId(),
+        Call<CommonMetaPOJO> call = apiInterface.getMetaList(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/get-meta-v2",loginPOJO.getActiveToken(), ""+loginPOJO.getEntityId(),
                 loginPOJO.getEntityName(), ""+loginPOJO.getReqPersonaId(),
                 loginPOJO.getReqPersonaName(), reasonId, persona_id);
         call.enqueue(new Callback<CommonMetaPOJO>() {
@@ -903,7 +904,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(loginPOJO.getActiveToken(),
+        Call<CommonPOJO> call = apiInterface.getSaveMeetingRequest(sharedData.getStringData(SharedData.API_URL) + "api/MRCalls/save-meeting-request", loginPOJO.getActiveToken(),
                 loginPOJO.getEntityId()
                 ,reasonId, personaId, domainId, subDomainId, expertiseId, regionId);
         call.enqueue(new Callback<CommonPOJO>() {

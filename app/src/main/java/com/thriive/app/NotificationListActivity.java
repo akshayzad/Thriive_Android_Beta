@@ -127,7 +127,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(loginPOJO.getActiveToken(),
+            Call<CommonMeetingListPOJO> call = apiInterface.getPendingRequest(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-pending-requests", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonMeetingListPOJO>() {
                 @Override
@@ -185,7 +185,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(loginPOJO.getActiveToken(),
+            Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meeting", loginPOJO.getActiveToken(),
                     getIntent().getStringExtra("meeting_id"));
             call.enqueue(new Callback<CommonMeetingPOJO>() {
                 @Override
@@ -367,7 +367,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(),
+            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(sharedData.getStringData(SharedData.API_URL) +
+                    "api/Entity/get-entity-slots", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
                 @SuppressLint("NewApi")
@@ -622,7 +623,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getAcceptMeeting(loginPOJO.getActiveToken(),
+            Call<CommonPOJO> call = apiInterface.getAcceptMeeting(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/accept-meeting", loginPOJO.getActiveToken(),
                     meetingCode, loginPOJO.getRowcode(), startTime, endTime);
             call.enqueue(new Callback<CommonPOJO>() {
                 @Override
@@ -673,7 +674,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getRejectMeeting(loginPOJO.getActiveToken(),
+            Call<CommonPOJO> call = apiInterface.getRejectMeeting(sharedData.getStringData(SharedData.API_URL)
+                            + "api/Meeting/reject-meeting", loginPOJO.getActiveToken(),
                     meetingCode, loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonPOJO>() {
                 @Override

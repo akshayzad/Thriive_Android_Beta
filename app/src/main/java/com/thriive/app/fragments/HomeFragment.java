@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             UUID = "";
         }
         Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
-        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(loginPOJO.getActiveToken(),
+        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meetings-home", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
         call.enqueue(new Callback<CommonHomePOJO>() {
             @Override

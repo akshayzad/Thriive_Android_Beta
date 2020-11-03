@@ -7,9 +7,11 @@
     android:background="@drawable/match_bgrnd"
     tools:context=".MeetingConfirmedActivity">
     <LinearLayout
+        android:id="@+id/layout_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:visibility="invisible"
         android:gravity="center">
         <TextView
             android:id="@+id/txt_22"
@@ -71,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="-60dp"
+                android:layout_marginLeft="-50dp"
                 android:layout_toRightOf="@id/img_requestor"
                 android:layout_below="@id/img_giver">
                 <TextView

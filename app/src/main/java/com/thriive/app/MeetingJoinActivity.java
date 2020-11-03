@@ -190,7 +190,17 @@ public class MeetingJoinActivity extends AppCompatActivity {
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
                                 showCustomToast(getResources().getString(R.string.internet_dissconnect));
-                                leaveActivity();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        leaveActivity();
+                                        showCustomToast(getResources().getString(R.string.internet_dissconnect));
+
+                                    }
+                                }, 5000);
+                                showCustomToast(getResources().getString(R.string.internet_dissconnect));
+
+                               // leaveActivity();
                             }
                         }, 5000);
                     }
@@ -304,7 +314,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+            Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/meeting-start", loginPOJO.getActiveToken(),
                     Integer.parseInt(meeting_id), true, loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonStartMeetingPOJO>() {
                 @Override
@@ -427,8 +437,8 @@ public class MeetingJoinActivity extends AppCompatActivity {
                 View view=toast.getView();
                 TextView view1=(TextView)view.findViewById(android.R.id.message);
                 view1.setPadding(10,10,10,10);
-                view1.setTextColor(Color.BLACK);
-                view.setBackgroundResource(R.drawable.rectangle_white);
+                view1.setTextColor(Color.WHITE);
+                view.setBackgroundResource(R.drawable.filled_circle_terracota);
                 toast.show();
 
             }
@@ -730,7 +740,8 @@ public class MeetingJoinActivity extends AppCompatActivity {
             try {
                 Log.d(TAG, loginPOJO.getActiveToken() +  " \n "+
                         meeting_id + " "+ loginPOJO.getRowcode());
-                Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(loginPOJO.getActiveToken(),
+                Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingEnd(sharedData.getStringData(SharedData.API_URL) +
+                        "api/Meeting/meeting-end", loginPOJO.getActiveToken(),
                         meeting_id, loginPOJO.getRowcode());
                 call.enqueue(new Callback<CommonStartMeetingPOJO>() {
                     @Override

@@ -711,7 +711,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(loginPOJO.getActiveToken(), loginPOJO.getRowcode());
+            Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(sharedData.getStringData(SharedData.API_URL) +
+                    "api/Entity/get-entity-slots", loginPOJO.getActiveToken(), loginPOJO.getRowcode());
             call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
                 @SuppressLint("NewApi")
                 @Override
@@ -957,7 +958,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
+            Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(sharedData.getStringData(SharedData.API_URL)
+                            + "api/Meeting/reschedule-meeting",loginPOJO.getActiveToken(),
                     meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), startTime,endTime);
             call.enqueue(new Callback<CommonPOJO>() {
                 @Override
@@ -1004,7 +1006,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                         .setLabel("Please wait")
                         .setCancellable(false)
                         .show();
-                Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+                Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/meeting-start",loginPOJO.getActiveToken(),
                         meetingListPOJO.getMeetingId(), true, loginPOJO.getRowcode());
                 call.enqueue(new Callback<CommonStartMeetingPOJO>() {
                     @Override
@@ -1156,7 +1158,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getCancelMeeting(loginPOJO.getActiveToken(),
+        Call<CommonPOJO> call = apiInterface.getCancelMeeting(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/cancel-meeting", loginPOJO.getActiveToken(),
                 meetingListPOJO.getMeetingCode(), loginPOJO.getRowcode(), cancelReason);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override

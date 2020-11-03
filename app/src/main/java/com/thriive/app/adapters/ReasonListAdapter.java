@@ -18,6 +18,7 @@ import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.models.ReasonListPOJO;
 import com.thriive.app.models.ReasonListPOJO;
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
     private Fragment fragment;
     private ArrayList<ReasonListPOJO> reasonList;
     private int currentItem = -1;
+    private SharedData sharedData;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_reasonName)
@@ -48,6 +50,7 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
         this.context = context;
         this.fragment = fragment;
         this.reasonList = reasonList;
+        sharedData = new SharedData(context);
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
         ReasonListPOJO item = reasonList.get(position);
         holder.txt_reasonName.setText(item.getReasonName());
         Glide.with(context)
-                .load(Utility.UTILITY_URL +"reason_button/"+ item.getRowcode() + ".png")
+                .load(sharedData.getStringData(SharedData.API_URL) +"reason_button/"+ item.getRowcode() + ".png")
                 .into(holder.image);
 //        if(currentItem == position){
 //            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_tarcoto));

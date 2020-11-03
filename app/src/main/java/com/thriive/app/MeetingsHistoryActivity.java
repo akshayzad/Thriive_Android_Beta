@@ -20,6 +20,7 @@ import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
@@ -43,12 +44,14 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
+    private SharedData sharedData;
     private static String TAG = MeetingsHistoryActivity.class.getName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meetings_history);
         ButterKnife.bind(this);
+        sharedData = new SharedData(getApplicationContext());
         loginPOJO = Utility.getLoginData(getApplicationContext());
         apiInterface = APIClient.getApiInterface();
 
@@ -63,7 +66,8 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonMeetingListPOJO> call = apiInterface.getMeetingHistory(loginPOJO.getActiveToken(),
+        Call<CommonMeetingListPOJO> call = apiInterface.getMeetingHistory(sharedData.getStringData(SharedData.API_URL) +
+                "api/Meeting/get-history-meetings", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
             @Override

@@ -346,7 +346,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
             if (UUID  == null) {
                 UUID = "";
             }
-            Call<CommonScheduleMeetingPOJO> call = apiInterface.getScheduledMeeting(loginPOJO.getActiveToken(),
+            Call<CommonScheduleMeetingPOJO> call = apiInterface.getScheduledMeeting(sharedData.getStringData(SharedData.API_URL)
+                            + "api/Meeting/get-scheduled-meetings", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
             call.enqueue(new Callback<CommonScheduleMeetingPOJO>() {
                 @Override
@@ -405,7 +406,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void getMeetingRequest() {
         try {
-            Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(loginPOJO.getActiveToken(),
+            Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-pending-meetings", loginPOJO.getActiveToken(),
                     loginPOJO.getRowcode());
             call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
                 @Override
@@ -474,7 +475,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(loginPOJO.getActiveToken(),
+        Call<CommonStartMeetingPOJO> call = apiInterface.getMeetingStart(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/meeting-start", loginPOJO.getActiveToken(),
                 meeting_id, true, loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonStartMeetingPOJO>() {
             @Override
@@ -536,7 +537,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(""+loginPOJO.getActiveToken(), ""+loginPOJO.getRowcode());
+        Call<CommonEntitySlotsPOJO> call = apiInterface.getEntitySlots(sharedData.getStringData(SharedData.API_URL) + "api/Entity/get-entity-slots", ""+loginPOJO.getActiveToken(), ""+loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonEntitySlotsPOJO>() {
             @SuppressLint("NewApi")
             @Override
@@ -757,7 +758,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .setLabel("Please wait")
                 .setCancellable(false)
                 .show();
-        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(loginPOJO.getActiveToken(),
+        Call<CommonPOJO> call = apiInterface.getRescheduleMeeting(sharedData.getStringData(SharedData.API_URL)
+                        + "api/Meeting/reschedule-meeting", loginPOJO.getActiveToken(),
                 meetingCode, loginPOJO.getRowcode(), startTime, endTime);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
