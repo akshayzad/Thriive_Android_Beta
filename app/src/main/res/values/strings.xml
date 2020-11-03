@@ -108,6 +108,9 @@
     <string name="no_domains">No domains found. Please try with a different domain name.</string>
     <string name="seemore">Show more</string>
     <string name="seeless">Show less</string>
+    <string name="relevant_match">"Was your match relevant? "</string>
+    <string name="experience">How was your conversation?</string>
+    <string name="app_experience">Rate your experience with\nThriive</string>
 
 
 </resources>

@@ -223,6 +223,18 @@ APIInterface {
 //            "response_int":3
 //    }
 
+
+//    {
+//
+//        "rowcode":"23bed6fd",
+//            "response_code":"good_review",
+//            "response_text":"Good but not relevant",
+//            "response_int":3,
+//            "flag_thumbs":1,
+//            "flag_no_show":0,
+//            "rating_app":2,
+//            "rating_meeting":4
+//    }
     @FormUrlEncoded
     @POST
     Call<CommonPOJO> getSaveMeetingReview(@Url String url, @Header("Authorization") String authorization,
@@ -230,7 +242,10 @@ APIInterface {
                                           @Field("rowcode") String rowcode,
                                           @Field("response_code") String response_code,
                                           @Field("response_text") String response_text,
-                                          @Field("response_int") int response_int);
+                                          @Field("response_int") int response_int,
+                                          @Field("flag_thumbs") int flag_thumbs,
+                                          @Field("flag_no_show") int flag_no_show,
+                                          @Field("rating_app") int rating_app, @Field("rating_meeting") int rating_meeting);
 
     @FormUrlEncoded
     @POST

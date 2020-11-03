@@ -89,9 +89,38 @@ public class SchedulePagerAdapter extends PagerAdapter {
         if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
             ArrayList <String> arrayList = new ArrayList<>();
 
-            arrayList.addAll(item.getGiverExpertiseTags());
-            arrayList.addAll(item.getMeetingTag());
-            rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
+//            arrayList.addAll(item.getGiverExpertiseTags());
+//            arrayList.addAll(item.getMeetingTag());
+//            rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
+
+            ArrayList<String> array1 = new ArrayList<>();
+            // array1.addAll(meetingListPOJO.getMeetingTag());
+            array1.addAll(item.getGiverDomainTags());
+            array1.addAll(item.getGiverExpertiseTags());
+
+            for (int i = 0; i< array1.size(); i++){
+                for (int j = 0; j < item.getMeetingTag().size(); j++){
+                    if (array1.get(i).equals(item.getMeetingTag().get(j))){
+                        array1.remove(array1.get(i));
+                    }
+                }
+            }
+
+            ArrayList<String> combine_array = new ArrayList<>();
+            combine_array.addAll(item.getMeetingTag());
+            combine_array.addAll(array1);
+
+            ArrayList<String> final_array = new ArrayList<>();
+            for (int i =0; i< combine_array.size(); i++)
+            {
+                if (i < 3){
+                    final_array.add(combine_array.get(i));
+                }
+
+            }
+            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
+
+
             txt_giverName.setText("with "+item.getGiverName());
             sharedData.addStringData(SharedData.CALLING_NAME, item.getGiverName());
             try{
@@ -135,10 +164,41 @@ public class SchedulePagerAdapter extends PagerAdapter {
             }
         } else {
             txt_giverName.setText("with " +item.getRequestorName());
-            ArrayList <String> arrayList = new ArrayList<>();
-            arrayList.addAll(item.getRequestorExpertiseTags());
-            arrayList.addAll(item.getMeetingTag());
-            rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
+
+//
+//            ArrayList <String> arrayList = new ArrayList<>();
+//            arrayList.addAll(item.getRequestorExpertiseTags());
+//            arrayList.addAll(item.getMeetingTag());
+
+
+
+            ArrayList<String> array1 = new ArrayList<>();
+            // array1.addAll(meetingListPOJO.getMeetingTag());
+            array1.addAll(item.getRequestorDomainTags());
+            array1.addAll(item.getRequestorExpertiseTags());
+
+            for (int i = 0; i< array1.size(); i++){
+                for (int j = 0; j < item.getMeetingTag().size(); j++){
+                    if (array1.get(i).equals(item.getMeetingTag().get(j))){
+                        array1.remove(array1.get(i));
+                    }
+                }
+            }
+
+            ArrayList<String> combine_array = new ArrayList<>();
+            combine_array.addAll(item.getMeetingTag());
+            combine_array.addAll(array1);
+
+                ArrayList<String> final_array = new ArrayList<>();
+                for (int i =0; i< combine_array.size(); i++)
+                {
+                    if (i < 3){
+                        final_array.add(combine_array.get(i));
+                    }
+
+                }
+            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
+
             sharedData.addStringData(SharedData.CALLING_NAME, item.getRequestorName());
             try {
                 if (item.getRequestorDesignationTags().size() > 0) {

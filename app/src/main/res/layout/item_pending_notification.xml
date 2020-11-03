@@ -89,12 +89,23 @@
                 android:orientation="vertical"
                 android:layout_margin="@dimen/_5dp">
 
-
+                <TextView
+                    android:id="@+id/txt_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textSize="@dimen/_16dp"
+                    android:padding="@dimen/_1dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:textColor="@color/darkGreyBlue"
+                    android:text="Meeting for" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/areas_expertise"
                     android:textSize="@dimen/_15dp"
+                    android:visibility="gone"
                     android:layout_marginRight="@dimen/_10dp"
                     android:layout_marginLeft="@dimen/_10dp"
                     android:textColor="@color/darkGreyBlue"
@@ -129,16 +140,7 @@
                     android:layout_marginBottom="5dp"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
-                <TextView
-                    android:id="@+id/txt_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:textSize="@dimen/_16dp"
-                    android:textAlignment="center"
-                    android:padding="@dimen/_10dp"
-                    android:textColor="@color/darkGreyBlue"
-                    android:text="Meeting for" />
+
                 <TextView
                     android:id="@+id/txt_learnMore"
                     android:layout_width="wrap_content"
@@ -146,6 +148,7 @@
                     android:layout_gravity="center"
                     android:textColor="@color/darkSeaGreen"
                     android:textSize="@dimen/_12dp"
+                    android:visibility="gone"
                     android:textAllCaps="true"
                     android:fontFamily="@font/roboto_regular"
                     android:background="@drawable/outline_circle_darkseagreen"

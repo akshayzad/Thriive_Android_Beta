@@ -520,8 +520,14 @@ public class Utility {
 
     public static String getInitialsName(String name){
         String[] splited = name.trim().split("\\s+");
-        String split_one=splited[0];
-        String split_second=splited[1];
+        String split_one = "", split_second = "";
+        try {
+             split_one=splited[0];
+             split_second=splited[1];
+        } catch (Exception e){
+
+        }
+
 
         StringBuilder s1 = new StringBuilder();
         try {

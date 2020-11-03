@@ -95,7 +95,8 @@ public class HomeActivity extends AppCompatActivity {
     private LoginPOJO.ReturnEntity loginPOJO;
     private static final String TAG = HomeActivity.class.getName();
 
-    private int rating_int = 0;
+    private int rating_int = 0, isRelevantMatchSelect;
+    boolean isDidntMeet = false, isRelevantMatch = false  , isDidntMeetSelect ;
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +181,8 @@ public class HomeActivity extends AppCompatActivity {
             getMeetingById();
 
         }
+
+        //showMeetingRatingDialog(meetingId);
     }
 
     private void getMeetingCount() {
@@ -398,7 +401,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
         if(sharedData.getBooleanData(SharedData.SHOW_DIALOG)){
             meetingId = sharedData.getStringData(SharedData.MEETING_ID);
-            showMeetingDialog(meetingId);
+            showMeetingRatingDialog(meetingId);
         }
         //getMeetingHome();
     }
@@ -446,6 +449,167 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
+
+
+
+    public void showMeetingRatingDialog(String meeting_Id) {
+        meetingId = meeting_Id;
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater =  this.getLayoutInflater();
+        // final View dialogView = inflater.inflate(R.layout.popup_pending_meeting, null);
+
+        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_rating, null);
+        builder.setView(view1);
+        ImageView img_close = view1.findViewById(R.id.img_close);
+
+        TextView txt_didntMeet = view1.findViewById(R.id.txt_didntMeet);
+        Button btn_submit = view1.findViewById(R.id.btn_submit);
+
+        RatingBar rating_meeting = view1.findViewById(R.id.rating_meeting);
+        RatingBar rating_app = view1.findViewById(R.id.rating_app);
+
+
+        ImageView img_thumbs_up = view1.findViewById(R.id.img_thumbs_up);
+        ImageView img_thumbs_down = view1.findViewById(R.id.img_thumbs_down);
+
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        sharedData.addBooleanData(SharedData.SHOW_DIALOG, false);
+//        txt_name.setText(Html.fromHtml((getResources().getString(R.string.rate_meeting))+
+//                " <font color='#108568'>" + "</font>" + ""));
+
+        builder.setView(view1);
+        rating_app.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                if (rating_app.getRating() != 0.0  && rating_meeting.getRating() != 0.0 && isRelevantMatch){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.circle_terracota));
+
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+
+                }
+//                if (rating.getRating() != 0.0 && !reason.equals("")){
+//                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_darkseacolor));
+//                } else {
+//                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_transparent_darkseacolor));
+//                }
+            }
+        });
+
+        rating_meeting.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                if (rating_app.getRating() != 0.0  && rating_meeting.getRating() != 0.0 && isRelevantMatch){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.circle_terracota));
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+                }
+                rating_int = (int) ratingBar.getRating();
+
+            }
+        });
+
+        img_thumbs_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isRelevantMatch = true;
+                isRelevantMatchSelect = 1;
+                img_thumbs_up.setImageDrawable(getResources().getDrawable(R.drawable.thumbs_up_select));
+                img_thumbs_down.setImageDrawable(getResources().getDrawable(R.drawable.thumb_down));
+                if (rating_app.getRating() != 0.0  && rating_meeting.getRating() != 0.0 && isRelevantMatch ){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.circle_terracota));
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+                }
+
+            }
+        });
+
+        img_thumbs_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isRelevantMatch = true;
+                isRelevantMatchSelect = 0;
+                img_thumbs_up.setImageDrawable(getResources().getDrawable(R.drawable.thumbs_up));
+                img_thumbs_down.setImageDrawable(getResources().getDrawable(R.drawable.thumbs_down_select));
+                if (rating_app.getRating() != 0.0  && rating_meeting.getRating() != 0.0 && isRelevantMatch){
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.circle_terracota));
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+                }
+
+            }
+        });
+
+
+        txt_didntMeet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isDidntMeet){
+                    isDidntMeet =false;
+                } else {
+                    isDidntMeet = true;
+                }
+
+
+                if (isDidntMeet) {
+                    txt_didntMeet.setTextColor(getResources().getColor(R.color.terracota));
+                    txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_circle_tarccota_transparent));
+                  //  isDidntMeet = false;
+                    isDidntMeetSelect = true;
+
+                } else {
+                    txt_didntMeet.setTextColor(getResources().getColor(R.color.darkSeaGreen));
+                    txt_didntMeet.setBackground(getResources().getDrawable(R.drawable.outline_circle_darkseagreen));
+                  //  isDidntMeet = true;
+                    isDidntMeetSelect = false;
+
+                }
+
+                if (rating_app.getRating() != 0.0 && rating_meeting.getRating() != 0.0 && isRelevantMatch && isDidntMeetSelect) {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.circle_terracota));
+
+                } else {
+                    btn_submit.setBackground(getResources().getDrawable(R.drawable.bg_login_button));
+
+                }
+            }
+        });
+
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (rating_app.getRating() != 0.0 && rating_meeting.getRating() != 0.0 && isRelevantMatch) {
+                    dialogs.dismiss();
+                    int flag_no_show;
+                    if (isDidntMeet){
+                        flag_no_show = 1;
+                    } else {
+                        flag_no_show = 0;
+                    }
+                    getSaveMeetingReview("", rating_int,  isRelevantMatchSelect,  flag_no_show,
+                            (int) rating_app.getRating(), (int) rating_meeting.getRating());
+                } else {
+                  //  Toast.makeText(HomeActivity.this, "Select valid details", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        // dialogs.setCancelable(false);
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+
+        dialogs.show();
+
+
+
+    }
+
 
 
     public void showMeetingDialog(String meeting_Id) {
@@ -588,7 +752,7 @@ public class HomeActivity extends AppCompatActivity {
                     rating_int = (int) rating.getRating();
                     Log.d(TAG,""+ rating_int);
                     //String reason = txt_reason4.getText().toString();
-                    getSaveMeetingReview(reason, rating_int);
+                  //  getSaveMeetingReview(reason, rating_int);
                 }
             }
         });
@@ -618,8 +782,8 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void getSaveMeetingReview(String review_text, int review_int) {
-        Log.d(TAG, "review int " + review_int);
+    public void getSaveMeetingReview(String review_text, int review_int, int flag_thumbs, int flag_no_show, int rating_app,  int rating_meeting ) {
+        Log.d(TAG, "review int " + rating_meeting + " meetingId " + meetingId);
         progressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
@@ -627,7 +791,7 @@ public class HomeActivity extends AppCompatActivity {
                 .show();
         Call<CommonPOJO> call = apiInterface.getSaveMeetingReview(sharedData.getStringData(SharedData.API_URL) +
                 "api/meeting/save-meeting-review", loginPOJO.getActiveToken(),
-                meetingId, loginPOJO.getRowcode(),review_text ,review_text, review_int);
+                meetingId, loginPOJO.getRowcode(),review_text ,review_text, review_int, flag_thumbs, flag_no_show, rating_app, rating_meeting);
         call.enqueue(new Callback<CommonPOJO>() {
             @Override
             public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {

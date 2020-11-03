@@ -54,6 +54,8 @@ import com.thriive.app.R;
 
 import com.thriive.app.adapters.ExperienceListAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
+import com.thriive.app.adapters.MeetingSelectTagAdapter;
+import com.thriive.app.adapters.MeetingTagAdapter;
 import com.thriive.app.adapters.SlotListAdapter;
 import com.thriive.app.adapters.SlotListFragmentAdapter;
 import com.thriive.app.api.APIClient;
@@ -243,8 +245,36 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 arrayList.addAll(meetingListPOJO.getMeetingTag());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout );
+
+
+                ArrayList<String> array1 = new ArrayList<>();
+                // array1.addAll(meetingListPOJO.getMeetingTag());
+                array1.addAll(meetingListPOJO.getGiverDomainTags());
+                array1.addAll(meetingListPOJO.getGiverExpertiseTags());
+
+                for (int i = 0; i< array1.size(); i++){
+                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
+                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
+                            array1.remove(i);
+                        }
+                    }
+                }
+
+                ArrayList<String> combine_array = new ArrayList<>();
+                combine_array.addAll(meetingListPOJO.getMeetingTag());
+                combine_array.addAll(array1);
+
+//                ArrayList<String> final_array = new ArrayList<>();
+//                for (int i =0; i< combine_array.size(); i++)
+//                {
+//                    if (i < 3){
+//                        final_array.add(combine_array.get(i));
+//                    }
+//
+//                }
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+
                 if (meetingListPOJO.getGiverExpertiseTags() != null){
-                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
                 }
 
                 txt_email.setText(meetingListPOJO.getGiverEmailId());
@@ -260,8 +290,10 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 if (meetingListPOJO.getGiverExperienceTags() != null){
                     label_experience.setText("Total " +meetingListPOJO.getGiverExperienceTags().get(0));
                 }
-                arrayList1.addAll(meetingListPOJO.getGiverDesignationTags());
 
+
+
+                arrayList1.addAll(meetingListPOJO.getGiverDesignationTags());
                 rv_experience.setLayoutManager(new FlexboxLayoutManager(getContext()) );
                 rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));
 
@@ -303,14 +335,43 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
                 txt_country.setText(""+meetingListPOJO.getRequestorCountryName());
 
-                //0));
-                ArrayList<String> arrayList = new ArrayList<>();
-                arrayList.addAll(meetingListPOJO.getRequestorExpertiseTags());
-                //arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
-                arrayList.addAll( meetingListPOJO.getMeetingTag());
+
+                ArrayList<String> array1 = new ArrayList<>();
+                // array1.addAll(meetingListPOJO.getMeetingTag());
+                array1.addAll(meetingListPOJO.getRequestorDomainTags());
+                array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
+
+                for (int i = 0; i< array1.size(); i++){
+                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
+                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
+                            array1.remove(i);
+                        }
+                    }
+                }
+
+                ArrayList<String> combine_array = new ArrayList<>();
+                combine_array.addAll(meetingListPOJO.getMeetingTag());
+                combine_array.addAll(array1);
+
+//                ArrayList<String> final_array = new ArrayList<>();
+//                for (int i =0; i< combine_array.size(); i++)
+//                {
+//                    if (i < 3){
+//                        final_array.add(combine_array.get(i));
+//                    }
+//
+//                }
+
+//
+//                //0));
+//                ArrayList<String> arrayList = new ArrayList<>();
+//                arrayList.addAll(meetingListPOJO.getRequestorExpertiseTags());
+//                //arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
+//                arrayList.addAll( meetingListPOJO.getMeetingTag());
+
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
-                rv_tags.setAdapter(new ExpertiseAdapter(getContext(), arrayList));
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
 //                if (meetingListPOJO.getMeetingTag() != null){
 //
 //                }
@@ -334,6 +395,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 if (meetingListPOJO.getGiverExperienceTags() != null){
                     label_experience.setText("Total "+meetingListPOJO.getRequestorExperienceTags().get(0));
                 }
+
                 arrayList1.addAll(meetingListPOJO.getRequestorDesignationTags());
 
                 rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));

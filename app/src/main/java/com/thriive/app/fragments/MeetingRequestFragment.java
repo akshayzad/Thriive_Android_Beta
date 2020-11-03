@@ -809,7 +809,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_request_meeting:
-                getSubmitRequestMeeting();
+                if (regionId.equals("")){
+                    Toast.makeText(getActivity(), "Please select region", Toast.LENGTH_SHORT).show();
+                } else {
+                    getSubmitRequestMeeting();
+                }
+
                 // successDialog();
                 break;
 
