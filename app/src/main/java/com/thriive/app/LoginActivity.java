@@ -285,29 +285,14 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     };
 
     public void getBaseUrl() {
-        PackageManager manager = this.getPackageManager();
-        PackageInfo info = null;
-        try {
-            info = manager.getPackageInfo(this.getPackageName(), PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "PackageName = " + info.packageName + "\nVersionCode = " + info.versionCode + "\nVersionName = " + info.versionName);
-        Map<String, Object> jsonParams = new ArrayMap<>();
-        jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", info.versionCode);
-
-        Log.e("params", jsonParams.toString());
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
-                (new JSONObject(jsonParams)).toString());
-
         try {
             progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<BaseUrlPOJo> call = apiInterface.GetBaseUrl("application/json", ""+Utility.BASEURL, body);
+            Call<BaseUrlPOJo> call = apiInterface.GetBaseUrl("application/json",
+                    ""+Utility.BASEURL, Utility.getJsonEncode(LoginActivity.this));
             call.enqueue(new Callback<BaseUrlPOJo>() {
                 @Override
                 public void onResponse(Call<BaseUrlPOJo> call, Response<BaseUrlPOJo> response) {

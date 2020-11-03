@@ -3,6 +3,8 @@ package com.thriive.app.utilities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.ParseException;
@@ -42,28 +44,24 @@ public class Utility {
     public static final String PRIVACY_POLICY = "Privacy Policy";
     public static final String TERMS = "Terms of Service";
     public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
-    public static RequestBody getJsonEncode() {
+    public static RequestBody getJsonEncode(Activity activity) {
 
+        PackageManager manager = activity.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(activity.getPackageName(), PackageManager.GET_ACTIVITIES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        Log.d("TAG", "PackageName = " + info.packageName + "\nVersionCode = " + info.versionCode + "\nVersionName = " + info.versionName);
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", BuildConfig.VERSION_CODE);
-
-
-//        Map<String, Object> jsonArrayMap = new ArrayMap<>();
-//        jsonArrayMap.put("phone", edt_phone_no.getText().toString());
-//        jsonArrayMap.put("first_name", edt_fname.getText().toString());
-//        jsonArrayMap.put("last_name", edt_lname.getText().toString());
-//        jsonArrayMap.put("email", email);
-//        jsonArrayMap.put("home_address", jsonMapHomeAddress);
-
-//        Map<String, Object> jsonParams = new HashMap<>();
-//        jsonParams.put("person", jsonArrayMap);
+        jsonParams.put("internal_app_version", info.versionCode);
 
         Log.e("params", jsonParams.toString());
-
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                 (new JSONObject(jsonParams)).toString());
-
+        Log.d("params", jsonParams.toString());
         return body;
 
     }
