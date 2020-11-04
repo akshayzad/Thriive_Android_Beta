@@ -250,19 +250,31 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 ArrayList<String> array1 = new ArrayList<>();
                 // array1.addAll(meetingListPOJO.getMeetingTag());
                 array1.addAll(meetingListPOJO.getGiverDomainTags());
+                array1.addAll(meetingListPOJO.getGiverSubDomainTags());
                 array1.addAll(meetingListPOJO.getGiverExpertiseTags());
 
-                for (int i = 0; i< array1.size(); i++){
-                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
-                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
-                            array1.remove(i);
-                        }
-                    }
-                }
+//                for (int i = 0; i< array1.size(); i++){
+//                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
+//                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
+//                            array1.remove(i);
+//                        }
+//                    }
+//                }
+//
+//
+//                ArrayList<String> combine_array = new ArrayList<>();
+//                for (int i = 0; i < meetingListPOJO.getMeetingTag().size(); i++){
+//                    if (!meetingListPOJO.getMeetingTag().get(i).equals("")){
+//                        combine_array.add(meetingListPOJO.getMeetingTag().get(i));
+//                    }
+//                }
+//                combine_array.addAll(array1);
 
-                ArrayList<String> combine_array = new ArrayList<>();
-                combine_array.addAll(meetingListPOJO.getMeetingTag());
-                combine_array.addAll(array1);
+
+//                ArrayList<String> combine_array = new ArrayList<>();
+//
+//                combine_array.addAll(meetingListPOJO.getMeetingTag());
+//                combine_array.addAll(array1);
 
 //                ArrayList<String> final_array = new ArrayList<>();
 //                for (int i =0; i< combine_array.size(); i++)
@@ -272,7 +284,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 //                    }
 //
 //                }
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), array1, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
 
                 if (meetingListPOJO.getGiverExpertiseTags() != null){
                 }
@@ -339,19 +351,28 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 ArrayList<String> array1 = new ArrayList<>();
                 // array1.addAll(meetingListPOJO.getMeetingTag());
                 array1.addAll(meetingListPOJO.getRequestorDomainTags());
+                array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
                 array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
 
-                for (int i = 0; i< array1.size(); i++){
-                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
-                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
-                            array1.remove(i);
-                        }
-                    }
-                }
+//                for (int i = 0; i< array1.size(); i++){
+//                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
+//                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
+//                            array1.remove(i);
+//                        }
+//                    }
+//                }
 
-                ArrayList<String> combine_array = new ArrayList<>();
-                combine_array.addAll(meetingListPOJO.getMeetingTag());
-                combine_array.addAll(array1);
+//                ArrayList<String> combine_array = new ArrayList<>();
+//                for (int i = 0; i < meetingListPOJO.getMeetingTag().size(); i++){
+//                    if (!meetingListPOJO.getMeetingTag().get(i).equals("")){
+//                        combine_array.add(meetingListPOJO.getMeetingTag().get(i));
+//                    }
+//                }
+//                combine_array.addAll(array1);
+
+//                ArrayList<String> combine_array = new ArrayList<>();
+//                combine_array.addAll(meetingListPOJO.getMeetingTag());
+//                combine_array.addAll(array1);
 
 //                ArrayList<String> final_array = new ArrayList<>();
 //                for (int i =0; i< combine_array.size(); i++)
@@ -371,7 +392,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), array1, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
 //                if (meetingListPOJO.getMeetingTag() != null){
 //
 //                }
@@ -1083,8 +1104,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                                 if (reasonPOJO.getOK()) {
                                     meetingDataPOJO = reasonPOJO.getMeetingData();
                                     sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
-
-                                    sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+                                    if (sharedData.getIntData(SharedData.USER_ID) == reasonPOJO.getMeetingData().getGiverId()){
+                                        sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getRequestorName());
+                                    }else {
+                                        sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getGiverName());
+                                    }
                                     callMeeting();
 
                                     //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();

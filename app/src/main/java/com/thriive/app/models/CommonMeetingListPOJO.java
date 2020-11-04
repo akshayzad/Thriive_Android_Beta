@@ -58,7 +58,7 @@ public class CommonMeetingListPOJO {
         @SerializedName("meeting_sub_domain")
         private String meetingSubDomain;
         @SerializedName("meeting_expertise")
-        private Object meetingExpertise;
+        private String meetingExpertise;
         @SerializedName("plan_start_time")
         private String planStartTime;
         @SerializedName("plan_end_time")
@@ -227,11 +227,11 @@ public class CommonMeetingListPOJO {
             this.meetingSubDomain = meetingSubDomain;
         }
 
-        public Object getMeetingExpertise() {
+        public String getMeetingExpertise() {
             return meetingExpertise;
         }
 
-        public void setMeetingExpertise(Object meetingExpertise) {
+        public void setMeetingExpertise(String meetingExpertise) {
             this.meetingExpertise = meetingExpertise;
         }
 

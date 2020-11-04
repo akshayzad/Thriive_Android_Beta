@@ -305,7 +305,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                                 progressHUD.dismiss();
                                 if (urlPOJo.getOK()) {
                                     sharedData.addStringData(SharedData.API_URL, urlPOJo.getApiUrl());
-                                    Log.d(TAG, "Base url " + urlPOJo.getApiUrl());
+                                    sharedData.addStringData(SharedData.REGISTER_URL, urlPOJo.getRegisterUrl());
+                                    Log.d(TAG, "Base url " + urlPOJo.getApiUrl() + " "+  urlPOJo.getRegisterUrl());
                                     if (urlPOJo.getEnv().equals("Test")) {
                                         Toast.makeText(LoginActivity.this, "Test Environment", Toast.LENGTH_SHORT).show();
                                     }
@@ -365,7 +366,8 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
 
 
 
-    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linkedin, R.id.txt_forgetPassword, R.id.txt_terms, R.id.txt_privacy, R.id.btn_custom})
+    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linkedin, R.id.txt_forgetPassword, R.id.txt_terms,
+            R.id.txt_privacy, R.id.btn_custom, R.id.btn_register})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_forgetPassword:
@@ -425,6 +427,13 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                         (LoginFragment) LoginFragment.newInstance();
                 loginFragment.show(getSupportFragmentManager(), "LoginFragment");
 
+                break;
+
+
+            case R.id.btn_register:
+                Intent intent = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+                intent.putExtra("intent_type", Utility.REGISTER);
+                startActivity(intent);
                 break;
         }
     }

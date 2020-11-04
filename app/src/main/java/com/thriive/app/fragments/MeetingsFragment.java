@@ -489,6 +489,11 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                          if (reasonPOJO.getOK()) {
                              meetingDataPOJO = reasonPOJO.getMeetingData();
                              sharedData.addStringData(SharedData.MEETING_TOKEN, meetingDataPOJO.getMeetingToken());
+                             if (sharedData.getIntData(SharedData.USER_ID) == reasonPOJO.getMeetingData().getGiverId()){
+                                 sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getRequestorName());
+                             }else {
+                                 sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getGiverName());
+                             }
                              callMeeting();
                             // Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                          } else {

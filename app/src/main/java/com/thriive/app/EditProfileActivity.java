@@ -112,7 +112,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private SharedData sharedData;
 
-    private String fName, lName;
+    private String fName = "", lName = "";
     private LoginPOJO.ReturnEntity loginPOJO;
 
     private KProgressHUD progressHUD;
@@ -171,7 +171,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             .width(120)  // width in px
                             .height(120) // height in px
                             .endConfig()
-                            .buildRect(Utility.getInitialsName(loginPOJO.getEntityName()) ,getResources().getColor( R.color.pale48));
+                            .buildRect(Utility.getInitialsName(fName +" "+ lName) ,getResources().getColor( R.color.pale48));
                     img_profile.setImageDrawable(drawable);
                 } catch (Exception e){
                     e.getMessage();
@@ -478,29 +478,33 @@ public class EditProfileActivity extends AppCompatActivity {
                 public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
                     if(response.isSuccessful()) {
                         Log.d(TAG, response.toString());
-                        CommonPOJO loginPOJO = response.body();
+                        CommonPOJO commonPOJO = response.body();
                         progressHUD.dismiss();
                         try {
-                            if (loginPOJO != null){
-                                if (loginPOJO.getOK()) {
-                                    Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
-                                    sharedData.addBooleanData(SharedData.isFirstVisit, false);
-                                    sharedData.addBooleanData(SharedData.isLogged, false);
-                                    sharedData.clearPref(getApplicationContext());
-                                    Utility.clearLogin(getApplicationContext());
-                                    Utility.clearMeetingDetails(getApplicationContext());
-                                    Handler mHandler = new Handler();
-                                    mHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            progressHUD.dismiss();
-                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                            startActivity(intent);
-                                            finishAffinity();
-                                        }
-                                    }, 2000);
+                            if (commonPOJO != null){
+                                if (commonPOJO.getOK()) {
+                                    loginPOJO.setEntityPassword(password);
+                                    Toast.makeText(EditProfileActivity.this, ""+commonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+//                                    sharedData.addBooleanData(SharedData.isFirstVisit, false);
+//                                    sharedData.addBooleanData(SharedData.isLogged, false);
+//                                    sharedData.clearPref(getApplicationContext());
+//                                    Utility.clearLogin(getApplicationContext());
+//                                    Utility.clearMeetingDetails(getApplicationContext());
+//                                    Handler mHandler = new Handler();
+//                                    mHandler.postDelayed(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            progressHUD.dismiss();
+//                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//                                            startActivity(intent);
+//                                            finishAffinity();
+//                                        }
+//                                    }, 2000);
+                                    Utility.saveLoginData(getApplicationContext(),loginPOJO);
+
+                                    setData();
                                 } else {
-                                    Toast.makeText(EditProfileActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(EditProfileActivity.this, ""+commonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (Exception e){

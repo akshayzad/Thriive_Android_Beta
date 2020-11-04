@@ -123,6 +123,11 @@ public class CommonStartMeetingPOJO {
         @Expose
         private String meetingToken;
 
+        @SerializedName("requestor_id")
+        private Integer requestorId;
+        @SerializedName("requestor_name")
+        private String requestorName;
+
         public Integer getMeetingId() {
             return meetingId;
         }
@@ -337,6 +342,22 @@ public class CommonStartMeetingPOJO {
 
         public void setMeetingToken(String meetingToken) {
             this.meetingToken = meetingToken;
+        }
+
+        public Integer getRequestorId() {
+            return requestorId;
+        }
+
+        public void setRequestorId(Integer requestorId) {
+            this.requestorId = requestorId;
+        }
+
+        public String getRequestorName() {
+            return requestorName;
+        }
+
+        public void setRequestorName(String requestorName) {
+            this.requestorName = requestorName;
         }
     }
 }

@@ -183,16 +183,22 @@ public class ExampleNotificationReceivedHandler implements OneSignal.Notificatio
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = null;
+        if (sharedData.getBooleanData(SharedData.IS_MEETING_JOIN)){
+            pendingIntent = PendingIntent.getActivity(context , 0, new Intent(),
+                    PendingIntent.FLAG_ONE_SHOT);
+        } else {
+            pendingIntent = PendingIntent.getActivity(context , 0, intent,
+                    PendingIntent.FLAG_ONE_SHOT);
+        }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context , 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.app_logo);
 
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, ADMIN_CHANNEL_ID)
-                .setSmallIcon(R.drawable.small_icon
-                )
+                .setSmallIcon(R.drawable.small_icon)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(message))

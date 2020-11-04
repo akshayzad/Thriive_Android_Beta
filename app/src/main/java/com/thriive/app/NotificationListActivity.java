@@ -310,7 +310,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             ArrayList<String> array = new ArrayList<>();
             //array.addAll(meetingListPOJO.getRequestorExperienceTags());
             for (int i =0; i< meetingListPOJO.getRequestorDesignationTags().size(); i++) {
-                if (i < 1){
+                if (i <= 1){
                     array.add(meetingListPOJO.getRequestorDesignationTags().get(i));
                 }
             }
@@ -326,29 +326,29 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
             array1.addAll(meetingListPOJO.getRequestorDomainTags());
             array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
 
-            for (int i = 0; i< array1.size(); i++){
-                for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
-                    if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
-                        array1.remove(i);
-                    }
-                }
-            }
-
-            ArrayList<String> combine_array = new ArrayList<>();
-            combine_array.addAll(meetingListPOJO.getMeetingTag());
-            combine_array.addAll(array1);
-
-            ArrayList<String> final_array = new ArrayList<>();
-            for (int i =0; i< combine_array.size(); i++)
-            {
-                if (i < 3){
-                    final_array.add(combine_array.get(i));
-                }
-
-            }
+//            for (int i = 0; i< array1.size(); i++){
+//                for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
+//                    if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
+//                        array1.remove(i);
+//                    }
+//                }
+//            }
+//
+//            ArrayList<String> combine_array = new ArrayList<>();
+//            combine_array.addAll(meetingListPOJO.getMeetingTag());
+//            combine_array.addAll(array1);
+//
+//            ArrayList<String> final_array = new ArrayList<>();
+//            for (int i =0; i< combine_array.size(); i++)
+//            {
+//                if (i <= 3){
+//                    final_array.add(combine_array.get(i));
+//                }
+//
+//            }
 
             // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
-            rv_expertise.setAdapter(new MeetingSelectTagAdapter(NotificationListActivity.this, final_array,
+            rv_expertise.setAdapter(new MeetingSelectTagAdapter(NotificationListActivity.this, array1,
                     (ArrayList<String>) meetingListPOJO.getMeetingTag()));
             img_close.setOnClickListener(new View.OnClickListener() {
                 @Override

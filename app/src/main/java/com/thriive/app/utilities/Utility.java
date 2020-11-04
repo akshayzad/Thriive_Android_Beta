@@ -43,6 +43,8 @@ public class Utility {
     public static final int END_CALL_DIALOG = 500;
     public static final String PRIVACY_POLICY = "Privacy Policy";
     public static final String TERMS = "Terms of Service";
+    public static final String REGISTER = "Register";
+
     public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
     public static RequestBody getJsonEncode(Activity activity) {
 
@@ -56,7 +58,7 @@ public class Utility {
         Log.d("TAG", "PackageName = " + info.packageName + "\nVersionCode = " + info.versionCode + "\nVersionName = " + info.versionName);
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", info.versionCode);
+        jsonParams.put("internal_app_version", 1);
 
         Log.e("params", jsonParams.toString());
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),

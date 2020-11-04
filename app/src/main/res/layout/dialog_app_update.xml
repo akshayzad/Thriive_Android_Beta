@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="@null"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="@dimen/_20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_bold"
+            android:textSize="@dimen/_18dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/_5dp"
+            android:textColor="@color/darkGreyBlue"
+            android:layout_margin="@dimen/_10dp"
+            android:text="Update Thriive?" />
+        <TextView
+            android:id="@+id/label_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_16dp"
+            android:layout_below="@id/img_02"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/_16dp"
+            android:layout_marginBottom="@dimen/_20dp"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/darkGreyBlue"
+            android:text="Thriive recommends that you update to the latest version." />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightGrey"></TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/label_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_16dp"
+                android:layout_below="@id/img_02"
+                android:textAllCaps="true"
+                android:layout_weight="1"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_margin="@dimen/_10dp"
+                android:textColor="@color/battleshipGrey"
+                android:text="@string/cancel" />
+            <TextView
+                android:id="@+id/label_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_bold"
+                android:textSize="@dimen/_16dp"
+                android:layout_below="@id/img_02"
+                android:textAllCaps="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_10dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_margin="@dimen/_10dp"
+                android:textColor="@color/terracota"
+                android:text="@string/update" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

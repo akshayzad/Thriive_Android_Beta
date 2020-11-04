@@ -81,42 +81,42 @@ public class QuickGuideActivity extends AppCompatActivity {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         txt_name.setText(loginPOJO.getFirstName());
-//        final Handler handler = new Handler();
-//        final Runnable Update = new Runnable() {
-//            public void run() {
-////                if (currentPage == languageArray.length - 0) {
-////                    currentPage = 0;
-////                }
-//                if (currentPage == 0){
-//                    layout_wh1.setVisibility(View.VISIBLE);
-//                    txt_close.setVisibility(View.GONE);
-//                } else {
-//                    layout_wh1.setVisibility(View.GONE);
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+//                if (currentPage == languageArray.length - 0) {
+//                    currentPage = 0;
 //                }
-//                if (currentPage == scree_list.length - 0)
-//                {
-//                    txt_close.setVisibility(View.VISIBLE);
-//                    timer.cancel();
+                if (currentPage == 0){
+                    layout_wh1.setVisibility(View.VISIBLE);
+                    txt_close.setVisibility(View.GONE);
+                } else {
+                    layout_wh1.setVisibility(View.GONE);
+                }
+                if (currentPage == scree_list.length - 0)
+                {
+                    txt_close.setVisibility(View.VISIBLE);
+                   // timer.cancel();
 //                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
 //                    intent.putExtra("intent_type", "FLOW");
 //                    startActivity(intent);
 //                    finishAffinity();
-//
-//                } else {
-//                    viewPager.setCurrentItem(currentPage++, true);
-//                    txt_close.setVisibility(View.GONE);
-//                }
-//
-//            }
-//        };
-//
-//        timer = new Timer(); // This will create a new Thread
-//        timer.schedule(new TimerTask() { // task to be scheduled
-//            @Override
-//            public void run() {
-//                handler.post(Update);
-//            }
-//        }, DELAY_MS, PERIOD_MS);
+
+                } else {
+                    viewPager.setCurrentItem(currentPage++, true);
+                    txt_close.setVisibility(View.GONE);
+                }
+
+            }
+        };
+
+        timer = new Timer(); // This will create a new Thread
+        timer.schedule(new TimerTask() { // task to be scheduled
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        }, DELAY_MS, PERIOD_MS);
 
     }
 
@@ -136,6 +136,7 @@ public class QuickGuideActivity extends AppCompatActivity {
             } else {
                 layout_wh1.setVisibility(View.GONE);
             }
+            currentPage = position;
             //addBottomDots(position);
         }
         @Override

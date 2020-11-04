@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
@@ -23,6 +24,9 @@ public class CommonWebviewActivity extends AppCompatActivity {
     KProgressHUD progressHUD;
     @BindView(R.id.webView)
     WebView webView;
+
+    private SharedData sharedData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,7 @@ public class CommonWebviewActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         String title = getIntent().getStringExtra("intent_type");
 
+        sharedData = new SharedData(getApplicationContext());
         progressHUD = KProgressHUD.create(this)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
@@ -39,6 +44,10 @@ public class CommonWebviewActivity extends AppCompatActivity {
             webView.loadUrl("https://thriive.app/terms-of-service/");
             webView.getSettings().setJavaScriptEnabled(true);
 
+        }else if (title.equals(Utility.REGISTER)){
+            label_name.setText("");
+            webView.loadUrl(sharedData.getStringData(SharedData.REGISTER_URL));
+            webView.getSettings().setJavaScriptEnabled(true);
         } else {
             label_name.setText(""+Utility.PRIVACY_POLICY);
             webView.loadUrl("https://thriive.app/privacy-policy/");

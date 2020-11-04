@@ -354,7 +354,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         label_noMeta.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.GONE);
         layout_lsdomain.setVisibility(View.GONE);
-
+        layout_region.setVisibility(View.GONE);
+        rv_region.setVisibility(View.GONE);
+        label_region.setVisibility(View.GONE);
     }
 
 
@@ -519,6 +521,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                         } catch (Exception e){
                             e.getMessage();
                         }
+                        layout_region.setVisibility(View.GONE);
+                        rv_region.setVisibility(View.GONE);
+                        label_region.setVisibility(View.GONE);
+                        layout_meeting_preference.setVisibility(View.GONE);
+
                         setMeta();
 
                     }
@@ -696,14 +703,32 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                             }
 
                         }
+
+                        layout_region.setVisibility(View.GONE);
+                        rv_region.setVisibility(View.GONE);
+                        label_region.setVisibility(View.GONE);
+                        layout_meeting_preference.setVisibility(View.GONE);
+
+
                     } else {
                         layout_expertise.setVisibility(View.GONE);
                         label_expertise.setVisibility(View.GONE);
+
+
+                        layout_region.setVisibility(View.GONE);
+                        rv_region.setVisibility(View.GONE);
+                        label_region.setVisibility(View.GONE);
+                        layout_meeting_preference.setVisibility(View.GONE);
+
                     }
 
                     if (!reasonPOJO.getMrParams().getFlagDomain() && !reasonPOJO.getMrParams().getFlagExpertise()) {
+                        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
                         layout_region.setVisibility(View.VISIBLE);
                         rv_region.setVisibility(View.VISIBLE);
+                        label_region.setVisibility(View.VISIBLE);
+                        layout_meeting_preference.setVisibility(View.VISIBLE);
+
                     }
                     label_noDomain.setVisibility(View.GONE);
                     setMeta();
@@ -728,14 +753,14 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_reason.setVisibility(View.GONE);
         layout_persona.setVisibility(View.GONE);
 //        label_expertise.setVisibility(View.GONE);
-        label_region.setVisibility(View.GONE);
-        layout_region.setVisibility(View.GONE);
+       // label_region.setVisibility(View.GONE);
+        //layout_region.setVisibility(View.GONE);
 
         rv_persona.setVisibility(View.GONE);
-        rv_region.setVisibility(View.GONE);
+        //rv_region.setVisibility(View.GONE);
 
         layout_subdomain.setVisibility(View.GONE);
-        layout_meeting_preference.setVisibility(View.GONE);
+      //  layout_meeting_preference.setVisibility(View.GONE);
         btn_meta.setVisibility(View.GONE);
 
     }
@@ -857,6 +882,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     private void setMetaSubDomain() {
+        label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
         layout_region.setVisibility(View.VISIBLE);

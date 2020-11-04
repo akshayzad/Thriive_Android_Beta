@@ -23,6 +23,8 @@ public class MeetingDomainAdapter extends RecyclerView.Adapter<MeetingDomainAdap
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_experience)
         TextView txt_experience;
+        @BindView(R.id.layout_select)
+        LinearLayout layout_select;
         public RecyclerAdapterHolder(View itemView) {
             super( itemView );
             ButterKnife.bind(this, itemView);
@@ -47,10 +49,10 @@ public class MeetingDomainAdapter extends RecyclerView.Adapter<MeetingDomainAdap
         holder.txt_experience.setText(item);
         for (int i = 0; i < matchList.size(); i++){
             if (item.equals(matchList.get(i))){
-               holder.txt_experience.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
+               holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
                 holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
             } else {
-                holder.txt_experience.setBackground(context.getResources().getDrawable(R.drawable.outline_background_experience));
+                holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_background_experience));
                 holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkGrey));
             }
         }

@@ -22,9 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_50dp"
-            android:layout_marginTop="@dimen/_20dp"
             android:layout_marginLeft="@dimen/_50dp"
-            android:layout_marginBottom="@dimen/_20dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -50,7 +48,7 @@
                 <Button
                     android:id="@+id/btn_linkedin"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:textAllCaps="false"
                     android:textColor="@color/whiteTwo"
                     android:textSize="@dimen/_14dp"
@@ -83,7 +81,7 @@
                 <Button
                     android:id="@+id/btn_google"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:textAllCaps="false"
                     android:background="@null"
                     android:gravity="center"
@@ -118,7 +116,7 @@
                 <Button
                     android:id="@+id/btn_custom"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:textAllCaps="false"
                     android:textColor="@color/whiteTwo"
                     android:textSize="@dimen/_13dp"
@@ -129,12 +127,38 @@
                     android:text="Login with Email"></Button>
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="180dp"
+                android:layout_height="44dp"
+                android:layout_marginRight="@dimen/_25dp"
+                android:layout_marginLeft="@dimen/_25dp"
+                android:layout_marginTop="@dimen/_5dp"
+                android:layout_marginBottom="@dimen/_2dp"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:backgroundTint="@color/darkSeaGreen"
+                android:background="@drawable/rectangle_white"
+                >
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteTwo"
+                    android:textSize="@dimen/_13dp"
+                    android:gravity="center"
+                    android:background="@null"
+                    android:layout_toRightOf="@id/img_03"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="@string/register"></Button>
 
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/layout_dot"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/_40dp"
             android:layout_marginBottom="1dp"
             android:gravity="center"
             android:orientation="horizontal">

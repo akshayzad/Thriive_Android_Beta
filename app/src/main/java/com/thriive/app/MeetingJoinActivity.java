@@ -291,6 +291,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
                     checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
                     checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
                 initEngineAndJoinChannel();
+                sharedData.addBooleanData(SharedData.IS_MEETING_JOIN, true);
             }
             getStartTimer();
 //            startTimer();
@@ -331,9 +332,15 @@ public class MeetingJoinActivity extends AppCompatActivity {
                                         checkSelfPermission(REQUESTED_PERMISSIONS[1], PERMISSION_REQ_ID) &&
                                         checkSelfPermission(REQUESTED_PERMISSIONS[2], PERMISSION_REQ_ID)) {
                                     initEngineAndJoinChannel();
+                                    sharedData.addBooleanData(SharedData.IS_MEETING_JOIN, true);
                                 }
                                 end_time = reasonPOJO.getMeetingData().getPlanEndTime();
                                 start_time = reasonPOJO.getMeetingData().getPlanStartTime();
+                                if (sharedData.getIntData(SharedData.USER_ID) == reasonPOJO.getMeetingData().getGiverId()){
+                                    sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getRequestorName());
+                                }else {
+                                    sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getGiverName());
+                                }
                                 getStartTimer();
                                 //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
@@ -528,6 +535,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
         super.onDestroy();
         if (!mCallEnd) {
             leaveChannel();
+            sharedData.addBooleanData(SharedData.IS_MEETING_JOIN, false);
         }
         /*
           Destroys the RtcEngine instance and releases all resources used by the Agora SDK.

@@ -72,13 +72,18 @@ public class RequestPagerAdapter extends PagerAdapter {
 
         txt_persona.setText("with "+item.getGiverPersonaName());
         txt_reason.setText("Meeting for "+item.getReasonName());
-        txt_tags.setText(""+item.getMeetingLabel());
+        //txt_tags.setText(""+item.getMeetingLabel());
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.addAll(item.getDomainTags());
         arrayList.addAll(item.getSubDomainTags());
         arrayList.addAll(item.getExpertiseTags());
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         rv_tags.setLayoutManager(gridLayout );
+        if (arrayList.size() > 0){
+            txt_tags.setVisibility(View.VISIBLE);
+        } else {
+            txt_tags.setVisibility(View.GONE);
+        }
         rv_tags.setAdapter(new ExperienceAdapter(context, arrayList));
 
 

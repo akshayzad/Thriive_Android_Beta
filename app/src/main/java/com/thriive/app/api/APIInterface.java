@@ -245,7 +245,8 @@ APIInterface {
                                           @Field("response_int") int response_int,
                                           @Field("flag_thumbs") int flag_thumbs,
                                           @Field("flag_no_show") int flag_no_show,
-                                          @Field("rating_app") int rating_app, @Field("rating_meeting") int rating_meeting);
+                                          @Field("rating_app") int rating_app,
+                                          @Field("rating_meeting") int rating_meeting);
 
     @FormUrlEncoded
     @POST

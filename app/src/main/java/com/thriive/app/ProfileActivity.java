@@ -75,35 +75,40 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loginPOJO = Utility.getLoginData(ProfileActivity.this);
-        txt_name.setText(loginPOJO.getFirstName() + " " + loginPOJO.getLastName());
-        txt_profession.setText(loginPOJO.getDesignationName());
+        try {
+            loginPOJO = Utility.getLoginData(ProfileActivity.this);
+            txt_name.setText(loginPOJO.getFirstName() + " " + loginPOJO.getLastName());
+            txt_profession.setText(loginPOJO.getDesignationName());
 
-        if (loginPOJO.getPicUrl().equals("")){
-            Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(getResources().getColor( R.color.terracota))
-                    .useFont(typeface)
-                    .fontSize(40) /* size in px */
-                    .bold()
-                    .toUpperCase()
-                    .width(120)  // width in px
-                    .height(120) // height in px
-                    .endConfig()
-                    .buildRect(Utility.getInitialsName(loginPOJO.getEntityName()) ,
-                            getResources().getColor( R.color.whiteTwo));
+            if (loginPOJO.getPicUrl().equals("")){
+                Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .textColor(getResources().getColor( R.color.terracota))
+                        .useFont(typeface)
+                        .fontSize(40) /* size in px */
+                        .bold()
+                        .toUpperCase()
+                        .width(120)  // width in px
+                        .height(120) // height in px
+                        .endConfig()
+                        .buildRect(Utility.getInitialsName(loginPOJO.getFirstName() + " " + loginPOJO.getLastName()) ,
+                                getResources().getColor( R.color.whiteTwo));
 
-            img_profile.setImageDrawable(drawable);
-        } else {
-            img_profile.setMinimumWidth(60);
-            img_profile.setMaxHeight(60);
-            img_profile.setMinimumHeight(60);
-            img_profile.setMaxWidth(60);
-            Glide.with(this)
-                    .load(loginPOJO.getPicUrl())
-                    .into(img_profile);
+                img_profile.setImageDrawable(drawable);
+            } else {
+                img_profile.setMinimumWidth(60);
+                img_profile.setMaxHeight(60);
+                img_profile.setMinimumHeight(60);
+                img_profile.setMaxWidth(60);
+                Glide.with(this)
+                        .load(loginPOJO.getPicUrl())
+                        .into(img_profile);
+            }
+        } catch (Exception e){
+            e.getMessage();
         }
+
 
     }
 

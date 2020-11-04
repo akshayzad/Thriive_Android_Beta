@@ -6,21 +6,22 @@
     android:layout_marginBottom="2dp"
     android:layout_marginRight="5dp"
     android:layout_marginLeft="2dp"
-    android:layout_marginTop="5dp">
+    android:id="@+id/layout_select"
+    android:background="@drawable/outline_background_experience"
+    android:layout_marginTop="3dp">
     <TextView
         android:id="@+id/txt_experience"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:paddingTop="@dimen/_5dp"
-        android:paddingBottom="@dimen/_5dp"
-        android:paddingRight="@dimen/_12dp"
-        android:paddingLeft="@dimen/_12dp"
+        android:paddingTop="@dimen/_1dp"
+        android:paddingBottom="@dimen/_1dp"
+        android:paddingRight="@dimen/_2dp"
+        android:paddingLeft="@dimen/_2dp"
         android:textAlignment="center"
         android:textColor="@color/slateGrey"
         android:textSize="@dimen/_12dp"
         android:fontFamily="@font/roboto_regular"
-        android:background="@drawable/outline_background_experience"
         android:text="Borning Inc - 1 year"
         android:layout_gravity="center"></TextView>
 </LinearLayout>
