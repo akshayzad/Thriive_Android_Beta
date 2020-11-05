@@ -114,6 +114,7 @@
     <string name="register">Not registered? Sign-up</string>
     <string name="expertise">Expertise</string>
     <string name="update">Update</string>
+    <string name="linkedin_progress_dialog_message">Loading, Please wait</string>
 
 
 </resources>

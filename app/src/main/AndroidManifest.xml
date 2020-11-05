@@ -37,6 +37,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".MeetingConfirmedActivity"></activity>
         <activity android:name=".CommonWebviewActivity" />
+        <activity android:name=".utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInAuthenticationActivity" />
 
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"

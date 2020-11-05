@@ -65,6 +65,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -338,17 +339,27 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 //            combine_array.addAll(meetingListPOJO.getMeetingTag());
 //            combine_array.addAll(array1);
 //
-//            ArrayList<String> final_array = new ArrayList<>();
-//            for (int i =0; i< combine_array.size(); i++)
-//            {
-//                if (i <= 3){
-//                    final_array.add(combine_array.get(i));
-//                }
-//
-//            }
+            ArrayList<String> combine_array = new ArrayList<>();
+            for (int i = 0; i < array1.size(); i++){
+                if (!array1.get(i).equals("")){
+                    combine_array.add(array1.get(i));
+                }
+            }
+            HashSet hs = new HashSet();
+            hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+            combine_array.clear();
+            combine_array.addAll(hs);
+            ArrayList<String> final_array = new ArrayList<>();
+            for (int i =0; i< combine_array.size(); i++)
+            {
+                if (i <= 3){
+                    final_array.add(combine_array.get(i));
+                }
+
+            }
 
             // rv_expertise.setLayoutManager(new FlexboxLayoutManager(NotificationListActivity.this) );
-            rv_expertise.setAdapter(new MeetingSelectTagAdapter(NotificationListActivity.this, array1,
+            rv_expertise.setAdapter(new MeetingSelectTagAdapter(NotificationListActivity.this, final_array,
                     (ArrayList<String>) meetingListPOJO.getMeetingTag()));
             img_close.setOnClickListener(new View.OnClickListener() {
                 @Override

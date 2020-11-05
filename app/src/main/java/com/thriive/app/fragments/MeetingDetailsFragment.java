@@ -78,9 +78,14 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -253,38 +258,17 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 array1.addAll(meetingListPOJO.getGiverSubDomainTags());
                 array1.addAll(meetingListPOJO.getGiverExpertiseTags());
 
-//                for (int i = 0; i< array1.size(); i++){
-//                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
-//                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
-//                            array1.remove(i);
-//                        }
-//                    }
-//                }
-//
-//
-//                ArrayList<String> combine_array = new ArrayList<>();
-//                for (int i = 0; i < meetingListPOJO.getMeetingTag().size(); i++){
-//                    if (!meetingListPOJO.getMeetingTag().get(i).equals("")){
-//                        combine_array.add(meetingListPOJO.getMeetingTag().get(i));
-//                    }
-//                }
-//                combine_array.addAll(array1);
-
-
-//                ArrayList<String> combine_array = new ArrayList<>();
-//
-//                combine_array.addAll(meetingListPOJO.getMeetingTag());
-//                combine_array.addAll(array1);
-
-//                ArrayList<String> final_array = new ArrayList<>();
-//                for (int i =0; i< combine_array.size(); i++)
-//                {
-//                    if (i < 3){
-//                        final_array.add(combine_array.get(i));
-//                    }
-//
-//                }
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), array1, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                ArrayList<String> combine_array = new ArrayList<>();
+                for (int i = 0; i < array1.size(); i++){
+                    if (!array1.get(i).equals("")){
+                        combine_array.add(array1.get(i));
+                    }
+                }
+                HashSet hs = new HashSet();
+                hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+                combine_array.clear();
+                combine_array.addAll(hs);
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
 
                 if (meetingListPOJO.getGiverExpertiseTags() != null){
                 }
@@ -379,20 +363,27 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 //                {
 //                    if (i < 3){
 //                        final_array.add(combine_array.get(i));
-//                    }
-//
-//                }
+
+
+                ArrayList<String> combine_array = new ArrayList<>();
+                for (int i = 0; i < array1.size(); i++){
+                    if (!array1.get(i).equals("")){
+                        combine_array.add(array1.get(i));
+                    }
+                }
 
 //
-//                //0));
-//                ArrayList<String> arrayList = new ArrayList<>();
-//                arrayList.addAll(meetingListPOJO.getRequestorExpertiseTags());
-//                //arrayList.addAll(meetingListPOJO.getRequestorSubDomainTags());
-//                arrayList.addAll( meetingListPOJO.getMeetingTag());
+//            ArrayList<String> combine_array = new ArrayList<>();
+//            combine_array.addAll(item.getMeetingTag());
+//            combine_array.addAll(array1);
 
+                HashSet hs = new HashSet();
+                hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+                combine_array.clear();
+                combine_array.addAll(hs);
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), array1, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
 //                if (meetingListPOJO.getMeetingTag() != null){
 //
 //                }

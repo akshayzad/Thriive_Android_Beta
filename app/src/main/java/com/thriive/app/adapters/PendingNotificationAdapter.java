@@ -27,6 +27,7 @@ import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -140,10 +141,19 @@ public class PendingNotificationAdapter extends RecyclerView.Adapter<PendingNoti
     //    arrayList.addAll(item.getRequestorSubDomainTags());
       //  arrayList.addAll(item.getRequestorExpertiseTags());
         arrayList.addAll(item.getMeetingTag());
-
+        ArrayList<String> combine_array = new ArrayList<>();
+        for (int i = 0; i < arrayList.size(); i++){
+            if (!arrayList.get(i).equals("")){
+                combine_array.add(arrayList.get(i));
+            }
+        }
+        HashSet hs = new HashSet();
+        hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+        combine_array.clear();
+        combine_array.addAll(hs);
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
         holder.rv_tags.setLayoutManager(gridLayout);
-        holder.rv_tags.setAdapter(new ExpertiseAdapter(context, arrayList));
+        holder.rv_tags.setAdapter(new ExpertiseAdapter(context, combine_array));
         holder.txt_reason.setText("Meeting for "+item.getMeetingReason());
         // setProgress();
         ArrayList<String> ex_array = new ArrayList<>();

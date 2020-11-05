@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.R;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;

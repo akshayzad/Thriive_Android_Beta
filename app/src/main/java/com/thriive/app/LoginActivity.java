@@ -34,9 +34,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInUser;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
 import com.bumptech.glide.Glide;
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -47,11 +47,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.onesignal.OneSignal;
-import com.ssw.linkedinmanager.dto.LinkedInAccessToken;
-import com.ssw.linkedinmanager.dto.LinkedInEmailAddress;
-import com.ssw.linkedinmanager.dto.LinkedInUserProfile;
-import com.ssw.linkedinmanager.events.LinkedInManagerResponse;
-import com.ssw.linkedinmanager.ui.LinkedInRequestManager;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.fragments.LoginFragment;
@@ -85,7 +80,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity implements  LinkedInManagerResponse {
+public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.viewPager_login)
     ViewPager viewPager;
@@ -129,8 +124,6 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
     //String REDIRECTION_URL = "http://localhost:4200/";
 
     private String REDIRECTION_URL = "http://localhost:4200/redirect";
-
-    private LinkedInRequestManager linkedInRequestManager;
     private KProgressHUD progressHUD;
 
 
@@ -213,10 +206,6 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
             e.getMessage();
         }
 
-
-
-        linkedInRequestManager = new LinkedInRequestManager(LoginActivity.this, this,
-                CLIENT_ID, CLIENT_SECRET, REDIRECTION_URL, true);
 
         getBaseUrl();
 
@@ -455,12 +444,16 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
                 getLogin(email, "" , login_method);
 
             } else {
+                Log.d("LINKEDIN ERROR", data.getStringExtra("err_message"));
                 if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_USER_DENIED) {
                     //Handle : user denied access to account
                 } else if (data.getIntExtra("err_code", 0) == LinkedInBuilder.ERROR_FAILED) {
                     //Handle : Error in API : see logcat output for details
                     Log.e("LINKEDIN ERROR", data.getStringExtra("err_message"));
+                } else {
+
                 }
+
             }
         }
                // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -745,43 +738,4 @@ public class LoginActivity extends AppCompatActivity implements  LinkedInManager
         });
     }
 
-    @Override
-    public void onGetAccessTokenFailed() {
-
-    }
-
-    @Override
-    public void onGetAccessTokenSuccess(LinkedInAccessToken linkedInAccessToken) {
-
-    }
-
-    @Override
-    public void onGetCodeFailed() {
-
-    }
-
-    @Override
-    public void onGetCodeSuccess(String code) {
-
-    }
-
-    @Override
-    public void onGetProfileDataFailed() {
-
-    }
-
-    @Override
-    public void onGetProfileDataSuccess(LinkedInUserProfile linkedInUserProfile) {
-
-    }
-
-    @Override
-    public void onGetEmailAddressFailed() {
-
-    }
-
-    @Override
-    public void onGetEmailAddressSuccess(LinkedInEmailAddress linkedInEmailAddress) {
-
-    }
 }

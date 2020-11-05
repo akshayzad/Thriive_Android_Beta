@@ -35,6 +35,7 @@ import com.thriive.app.utilities.textdrawable.TextDrawable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 public class SchedulePagerAdapter extends PagerAdapter {
@@ -96,53 +97,33 @@ public class SchedulePagerAdapter extends PagerAdapter {
             ArrayList<String> array1 = new ArrayList<>();
             // array1.addAll(meetingListPOJO.getMeetingTag());
             array1.addAll(item.getGiverDomainTags());
-
-//            for (int i = 0; i< array1.size(); i++){
-//                for (int j = 0; j < item.getMeetingTag().size(); j++){
-//                    try {
-//                        if (array1.get(i).equals(item.getMeetingTag().get(j))){
-//                            array1.remove(array1.get(i));
-//                        }
-//                    } catch (Exception e){
-//
-//                    }
-//
-//                }
-//            }
             array1.addAll(item.getGiverExpertiseTags());
-//            for (int i = 0; i< array1.size(); i++){
-//                for (int j = 0; j < item.getMeetingTag().size(); j++){
-//                    try {
-//                        if (array1.get(i).equals(item.getMeetingTag().get(j))) {
-//                            array1.remove(array1.get(i));
-//                        }
-//                    } catch (Exception e){
-//
-//                    }
-//                }
-//            }
 
-//            ArrayList<String> combine_array = new ArrayList<>();
-//            for (int i = 0; i < item.getMeetingTag().size(); i++){
-//                if (!item.getMeetingTag().get(i).equals("")){
-//                    combine_array.add(item.getMeetingTag().get(i));
-//                }
-//            }
-//            combine_array.addAll(array1);
 
+            ArrayList<String> combine_array = new ArrayList<>();
+            for (int i = 0; i < array1.size(); i++){
+                if (!array1.get(i).equals("")){
+                    combine_array.add(array1.get(i));
+                }
+            }
 //
 //            ArrayList<String> combine_array = new ArrayList<>();
 //            combine_array.addAll(item.getMeetingTag());
 //            combine_array.addAll(array1);
 
+            HashSet hs = new HashSet();
+            hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+            combine_array.clear();
+            combine_array.addAll(hs);
             ArrayList<String> final_array = new ArrayList<>();
-            for (int i =0; i< array1.size(); i++)
+            for (int i =0; i< combine_array.size(); i++)
             {
                 if (i <= 3){
-                    final_array.add(array1.get(i));
+                    final_array.add(combine_array.get(i));
                 }
 
             }
+
             rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
 
 
@@ -200,51 +181,28 @@ public class SchedulePagerAdapter extends PagerAdapter {
             ArrayList<String> array1 = new ArrayList<>();
             // array1.addAll(meetingListPOJO.getMeetingTag());
             array1.addAll(item.getRequestorDomainTags());
-         //   array1.addAll(item.getRequestorExpertiseTags());
-
-//            for (int i = 0; i< array1.size(); i++){
-//                for (int j = 0; j < item.getMeetingTag().size(); j++){
-//                    try {
-//                        if (array1.get(i).equals(item.getMeetingTag().get(j))){
-//                            array1.remove(array1.get(i));
-//                        }
-//                    } catch (Exception e){
-//                        e.getMessage();
-//                    }
-//
-//                }
-//            }
             array1.addAll(item.getRequestorExpertiseTags());
-
-//            for (int i = 0; i< array1.size(); i++){
-//                for (int j = 0; j < item.getMeetingTag().size(); j++){
-//                    try {
-//                        if (array1.get(i).equals(item.getMeetingTag().get(j))){
-//                            array1.remove(array1.get(i));
-//                        }
-//                    } catch (Exception e){
-//                        e.getMessage();
-//                    }
 //
-//                }
-//            }
-//
-//            ArrayList<String> combine_array = new ArrayList<>();
-//            for (int i = 0; i < item.getMeetingTag().size(); i++){
-//                if (!item.getMeetingTag().get(i).equals("")){
-//                    combine_array.add(item.getMeetingTag().get(i));
-//                }
-//            }
-//            combine_array.addAll(array1);
-
-                ArrayList<String> final_array = new ArrayList<>();
-                for (int i =0; i< array1.size(); i++)
-                {
-                    if (i <= 3){
-                        final_array.add(array1.get(i));
-                    }
-
+            ArrayList<String> combine_array = new ArrayList<>();
+            for (int i = 0; i < array1.size(); i++){
+                if (!array1.get(i).equals("")){
+                    combine_array.add(array1.get(i));
                 }
+            }
+            HashSet hs = new HashSet();
+            hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
+            combine_array.clear();
+            combine_array.addAll(hs);
+            ArrayList<String> final_array = new ArrayList<>();
+            for (int i =0; i< combine_array.size(); i++)
+            {
+                if (i <= 3){
+                    final_array.add(combine_array.get(i));
+                }
+
+            }
+
+
             rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
 
             sharedData.addStringData(SharedData.CALLING_NAME, item.getRequestorName());

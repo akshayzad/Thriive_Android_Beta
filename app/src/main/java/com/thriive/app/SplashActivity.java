@@ -23,9 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.LinkedInUser;
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
-import com.AbdAllahAbdElFattah13.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInUser;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
+import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
 import com.bumptech.glide.Glide;
 import com.onesignal.OneSignal;
 import com.thriive.app.R;
