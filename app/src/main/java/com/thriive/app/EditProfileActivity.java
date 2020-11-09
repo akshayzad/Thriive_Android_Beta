@@ -792,7 +792,8 @@ public class EditProfileActivity extends AppCompatActivity {
         Button btn_submit = dialogView.findViewById(R.id.btn_submit);
         dialog.setContentView(dialogView);
 
-        CountryListAdapter countryListAdapter = new CountryListAdapter(getApplicationContext(), (ArrayList<CountryListPOJO>) listPOJO);
+        CountryListAdapter countryListAdapter = new CountryListAdapter(getApplicationContext(),
+                removeDuplicates((ArrayList<CountryListPOJO>) listPOJO));
         FlexboxLayoutManager manager = new FlexboxLayoutManager(getApplicationContext());
         manager.setFlexWrap(FlexWrap.WRAP);
         manager.setJustifyContent(JustifyContent.CENTER);
@@ -838,6 +839,23 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
         dialog.show();
+    }
+    public ArrayList<CountryListPOJO> removeDuplicates(ArrayList<CountryListPOJO> list) {
+        ArrayList<String> countryListPOJOS = new ArrayList<>();
+        ArrayList<CountryListPOJO> returnList = new ArrayList<>();
+
+        for (int i = 0; i<list.size(); i++){
+            CountryListPOJO pojo = list.get(i);
+            if (!countryListPOJOS.contains(pojo.getCountryName().replace(" ", "").trim())){
+                countryListPOJOS.add(pojo.getCountryName());
+                returnList.add(pojo);
+            }
+
+        }
+
+        //Set<String> noDuplication = new HashSet<String>(countryListPOJOS);
+
+        return returnList;
     }
 
     private void getEditRegion(int countryCode, String countryName) {

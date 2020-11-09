@@ -128,6 +128,17 @@ public class MeetingJoinActivity extends AppCompatActivity {
             });
         }
 
+        @Override
+        public void onRemoteVideoStateChanged(int uid, int state, int reason, int elapsed) {
+            super.onRemoteVideoStateChanged(uid, state, reason, elapsed);
+            Log.d(TAG,"onRemoteVideoStateChanged , uid: " + uid  + "state  " + state  + " reason " + reason );
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    onRemoteVideoState(state);
+                }
+            });
+        }
 
         @Override
         public void onUserOffline(final int uid, int reason) {
@@ -265,6 +276,18 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
 
 
+    private void  onRemoteVideoState(int state){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (state == 0){
+                    mRemoteContainer.setVisibility(GONE);
+                } else {
+                    mRemoteContainer.setVisibility(VISIBLE);
+                }
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -535,7 +558,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
         super.onDestroy();
         if (!mCallEnd) {
             leaveChannel();
-            sharedData.addBooleanData(SharedData.IS_MEETING_JOIN, false);
+
         }
         /*
           Destroys the RtcEngine instance and releases all resources used by the Agora SDK.
@@ -543,6 +566,7 @@ public class MeetingJoinActivity extends AppCompatActivity {
           This method is useful for apps that occasionally make voice or video calls,
           to free up resources for other operations when not making calls.
          */
+        sharedData.addBooleanData(SharedData.IS_MEETING_JOIN, false);
         RtcEngine.destroy();
     }
 

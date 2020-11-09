@@ -65,9 +65,15 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -390,11 +396,14 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     FlexboxLayoutManager manager = new FlexboxLayoutManager(getContext());
                     manager.setFlexWrap(FlexWrap.WRAP);
                     manager.setJustifyContent(JustifyContent.FLEX_START);
+
+                    ArrayList<CountryListPOJO> region_array = removeDuplicates(
+                            (ArrayList<CountryListPOJO>) reasonPOJO.getMrParams().getCountryList());
                     rv_region.setLayoutManager(manager );
 
                     //    rv_region.setLayoutManager(new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false));
                     rv_region.setAdapter(new RegionAdapter(getActivity(), MeetingRequestFragment.this,
-                            (ArrayList<CountryListPOJO>) reasonPOJO.getMrParams().getCountryList()));
+                            (ArrayList<CountryListPOJO>) region_array));
 
 
                 }
@@ -406,6 +415,26 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             }
         });
     }
+
+    public ArrayList<CountryListPOJO> removeDuplicates(ArrayList<CountryListPOJO> list) {
+        ArrayList<String> countryListPOJOS = new ArrayList<>();
+        ArrayList<CountryListPOJO> returnList = new ArrayList<>();
+
+        for (int i = 0; i<list.size(); i++){
+            CountryListPOJO pojo = list.get(i);
+            if (!countryListPOJOS.contains(pojo.getCountryName().replace(" ", "").trim())){
+                countryListPOJOS.add(pojo.getCountryName());
+                returnList.add(pojo);
+            }
+
+        }
+
+        //Set<String> noDuplication = new HashSet<String>(countryListPOJOS);
+
+        return returnList;
+    }
+
+
 
     public void getPersona(String reason_id, String reason_name) {
         txt_reason.setText(""+reason_name);
