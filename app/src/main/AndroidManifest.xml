@@ -35,24 +35,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MeetingConfirmedActivity"></activity>
+        <activity android:name=".LoginMessageActivity"></activity>
+        <activity android:name=".MeetingConfirmedActivity" />
         <activity android:name=".CommonWebviewActivity" />
         <activity android:name=".utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInAuthenticationActivity" />
 
         <meta-data
             android:name="com.onesignal.NotificationOpened.DEFAULT"
             android:value="DISABLE" />
-
         <meta-data
             android:name="CLEVERTAP_ACCOUNT_ID"
-            android:value="WW6-ZW6-895Z"/>
+            android:value="WW6-ZW6-895Z" />
         <meta-data
             android:name="CLEVERTAP_TOKEN"
-            android:value="601-600"/>
-        <!-- IMPORTANT: To force use Google AD ID to uniquely identify  users, use the following meta tag. GDPR mandates that if you are using this tag, there is prominent disclousure to your end customer in their application. Read more about GDPR here - https://clevertap.com/blog/in-preparation-of-gdpr-compliance/ -->
+            android:value="601-600" /> <!-- IMPORTANT: To force use Google AD ID to uniquely identify  users, use the following meta tag. GDPR mandates that if you are using this tag, there is prominent disclousure to your end customer in their application. Read more about GDPR here - https://clevertap.com/blog/in-preparation-of-gdpr-compliance/ -->
         <meta-data
             android:name="CLEVERTAP_USE_GOOGLE_AD_ID"
-            android:value="1"/>
+            android:value="1" />
 
         <service
             android:name=".handler.NotificationExtenderClass"

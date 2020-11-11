@@ -122,4 +122,25 @@
     <string name="view">View</string>
     <string name="objectives">Objectives</string>
     <string name="interest">Interests</string>
+    <string name="helper_expertise">Select your top three areas of expertise.\nThis helps us suggest more relevant matches for you.</string>
+    <string name="helper_objective">We understand your requirements may change with time.\n\nSelect up to three objectives. This helps us find the best relevant match for you.</string>
+    <string name="helper_interests">Select your top three areas of interests. This helps us suggest more relevant matches for you.</string>
+    <string name="signup">Sign-up</string>
+    <string name="land_message_flag_new_user">Thriive is an invite-only platform offering high-quality,
+        actionable meetings with the people you need, when you need them.
+        We allow users on the platform only after reviewing their profile.<br/><br/>
+        If you’ve previously registered, please go back and login using the same credentials.
+        <b>OR,</b> please continue to sign-up on Thriive</string>
+    <string name="land_message_flag_waitlist">You’ve been added to the Thriive’s
+        <b> <font color='#CE593F'> WAIT LIST! </font> </b><br/><br/>
+        Thank you for your interest in joining Thriive.
+        We are currently overwhelmed by the number of join requests to our platform.
+      <br/><br/>>Stay tuned for more updates from Thriive!</string>
+    <string name="land_message_flag_rejected">Thank you for your interest in joining Thriive.<br/><br/><font color='#CE593F'>
+        We regret to inform you that we are unable to accept your join request at this time. </font><br/><br/>
+        We have consciously kept a minimum level of expertise and experience that is required to join Thriive.<br/><br/>
+        We will definitely get back to you when we open Thriive to broader membership.</string>
+    <string name="land_message_flag_under_review">Thank you for your interest in joining Thriive.<br/><br/>
+        <font color='#CE593F'>We are currently reviewing your profile.</font><br/><br/>You will hear from us very soon.</string>
+    <string name="thriive">©Thriive 2020</string>
 </resources>

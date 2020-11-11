@@ -175,12 +175,14 @@ public class PreferencesActivity extends AppCompatActivity {
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         Button btn_submit = dialogView.findViewById(R.id.btn_submit);
         TextView label_title = dialogView.findViewById(R.id.label_title);
+        TextView txt_helper = dialogView.findViewById(R.id.txt_helper);
+        txt_helper.setText(getApplicationContext().getResources().getString(R.string.helper_objective));
         dialog.setContentView(dialogView);
         label_title.setText("Your "+title);
 
         FlexboxLayoutManager manager = new FlexboxLayoutManager(getApplicationContext());
-        manager.setFlexWrap(FlexWrap.WRAP);
-        manager.setJustifyContent(JustifyContent.CENTER);
+//        manager.setFlexWrap(FlexWrap.WRAP);
+//        manager.setJustifyContent(JustifyContent.CENTER);
         rv_region.setLayoutManager(manager );
 
         YourObjectivesAdapter adapter = new YourObjectivesAdapter(PreferencesActivity.this,
@@ -197,13 +199,17 @@ public class PreferencesActivity extends AppCompatActivity {
 //
 //                String string  = myCustomArray.toString().trim();
 //                Log.d(TAG, "object " + string);
+                if (adapter.count_selected > 0){
+                    ObjectiveBodyPOJO bodyPOJO = new ObjectiveBodyPOJO();
+                    bodyPOJO.setRowcode(loginPOJO.getRowcode());
+                    bodyPOJO.setResult(adapter.getObjectivesLists());
+                    dialog.dismiss();
 
-                ObjectiveBodyPOJO bodyPOJO = new ObjectiveBodyPOJO();
-                bodyPOJO.setRowcode(loginPOJO.getRowcode());
-                bodyPOJO.setResult(adapter.getObjectivesLists());
-                dialog.dismiss();
+                    saveObjectives(bodyPOJO);
+                } else {
+                    Toast.makeText(PreferencesActivity.this, "You can select upto 3 Objectives.", Toast.LENGTH_SHORT).show();
+                }
 
-                saveObjectives(bodyPOJO);
 
             }
         });
@@ -322,12 +328,14 @@ public class PreferencesActivity extends AppCompatActivity {
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         Button btn_submit = dialogView.findViewById(R.id.btn_submit);
         TextView label_title = dialogView.findViewById(R.id.label_title);
+        TextView txt_helper = dialogView.findViewById(R.id.txt_helper);
+        txt_helper.setText(getApplicationContext().getResources().getString(R.string.helper_expertise));
         dialog.setContentView(dialogView);
         label_title.setText("Your "+title);
 
         FlexboxLayoutManager manager = new FlexboxLayoutManager(getApplicationContext());
-        manager.setFlexWrap(FlexWrap.WRAP);
-        manager.setJustifyContent(JustifyContent.CENTER);
+//        manager.setFlexWrap(FlexWrap.WRAP);
+//        manager.setJustifyContent(JustifyContent.CENTER);
         rv_region.setLayoutManager(manager );
 
         YourExpertiseAdapter adapter = new YourExpertiseAdapter(PreferencesActivity.this,
@@ -340,17 +348,23 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                if (adapter.count_selected > 2){
+//                    Gson gson = new GsonBuilder().create();
+//                    JsonArray myCustomArray = gson.toJsonTree(adapter.getExpertiseLists()).getAsJsonArray();
+//
+//                    String string  = myCustomArray.toString().trim();
+//                    Log.d(TAG, "getExpertiseLists " + string);
 
-                Gson gson = new GsonBuilder().create();
-                JsonArray myCustomArray = gson.toJsonTree(adapter.getExpertiseLists()).getAsJsonArray();
+                    ExpertiseBodyPOJO  expertiseBodyPOJO  = new ExpertiseBodyPOJO();
+                    expertiseBodyPOJO.setRowcode(loginPOJO.getRowcode());
+                    expertiseBodyPOJO.setResult(adapter.getExpertiseLists());
+                    dialog.dismiss();
+                    saveExpertise(expertiseBodyPOJO);
+                } else {
+                    Toast.makeText(PreferencesActivity.this, "You can select upto 3 Expertise.", Toast.LENGTH_SHORT).show();
+                }
 
-                String string  = myCustomArray.toString().trim();
-                Log.d(TAG, "getExpertiseLists " + string);
-                dialog.dismiss();
-                ExpertiseBodyPOJO  expertiseBodyPOJO  = new ExpertiseBodyPOJO();
-                expertiseBodyPOJO.setRowcode(loginPOJO.getRowcode());
-                expertiseBodyPOJO.setResult(adapter.getExpertiseLists());
-                saveExpertise(expertiseBodyPOJO);
+
             }
         });
 
@@ -448,14 +462,30 @@ public class PreferencesActivity extends AppCompatActivity {
     private void setInterests(List<CommonInterestsPOJO.InterestsList> result) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_preferences, null);
         BottomSheetDialog dialog = new BottomSheetDialog(PreferencesActivity.this,R.style.SheetDialog);
-
+        dialogView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < 16) {
+                    dialogView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    dialogView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                //BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+                FrameLayout bottomSheet = (FrameLayout)
+                        dialog.findViewById(R.id.design_bottom_sheet);
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                //      behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
+            }
+        });
         RecyclerView rv_region = dialogView.findViewById(R.id.rv_region);
         ImageView img_close = dialogView.findViewById(R.id.img_close);
         Button btn_submit = dialogView.findViewById(R.id.btn_submit);
         TextView label_title = dialogView.findViewById(R.id.label_title);
         dialog.setContentView(dialogView);
         label_title.setText("Your "+title);
-
+        TextView txt_helper = dialogView.findViewById(R.id.txt_helper);
+        txt_helper.setText(getApplicationContext().getResources().getString(R.string.helper_interests));
         FlexboxLayoutManager manager = new FlexboxLayoutManager(getApplicationContext());
         manager.setFlexWrap(FlexWrap.WRAP);
         manager.setJustifyContent(JustifyContent.CENTER);

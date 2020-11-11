@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import butterknife.ButterKnife;
 public class YourExpertiseAdapter extends RecyclerView.Adapter<YourExpertiseAdapter.RecyclerAdapterHolder> {
     private Context context;
     private ArrayList<CommonExpertisePOJO.ExpertiseList> expertiseLists;
+    public int count_selected = 0;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_objective)
@@ -52,6 +54,7 @@ public class YourExpertiseAdapter extends RecyclerView.Adapter<YourExpertiseAdap
         holder.txt_name.setText(item.getExpertiseName());
         if(item.getSelected()){
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.bg_darkseacolor_fifty));
+            count_selected ++;
         } else {
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
         }
@@ -61,9 +64,18 @@ public class YourExpertiseAdapter extends RecyclerView.Adapter<YourExpertiseAdap
             public void onClick(View view) {
                 if (item.getSelected()){
                     item.setSelected(false);
+                  //  count_selected --;
                 } else {
-                    item.setSelected(true);
+                    if (count_selected > 2){
+                        Toast.makeText(context, "You can select upto 3 Expertise.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        item.setSelected(true);
+                       // count_selected ++;
+
+                    }
+
                 }
+                count_selected = 0;
                 notifyDataSetChanged();
             }
         });

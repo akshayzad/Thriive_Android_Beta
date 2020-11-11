@@ -11,8 +11,9 @@ public class LoginPOJO {
     @SerializedName("Message")
     private String message;
     @SerializedName("return_entity")
-    private ReturnEntity returnEntity;
-
+    private ReturnEntity returnEntity = null;
+    @SerializedName("land_data")
+    private LandData landData = null;
     public Boolean getOK() {
         return isOK;
     }
@@ -35,6 +36,14 @@ public class LoginPOJO {
 
     public void setReturnEntity(ReturnEntity returnEntity) {
         this.returnEntity = returnEntity;
+    }
+
+    public LandData getLandData() {
+        return landData;
+    }
+
+    public void setLandData(LandData landData) {
+        this.landData = landData;
     }
 
     public class ReturnEntity {
@@ -641,6 +650,139 @@ public class LoginPOJO {
 
         public void setRowcode(String rowcode) {
             this.rowcode = rowcode;
+        }
+    }
+
+    public class LandData {
+        @SerializedName("show_landing_page")
+        private Boolean showLandingPage;
+        @SerializedName("flag_approved")
+        private Boolean flagApproved;
+        @SerializedName("flag_waitlisted")
+        private Boolean flagWaitlisted;
+        @SerializedName("flag_rejected")
+        private Boolean flagRejected;
+        @SerializedName("flag_under_review")
+        private Boolean flagUnderReview;
+        @SerializedName("flag_new_user")
+        private Boolean flagNewUser;
+        @SerializedName("flag_status")
+        private Integer flagStatus;
+        @SerializedName("html_message")
+        private String htmlMessage;
+        @SerializedName("show_close_button")
+        private Boolean showCloseButton;
+        @SerializedName("show_signup_button")
+        private Boolean showSignupButton;
+        @SerializedName("first_name")
+        private String firstName;
+        @SerializedName("last_name")
+        private String lastName;
+        @SerializedName("email_id")
+        private String emailId;
+
+        public Boolean getShowLandingPage() {
+            return showLandingPage;
+        }
+
+        public void setShowLandingPage(Boolean showLandingPage) {
+            this.showLandingPage = showLandingPage;
+        }
+
+        public Boolean getFlagApproved() {
+            return flagApproved;
+        }
+
+        public void setFlagApproved(Boolean flagApproved) {
+            this.flagApproved = flagApproved;
+        }
+
+        public Boolean getFlagWaitlisted() {
+            return flagWaitlisted;
+        }
+
+        public void setFlagWaitlisted(Boolean flagWaitlisted) {
+            this.flagWaitlisted = flagWaitlisted;
+        }
+
+        public Boolean getFlagRejected() {
+            return flagRejected;
+        }
+
+        public void setFlagRejected(Boolean flagRejected) {
+            this.flagRejected = flagRejected;
+        }
+
+        public Boolean getFlagUnderReview() {
+            return flagUnderReview;
+        }
+
+        public void setFlagUnderReview(Boolean flagUnderReview) {
+            this.flagUnderReview = flagUnderReview;
+        }
+
+        public Boolean getFlagNewUser() {
+            return flagNewUser;
+        }
+
+        public void setFlagNewUser(Boolean flagNewUser) {
+            this.flagNewUser = flagNewUser;
+        }
+
+        public Integer getFlagStatus() {
+            return flagStatus;
+        }
+
+        public void setFlagStatus(Integer flagStatus) {
+            this.flagStatus = flagStatus;
+        }
+
+        public String getHtmlMessage() {
+            return htmlMessage;
+        }
+
+        public void setHtmlMessage(String htmlMessage) {
+            this.htmlMessage = htmlMessage;
+        }
+
+        public Boolean getShowCloseButton() {
+            return showCloseButton;
+        }
+
+        public void setShowCloseButton(Boolean showCloseButton) {
+            this.showCloseButton = showCloseButton;
+        }
+
+        public Boolean getShowSignupButton() {
+            return showSignupButton;
+        }
+
+        public void setShowSignupButton(Boolean showSignupButton) {
+            this.showSignupButton = showSignupButton;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getEmailId() {
+            return emailId;
+        }
+
+        public void setEmailId(String emailId) {
+            this.emailId = emailId;
         }
     }
 }

@@ -61,7 +61,9 @@ APIInterface {
                           @Field("platform_ver") String platform_ver,
                           @Field("push_token") String push_token, @Field("voip_token") String voip_token,
                           @Field("app_platform") String app_platform, @Field("time_zone_name") String time_zone_name,
-                          @Field("time_stamp") String time_stamp);
+                          @Field("time_stamp") String time_stamp,
+                          @Field("first_name") String first_name, @Field("last_name") String last_name,
+                          @Field("email_id") String email_id);
 
 // "requestor_id": 1,
 //         "requestor_name": "Akshay",

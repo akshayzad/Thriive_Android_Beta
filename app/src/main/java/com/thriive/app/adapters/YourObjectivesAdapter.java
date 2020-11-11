@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ public class YourObjectivesAdapter extends RecyclerView.Adapter<YourObjectivesAd
     private Context context;
     private ArrayList<CommonObjectivesPOJO.ObjectivesList> objectivesLists;
 
+    public int count_selected = 0;
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_objective)
         public TextView txt_name;
@@ -51,6 +53,7 @@ public class YourObjectivesAdapter extends RecyclerView.Adapter<YourObjectivesAd
         holder.txt_name.setText(item.getObjectiveName());
         if(item.getSelected()){
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.bg_darkseacolor_fifty));
+            count_selected ++;
         } else {
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
         }
@@ -60,9 +63,18 @@ public class YourObjectivesAdapter extends RecyclerView.Adapter<YourObjectivesAd
             public void onClick(View view) {
                 if (item.getSelected()){
                     item.setSelected(false);
+                    //  count_selected --;
                 } else {
-                    item.setSelected(true);
+                    if (count_selected > 2){
+                        Toast.makeText(context, "You can select upto 3 Objectives.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        item.setSelected(true);
+                        // count_selected ++;
+
+                    }
+
                 }
+                count_selected = 0;
                 notifyDataSetChanged();
             }
         });

@@ -37,44 +37,31 @@
             android:padding="@dimen/_5dp"
             android:textColor="@color/darkGreyBlue"
             android:text="Edit Region" />
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/txt_helper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_15dp"
+            android:layout_below="@id/label_title"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:textAlignment="center"
+            android:padding="@dimen/_10dp"
+            android:textColor="@color/darkGreyBlue"
+            android:text="@string/helper_objective" />
 
-    <LinearLayout
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_region"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_above="@id/btn_submit"
         android:layout_below="@id/header"
-        android:layout_marginTop="@dimen/_10dp"
-        android:layout_marginEnd="@dimen/_10dp"
-        android:layout_marginBottom="@dimen/_10dp"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/_10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_region"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/_10dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
-
-        <TextView
-            android:id="@+id/txt_noRegion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/_10dp"
-            android:fontFamily="@font/roboto_regular"
-            android:padding="@dimen/_20dp"
-            android:text="@string/no_domain"
-            android:textAlignment="center"
-            android:textColor="@color/darkGrey"
-            android:textSize="@dimen/_12dp"
-            android:visibility="gone" />
-
-
-    </LinearLayout>
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="180dp"
@@ -82,14 +69,11 @@
         android:textAllCaps="false"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/_10dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_darkseacolor"
         android:textColor="@color/whiteTwo"
         android:fontFamily="@font/roboto_regular"
         android:textSize="19dp"
-        android:layout_marginBottom="@dimen/_40dp"
+        android:layout_margin="@dimen/_10dp"
         android:text="Save"></Button>
 </RelativeLayout>

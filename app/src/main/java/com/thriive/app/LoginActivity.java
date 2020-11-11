@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
     private KProgressHUD progressHUD;
 
 
-    private String email = "", password = "", login_method = "", time_stamp;
+    private String email = "", password = "", login_method = "", time_stamp, first_name = "", last_name = "";
     private APIInterface apiInterface;
 
     private SharedData sharedData;
@@ -445,6 +445,8 @@ public class LoginActivity extends AppCompatActivity {
                 //Successfully signed in
                 LinkedInUser user = data.getParcelableExtra("social_login");
                 login_method = "linkedin";
+                first_name = ""+user.getFirstName();
+                last_name = ""+user.getLastName();
                 //acessing user info
                 Log.d(TAG,"LinkedInLogin" + user.getFirstName());
                 Log.d(TAG,"LinkedInLogin" + user.getEmail());
@@ -528,9 +530,11 @@ public class LoginActivity extends AppCompatActivity {
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
-            Call<LoginPOJO> call = apiInterface.login(sharedData.getStringData(SharedData.API_URL) + "api/AppLogin/app-login",l_email, l_password, l_login_method, BuildConfig.VERSION_NAME,
+            Call<LoginPOJO> call = apiInterface.login(sharedData.getStringData(SharedData.API_URL)
+                            + "api/AppLogin/app-login",l_email, l_password, l_login_method, BuildConfig.VERSION_NAME,
                     ""+android.os.Build.VERSION.SDK_INT, UUID,
-                    UUID, "android",  ""+timeZone.getID(), time_stamp);
+                    UUID, "android",  ""+timeZone.getID(),
+                    time_stamp, first_name, last_name, l_email);
             call.enqueue(new Callback<LoginPOJO>() {
                 @Override
                 public void onResponse(Call<LoginPOJO> call, Response<LoginPOJO> response) {
@@ -544,7 +548,6 @@ public class LoginActivity extends AppCompatActivity {
                                 if (loginPOJO.getOK()) {
                                     if (loginPOJO.getReturnEntity() != null){
                                         Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
-
 
 
                                         HashMap<String, Object> profile = new HashMap<String, Object>();
@@ -573,7 +576,19 @@ public class LoginActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 } else {
-                                    Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    if (loginPOJO.getLandData() != null){
+                                        LoginPOJO.LandData landData = loginPOJO.getLandData();
+                                        if (landData.getShowLandingPage()) {
+                                            Intent intent = new Intent(LoginActivity.this, LoginMessageActivity.class);
+                                            LoginMessageActivity.landDataMessage = landData;
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                             else {
@@ -581,7 +596,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, ""+response.toString(), Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e){
+                         //   progressHUD.dismiss();
                             e.getMessage();
+                           // Toast.makeText(LoginActivity.this, ""+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                         }
 
                     } else {
@@ -639,10 +656,12 @@ public class LoginActivity extends AppCompatActivity {
 //            String personGivenName = acct.getGivenName();
 //            String personFamilyName = acct.getFamilyName();
             email = acct.getEmail();
+            first_name = ""+acct.getGivenName();
+            last_name = ""+acct.getFamilyName();
 //            String personId = acct.getId();
 //            Uri personPhoto = acct.getPhotoUrl();
             login_method = "google";
-            Log.d(TAG, email);
+            Log.d(TAG, email +" dn " + acct.getDisplayName() + " pgn " + acct.getGivenName() + " fn " + acct.getFamilyName());
             getLogin(email, "", login_method);
 
         }
