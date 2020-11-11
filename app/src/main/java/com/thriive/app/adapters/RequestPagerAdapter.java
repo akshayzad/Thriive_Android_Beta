@@ -38,16 +38,14 @@ import java.util.List;
 
 public class RequestPagerAdapter extends PagerAdapter {
 
-    Context context;
-    ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> arrayList;
-    SharedData sharedData;
+    private Context context;
+    private ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> arrayList;
     private Fragment fragment;
 
     public RequestPagerAdapter(Context context, Fragment fragment, ArrayList<PendingMeetingRequestPOJO.MeetingRequestList> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         this.fragment = fragment;
-        sharedData = new SharedData(context);
     }
 
     @Override

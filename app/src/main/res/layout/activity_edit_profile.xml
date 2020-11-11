@@ -36,7 +36,7 @@
                 android:textAlignment="center"
                 android:padding="@dimen/_10dp"
                 android:textColor="@color/darkGreyBlue"
-                android:text="Profile" />
+                android:text="@string/profile" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

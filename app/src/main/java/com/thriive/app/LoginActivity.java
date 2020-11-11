@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -420,9 +421,16 @@ public class LoginActivity extends AppCompatActivity {
 
 
             case R.id.btn_register:
-                Intent intent = new Intent(getApplicationContext(), CommonWebviewActivity.class);
-                intent.putExtra("intent_type", Utility.REGISTER);
-                startActivity(intent);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW).
+                            setData(Uri.parse(sharedData.getStringData(SharedData.REGISTER_URL)));
+                    startActivity(intent);
+                } catch (Exception e){
+                    e.getMessage();
+                }
+//                Intent intent = new Intent(getApplicationContext(), CommonWebviewActivity.class);
+//                intent.putExtra("intent_type", Utility.REGISTER);
+//                startActivity(intent);
                 break;
         }
     }

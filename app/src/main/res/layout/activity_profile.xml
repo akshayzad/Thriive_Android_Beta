@@ -47,21 +47,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/_10dp"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
+                android:padding="@dimen/_7dp"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:background="#231F20"
                 android:orientation="horizontal">
                 <com.thriive.app.utilities.CircleImageView
                     android:id="@+id/img_profile"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_weight="0"
-                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_margin="@dimen/_10dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
@@ -80,7 +80,7 @@
                         android:layout_marginLeft="@dimen/_10dp"
                         android:layout_marginRight="@dimen/_10dp"
                         android:padding="1dp"
-                        android:textColor="@color/darkGrey"
+                        android:textColor="@color/whiteTwo"
                         android:text="Samir K" />
                     <TextView
                         android:id="@+id/txt_profession"
@@ -91,233 +91,243 @@
                         android:padding="1dp"
                         android:layout_marginLeft="@dimen/_10dp"
                         android:layout_marginRight="@dimen/_10dp"
-                        android:textColor="@color/darkGrey"
+                        android:textColor="@color/whiteTwo"
                         android:text="CEO, Founder - Tesla" />
                 </LinearLayout>
 
 
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_edit_profile"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                android:orientation="vertical"
+                android:padding="@dimen/_10dp">
 
-                </ImageView>
-                <TextView
+
+
+                <LinearLayout
+                    android:id="@+id/history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/profile"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="@dimen/_25dp"
-                    android:layout_height="@dimen/_25dp"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5dp">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_my_connections"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/preferences"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_preferences"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    </ImageView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/history"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="@dimen/_25dp"
+                        android:layout_height="@dimen/_25dp"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-                <TextView
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/preferences"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/preferences"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="@dimen/_25dp"
-                    android:layout_height="@dimen/_25dp"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5dp">
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_my_preferences"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-            </LinearLayout>
+                    </ImageView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/preferences"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="@dimen/_25dp"
+                        android:layout_height="@dimen/_25dp"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5dp">
 
-            <LinearLayout
-                android:id="@+id/history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_history"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    </ImageView>
+                </LinearLayout>
 
-                </ImageView>
-                <TextView
+                <LinearLayout
+                    android:id="@+id/profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/history"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="@dimen/_25dp"
-                    android:layout_height="@dimen/_25dp"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5dp">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_edit_profile"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-            </LinearLayout>
+                    </ImageView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/profile"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="@dimen/_25dp"
+                        android:layout_height="@dimen/_25dp"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5dp">
 
-            <LinearLayout
-                android:id="@+id/service"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:visibility="visible"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_help"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
-
-                </ImageView>
-                <TextView
+                    </ImageView>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/service"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/terms"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_help"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-            </LinearLayout>
+                    </ImageView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/terms"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-            <LinearLayout
-                android:id="@+id/policy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:visibility="visible"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_about"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    </ImageView>
+                </LinearLayout>
 
-                </ImageView>
-                <TextView
+                <LinearLayout
+                    android:id="@+id/policy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/privacy"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_about"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
-            </LinearLayout>
+                    </ImageView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/privacy"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-            <LinearLayout
-                android:id="@+id/logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_logout"
-                    android:layout_weight="0"
-                    android:layout_margin="@dimen/_5dp">
+                    </ImageView>
+                </LinearLayout>
 
-                </ImageView>
-                <TextView
-                    android:id="@+id/txt_logout"
+                <LinearLayout
+                    android:id="@+id/logout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/_16dp"
-                    android:layout_weight="1"
                     android:layout_margin="@dimen/_5dp"
-                    android:text="@string/logout"
-                    android:textColor="@color/darkGreyBlue"
-                    android:fontFamily="@font/roboto_regular"></TextView>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_next"
-                    android:layout_weight="0"
-                    android:visibility="invisible"
-                    android:layout_margin="@dimen/_5dp">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_logout"
+                        android:layout_weight="0"
+                        android:layout_margin="@dimen/_5dp">
 
-                </ImageView>
+                    </ImageView>
+                    <TextView
+                        android:id="@+id/txt_logout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/_16dp"
+                        android:layout_weight="1"
+                        android:layout_margin="@dimen/_5dp"
+                        android:text="@string/logout"
+                        android:textColor="@color/darkGreyBlue"
+                        android:fontFamily="@font/roboto_regular"></TextView>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_next"
+                        android:layout_weight="0"
+                        android:visibility="invisible"
+                        android:layout_margin="@dimen/_5dp">
+
+                    </ImageView>
+                </LinearLayout>
             </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>

@@ -242,9 +242,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void setScheduleData() {
         //  To show preview of left and right pages set the following two values
-        viewpager_schedule.setClipToPadding(false);
         viewpager_schedule.setPadding(0,0,30,0);
-        viewpager_schedule.setClipToPadding(false);
 //        viewpager_schedule.setPageMargin(10);
         addDotSchedule(0);
 
@@ -294,9 +292,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void setRequestData() {
-        viewpager_request.setClipToPadding(false);
         viewpager_request.setPadding(0, 0, 30, 0);
-        viewpager_schedule.setClipToPadding(false);
         addDotRequest(0);
         // whenever the page changes
         viewpager_request.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

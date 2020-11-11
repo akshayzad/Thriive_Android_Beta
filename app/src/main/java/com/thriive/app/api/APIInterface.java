@@ -6,21 +6,29 @@ import com.thriive.app.models.CommonDomainPOJO;
 import com.thriive.app.models.CommonEntityImagePOJO;
 import com.thriive.app.models.CommonEntityPOJO;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
+import com.thriive.app.models.CommonExpertisePOJO;
 import com.thriive.app.models.CommonHomePOJO;
+import com.thriive.app.models.CommonInterestsPOJO;
 import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonMetaListPOJO;
 import com.thriive.app.models.CommonMetaPOJO;
+import com.thriive.app.models.CommonObjectivesPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.CommonPersonaPOJO;
 import com.thriive.app.models.CommonReasonPOJO;
 import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CommonScheduleMeetingPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
+import com.thriive.app.models.ExpertiseBodyPOJO;
+import com.thriive.app.models.IntrestsBodyPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.MetaListPOJO;
+import com.thriive.app.models.ObjectiveBodyPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import okhttp3.MultipartBody;
@@ -93,7 +101,8 @@ APIInterface {
 //              "skipCount" : 0
     @FormUrlEncoded
     @POST
-    Call<CommonDomainPOJO> getSearchDomain(@Url String url,@Header("Authorization") String authorization,@Field("query") String query, @Field("pageSize") String pageSize,
+    Call<CommonDomainPOJO> getSearchDomain(@Url String url,@Header("Authorization") String authorization,
+                                           @Field("query") String query, @Field("pageSize") String pageSize,
                                            @Field("skipCount") String skipCount);
     @FormUrlEncoded
     @POST
@@ -307,6 +316,46 @@ APIInterface {
     @FormUrlEncoded
     @POST
     Call<CommonMeetingCountPOJO> getMeetingCount(@Url String url,@Header("Authorization")String activeToken, @Field("rowcode") String rowcode);
+
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonExpertisePOJO> getExpertise(@Url String url, @Header("Authorization") String authorization,
+                                           @Field("rowcode") String rowcode);
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonObjectivesPOJO> getObjectives(@Url String url, @Header("Authorization") String authorization,
+                                             @Field("rowcode") String rowcode);
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonInterestsPOJO> getInterests(@Url String url, @Header("Authorization") String authorization,
+                                           @Field("rowcode") String rowcode);
+
+//    @Headers({"Accept:application/json", "Content-Type:application/json;"})
+//    @POST
+//    Call<CommonPOJO> saveExpertise(@Header("Content-Type") String content_type, @Url String url,
+//                                   @Header("Authorization") String authorization,  @Body RequestBody body);
+
+//    @FormUrlEncoded
+
+    @POST
+    @Headers({ "Content-Type: application/json;charset=UTF-8"})
+    Call<CommonPOJO> saveExpertise(@Url String url, @Header("Authorization") String authorization,
+                                    @Body ExpertiseBodyPOJO expertiseList);
+
+    @POST
+    @Headers({ "Content-Type: application/json;charset=UTF-8"})
+    Call<CommonPOJO> saveObjectives(@Url String url, @Header("Authorization") String authorization,
+                                    @Body ObjectiveBodyPOJO bodyPOJO);
+
+    @POST
+    @Headers({ "Content-Type: application/json;charset=UTF-8"})
+    Call<CommonPOJO> saveInterests(@Url String url, @Header("Authorization") String authorization,
+                                   @Body IntrestsBodyPOJO intrestsBodyPOJO);
+
+
 }
 
 

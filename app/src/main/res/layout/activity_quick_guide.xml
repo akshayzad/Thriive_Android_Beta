@@ -10,67 +10,125 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <TextView
-        android:id="@+id/txt_close"
+    <LinearLayout
+        android:id="@+id/layoutDots"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35dp"
+        android:gravity="center"
+        android:layout_margin="@dimen/_10dp"
+        android:orientation="horizontal">
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/view_skip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/roboto_bold"
-        android:textColor="@color/whiteTwo"
-        android:text="@string/close"
-        android:textAllCaps="true"
-        android:visibility="gone"
-        android:padding="@dimen/_5dp"
         android:layout_margin="@dimen/_20dp"
         android:layout_alignParentEnd="true"
-        android:textSize="@dimen/_14dp"></TextView>
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_skip"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
+            android:src="@drawable/ic_close"
+            android:layout_marginLeft="2dp"
+            app:tint="@color/whiteTwo">
+
+        </ImageView>
+        <TextView
+            android:id="@+id/txt_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_below="@id/img_skip"
+            android:textColor="@color/whiteTwo"
+            android:text="@string/skip"
+            android:padding="@dimen/_2dp"
+            android:visibility="visible"
+            android:textSize="@dimen/_12dp"></TextView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/view_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_20dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
+            android:src="@drawable/ic_close"
+            android:layout_marginLeft="@dimen/_2dp"
+            app:tint="@color/whiteTwo">
+
+        </ImageView>
+        <TextView
+            android:id="@+id/txt_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_below="@id/img_close"
+            android:textColor="@color/whiteTwo"
+            android:text="@string/skip"
+            android:padding="@dimen/_2dp"
+            android:visibility="visible"
+            android:textSize="@dimen/_12dp"></TextView>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/layout_wh1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_10dp"
-        android:layout_marginRight="@dimen/_10dp"
-        android:layout_marginBottom="@dimen/_10dp"
         android:layout_marginTop="70dp"
+        android:layout_marginRight="@dimen/_10dp"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/_10dp"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_10dp"
             android:layout_marginRight="@dimen/_20dp"
-           android:layout_marginTop="@dimen/_10dp"
-            android:padding="@dimen/_10dp"
             android:layout_marginBottom="@dimen/_5dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="@dimen/_10dp">
+
             <TextView
                 android:id="@+id/txt_01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="@dimen/_25dp"
                 android:layout_marginTop="@dimen/_5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Welcome, "
                 android:textColor="@color/whiteTwo"
-                android:text="Welcome, " />
+                android:textSize="@dimen/_25dp" />
+
             <TextView
                 android:id="@+id/txt_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_25dp"
                 android:layout_marginTop="@dimen/_5dp"
+                android:fontFamily="@font/roboto_bold"
+                android:text=""
                 android:textColor="@color/whiteTwo"
-                android:text="" />
+                android:textSize="@dimen/_25dp" />
         </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_30dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="@dimen/_30dp"
             android:fontFamily="@font/roboto_medium"
-            android:layout_marginTop="5dp"
-            android:textSize="@dimen/_16dp"
+            android:text="@string/walk"
             android:textColor="@color/whiteTwo"
-            android:text="@string/walk"></TextView>
+            android:textSize="@dimen/_16dp"></TextView>
     </LinearLayout>
 
     <ImageView
@@ -93,13 +151,38 @@
         android:layout_centerHorizontal="true"
         android:layout_marginRight="@dimen/_30dp"
         android:layout_height="150dp"></ImageView>
+
     <LinearLayout
-        android:id="@+id/layoutDots"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_20dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_margin="@dimen/_30dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
+        <TextView
+            android:id="@+id/txt_prev"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/whiteTwo"
+            android:text="@string/prev"
+            android:visibility="gone"
+            android:padding="@dimen/_2dp"
+         android:layout_weight="1"
+            android:textSize="@dimen/_15dp"></TextView>
+        <TextView
+            android:id="@+id/txt_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/whiteTwo"
+            android:text="@string/next"
+            android:visibility="visible"
+            android:layout_weight="1"
+            android:padding="@dimen/_2dp"
+            android:gravity="right"
+            android:textSize="@dimen/_15dp"></TextView>
     </LinearLayout>
+
 
 </RelativeLayout>

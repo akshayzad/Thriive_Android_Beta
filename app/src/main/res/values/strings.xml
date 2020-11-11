@@ -19,8 +19,8 @@
     <string name="confirm">Confirm</string>
     <string name="base_url">https://niticode.com/api/</string>
     <string name="done">Done</string>
-    <string name="profile">Profile</string>
-    <string name="preferences">Preferences</string>
+    <string name="profile">Account Settings</string>
+    <string name="preferences">My Preferences</string>
     <string name="history">My Connections</string>
     <string name="help">Help</string>
     <string name="about">About</string>
@@ -115,6 +115,11 @@
     <string name="expertise">Expertise</string>
     <string name="update">Update</string>
     <string name="linkedin_progress_dialog_message">Loading, Please wait</string>
+    <string name="skip">Skip</string>
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
 
-
+    <string name="view">View</string>
+    <string name="objectives">Objectives</string>
+    <string name="interest">Interests</string>
 </resources>

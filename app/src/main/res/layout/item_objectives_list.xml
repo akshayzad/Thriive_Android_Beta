@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="3dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp"
+    android:id="@+id/layout_select"
+    android:background="@drawable/outline_select_experience"
+    android:layout_marginTop="5dp">
+    <TextView
+        android:id="@+id/txt_objective"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_2dp"
+        android:paddingBottom="@dimen/_2dp"
+        android:paddingRight="@dimen/_2dp"
+        android:paddingLeft="@dimen/_2dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="@color/darkSeaGreen"
+        android:textSize="@dimen/_13dp"
+        android:fontFamily="@font/roboto_regular"
+        android:text="Data Analyst"
+        android:layout_gravity="center"></TextView>
+</LinearLayout>

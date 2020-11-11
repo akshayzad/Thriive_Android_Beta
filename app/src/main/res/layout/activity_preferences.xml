@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:layout_margin="@dimen/_10dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -83,6 +84,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
+            android:visibility="gone"
             android:layout_margin="@dimen/_10dp">
             <TextView
                 android:layout_width="wrap_content"
@@ -110,7 +112,107 @@
                 android:layout_margin="@dimen/_5dp">
             </ImageView>
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/view_objective"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:textSize="@dimen/_16dp"
+                android:text="@string/objectives"
+                android:textColor="@color/darkGreyBlue"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_weight="0"></TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:text="@string/view"
+                android:gravity="right"
+                android:textColor="@color/darkGrey"
+                android:textSize="15dp"
+                android:layout_weight="1"></TextView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_next"
+                android:layout_weight="0"
+                android:layout_margin="@dimen/_5dp">
+            </ImageView>
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/view_expertise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:textSize="@dimen/_16dp"
+                android:text="@string/expertise"
+                android:textColor="@color/darkGreyBlue"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_weight="0"></TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:text="@string/view"
+                android:gravity="right"
+                android:textColor="@color/darkGrey"
+                android:textSize="15dp"
+                android:layout_weight="1"></TextView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_next"
+                android:layout_weight="0"
+                android:layout_margin="@dimen/_5dp">
+            </ImageView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/view_interest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/_10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:textSize="@dimen/_16dp"
+                android:text="@string/interest"
+                android:textColor="@color/darkGreyBlue"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_weight="0"></TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5dp"
+                android:text="@string/view"
+                android:gravity="right"
+                android:textColor="@color/darkGrey"
+                android:textSize="15dp"
+                android:layout_weight="1"></TextView>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_next"
+                android:layout_weight="0"
+                android:layout_margin="@dimen/_5dp">
+            </ImageView>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -686,9 +686,12 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getActivity().startActivity(intent);
                 } catch (Exception e) {
-                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl())));
-                } finally {
-
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(meetingListPOJO.getGiverLinkedinUrl()));
+                        getActivity().startActivity(intent);
+                    } catch (Exception e1) {
+                    }
                 }
 
             }
@@ -704,9 +707,12 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getActivity().startActivity(intent);
                 } catch (Exception e) {
-                    getActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getRequestorLinkedinUrl())));
-                } finally {
-
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(meetingListPOJO.getRequestorLinkedinUrl()));
+                        getActivity().startActivity(intent);
+                    } catch (Exception e1) {
+                    }
                 }
             }
         }

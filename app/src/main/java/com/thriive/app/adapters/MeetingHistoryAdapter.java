@@ -144,22 +144,21 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                 if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
                     if (item.getGiverLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
-
                     } else {
                         try {
-
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
                             intent.setPackage("com.linkedin.android");
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             view.getContext().startActivity(intent);
                         } catch (Exception e) {
-                            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl())));
-                        } finally {
-
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
+                                view.getContext().startActivity(intent);
+                            } catch (Exception e1) {
+                            }
                         }
-
                     }
-
                 } else {
                     if (item.getRequestorLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
@@ -171,13 +170,15 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             view.getContext().startActivity(intent);
                         } catch (Exception e) {
-                            view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
-                        } finally {
-
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getRequestorLinkedinUrl()));
+                                view.getContext().startActivity(intent);
+                            } catch (Exception e1) {
+                            }
                         }
                     }
                 }
-
             }
         });
 
@@ -189,29 +190,27 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
 
                     } else {
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                        emailIntent.setType("text/plain");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-                        final PackageManager pm = context.getPackageManager();
-                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
-                        ResolveInfo best = null;
-                        for(final ResolveInfo info : matches)
-                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
-                                best = info;
-                        if (best != null)
-                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                        try {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                            final PackageManager pm = context.getPackageManager();
+                            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                            ResolveInfo best = null;
+                            for(final ResolveInfo info : matches)
+                                if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                    best = info;
+                            if (best != null)
+                                emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
 
-                        view.getContext().startActivity(emailIntent);
+                            view.getContext().startActivity(emailIntent);
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
 
-//                Intent intent = new Intent(Intent.ACTION_SEND);
-//                intent.setType("*/*");
-//                intent.putExtra(Intent.EXTRA_EMAIL,new String[]{ meetingListPOJO.getGiverEmailId()});
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
-//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-//                    getActivity().startActivity(intent);
-//                }
+
                     }
 
                 } else {
@@ -219,30 +218,26 @@ public class MeetingHistoryAdapter extends RecyclerView.Adapter<MeetingHistoryAd
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
 
                     } else {
+                        try {
+                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
+                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                            emailIntent.setType("text/plain");
+                            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                            final PackageManager pm = context.getPackageManager();
+                            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                            ResolveInfo best = null;
+                            for(final ResolveInfo info : matches)
+                                if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                                    best = info;
+                            if (best != null)
+                                emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
 
-                        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
-                        emailIntent.setType("text/plain");
-                        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-                        final PackageManager pm = context.getPackageManager();
-                        final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
-                        ResolveInfo best = null;
-                        for(final ResolveInfo info : matches)
-                            if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
-                                best = info;
-                        if (best != null)
-                            emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                            view.getContext().startActivity(emailIntent);
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
 
-                        view.getContext().startActivity(emailIntent);
-
-//                Intent intent = new Intent(Intent.ACTION_SEND);
-//                intent.setType("*/*");
-//                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{meetingListPOJO.getRequestorEmailId()});
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "");
-//                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
-//                    getActivity().startActivity(intent);
-//                }
                     }
                 }
             }

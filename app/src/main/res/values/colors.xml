@@ -64,8 +64,18 @@
         <item>@color/butterscotch</item>
     </array>
 
-
+    <array name="view_active">
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+        <item>@color/battleshipGrey</item>
+    </array>
     <array name="view_dot_inactive">
+        <item>@color/whiteTwo</item>
+        <item>@color/whiteTwo</item>
         <item>@color/whiteTwo</item>
         <item>@color/whiteTwo</item>
         <item>@color/whiteTwo</item>

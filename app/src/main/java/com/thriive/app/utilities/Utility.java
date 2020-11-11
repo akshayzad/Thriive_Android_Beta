@@ -48,17 +48,18 @@ public class Utility {
     public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
     public static RequestBody getJsonEncode(Activity activity) {
 
-        PackageManager manager = activity.getPackageManager();
-        PackageInfo info = null;
-        try {
-            info = manager.getPackageInfo(activity.getPackageName(), PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        Log.d("TAG", "PackageName = " + info.packageName + "\nVersionCode = " + info.versionCode + "\nVersionName = " + info.versionName);
+//        PackageManager manager = activity.getPackageManager();
+//        PackageInfo info = null;
+//        try {
+//            info = manager.getPackageInfo(activity.getPackageName(), PackageManager.GET_ACTIVITIES);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        Log.d("TAG", "PackageName = " + info.packageName + "\nVersionCode = "
+//                + info.versionCode + "\nVersionName = " + info.versionName);
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", 1);
+        jsonParams.put("internal_app_version", 3);
 
         Log.e("params", jsonParams.toString());
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),

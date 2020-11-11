@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:layout_marginRight="2dp"
-    android:layout_marginLeft="2dp"
+    android:layout_marginBottom="3dp"
+    android:layout_marginRight="3dp"
+    android:layout_marginLeft="3dp"
     android:id="@+id/layout_select"
     android:background="@drawable/background_expertise"
     android:layout_marginTop="5dp">
@@ -20,7 +20,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="@color/darkGrey"
-        android:textSize="@dimen/_12dp"
+        android:textSize="@dimen/_13dp"
         android:fontFamily="@font/roboto_regular"
         android:text="Data Analyst"
         android:layout_gravity="center"></TextView>

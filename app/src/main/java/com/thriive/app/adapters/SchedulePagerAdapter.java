@@ -315,7 +315,6 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
                     if (item.getGiverEmailId().equals("")){
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
-
                     } else {
                         try {
                             Intent emailIntent = new Intent(Intent.ACTION_SEND);
@@ -375,23 +374,39 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         } catch (Exception e) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
+                                context.startActivity(intent);
+                            } catch (Exception e1) {
+                            }
                         }
+
                     }
                 } else {
                     if (item.getRequestorLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
                     } else {
                         try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(item.getRequestorLinkedinUrl()));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             context.startActivity(intent);
                         } catch (Exception e) {
-                            //    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
+                                context.startActivity(intent);
+                            } catch (Exception e1) {
+                                //    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl())));
+                            }
                         }
+
                     }
                 }
             }

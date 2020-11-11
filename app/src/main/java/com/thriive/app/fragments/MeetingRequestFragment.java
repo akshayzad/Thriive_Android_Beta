@@ -34,7 +34,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.thriive.app.R;
-import com.thriive.app.adapters.DomainListAdapter;
 import com.thriive.app.adapters.ExpertiseListAdapter;
 import com.thriive.app.adapters.MetaChildListAdapter;
 import com.thriive.app.adapters.MetaListAdapter;
@@ -173,7 +172,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     TextView txt_meetingCount;
     @BindView(R.id.txt_message)
     TextView txt_message;
-    private DomainListAdapter domainAdapter;
+
 
 
     @BindView(R.id.layout_meta)
@@ -539,10 +538,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                                 } else {
                                     label_noDomain.setVisibility(View.GONE);
                                 }
-                               // domainAdapter = new DomainAdapter(getActivity(), MeetingRequestFragment.this,
-                                   //     (ArrayList<DomainListPOJO>) reasonPOJO.getDomainList());
                                 rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                rv_domain.setAdapter(domainAdapter);
+                               // rv_domain.setAdapter(domainAdapter);
 
                             } else {
                                 label_noDomain.setVisibility(View.VISIBLE);
@@ -662,9 +659,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 .show();
         personaId = persona_id;
         personaName = persona_name;
-        if (domainAdapter != null){
-            domainAdapter.clearData();
-        }
         if (metaListAdapter != null){
             metaListAdapter.clearData();
         }
@@ -699,8 +693,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                         rv_meta.setVisibility(View.VISIBLE);
                         label_noMeta.setVisibility(View.GONE);
                         layout_lexpertise.setVisibility(View.GONE);
-//                        domainAdapter = new DomainListAdapter(getActivity(), MeetingRequestFragment.this,
-//                                (ArrayList<CommonMetaListPOJO.DomainList>) reasonPOJO.getMrParams().getDomainList());
 //                        rv_domain.setLayoutManager(new LinearLayoutManager(getActivity()));
 //                        rv_domain.setAdapter(domainAdapter);
                     } else {
@@ -708,10 +700,6 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                         layout_domain.setVisibility(View.GONE);
                         layout_meta.setVisibility(View.GONE);
                         layout_lexpertise.setVisibility(View.GONE);
-                    }
-
-                    if (domainAdapter != null) {
-                        domainAdapter.notifyDataSetChanged();
                     }
 
                     if (reasonPOJO.getMrParams().getFlagExpertise()){
