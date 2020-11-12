@@ -84,7 +84,7 @@ private  String intent_type ;
                 if (intent_type.equals("ACCEPT")){
                     NotificationListActivity.start_time = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
                     NotificationListActivity.end_time = Utility.ConvertUTCToUserTimezone(item.getPlanEndTime());
-                    ((NotificationListActivity)context).meetingConfirmation();
+                    ((NotificationListActivity)context).meetingConfirmation("preset");
                 }
 
             }

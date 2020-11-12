@@ -137,7 +137,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 //            "sel_sub_domain_id":2,
 //            "sel_expertise_id":1
     public String reasonId = "",requestorId, giverPersonaId, domainId ="",
-        subDomainId ="", expertiseId  = "", reasonName, regionId = "", personaName, sdomainName;
+        subDomainId ="", expertiseId  = "", reasonName, regionId = "", personaName, domainName, sdomainName, expertiseName , regionName;
 
     private String  personaId = "";
     @BindView(R.id.txt_reason)
@@ -199,7 +199,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     MetaListAdapter metaListAdapter;
     MetaChildListAdapter metaChildListAdapter;
 
-
+    private CleverTapAPI cleverTap;
     ArrayList<MetaListPOJO.Child> tagLists = new ArrayList<>();
     public MeetingRequestFragment() {
         // Required empty public constructor
@@ -226,6 +226,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         sharedData = new SharedData(getActivity());
         apiInterface = APIClient.getApiInterface();
         loginPOJO = Utility.getLoginData(getActivity());
+
+        cleverTap = CleverTapAPI.getDefaultInstance(getActivity().getApplicationContext());
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -436,6 +438,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void getPersona(String reason_id, String reason_name) {
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step1);
+
         txt_reason.setText(""+reason_name);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -644,6 +648,8 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
     public void getMetaDomain(String persona_id, String persona_name) {
         // ddapter.re();omainA
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step2);
+
         label_noMeta.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
         layout_ldomain.setVisibility(View.GONE);
@@ -788,7 +794,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         subDomainId = ""+s_id;
         domainId = ""+d_id;
-        sdomainName = subDomainName;
+        domainName = subDomainName;
         txt_domains.setText(subDomainName);
         label_domain.setVisibility(View.GONE);
         layout_domain.setVisibility(View.GONE);
@@ -810,7 +816,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_lsdomain.setVisibility(View.VISIBLE);
         subDomainId = ""+s_id;
         domainId = ""+d_id;
-       // sdomainName = subDomainName;
+        sdomainName = subDomainName;
       //  txt_domains.setText(subDomainName);
         label_domain.setVisibility(View.GONE);
         layout_domain.setVisibility(View.GONE);
@@ -825,16 +831,19 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
     }
 
-    public void getRegion_Id(Integer countryId) {
+    public void getRegion_Id(Integer countryId, String countryName) {
         if (layout_meeting_preference.getVisibility() == View.GONE){
             layout_meeting_preference.setVisibility(View.VISIBLE);
         }
         regionId = "" + countryId;
+        regionName = countryName;
     }
 
-    public void setExpertise(Integer expertise_id, String expertiseName) {
+    public void setExpertise(Integer expertise_id, String expertise_name) {
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3);
+
         label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
-        txt_expertise.setText(""+expertiseName);
+        txt_expertise.setText(""+expertise_name);
         label_expertise.setVisibility(View.GONE);
         layout_expertise.setVisibility(View.GONE);
         layout_region.setVisibility(View.VISIBLE);
@@ -843,6 +852,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
         layout_lexpertise.setVisibility(View.VISIBLE);
         label_region.setVisibility(View.VISIBLE);
         expertiseId = ""+expertise_id;
+        expertiseName = expertise_name;
     }
 
 
@@ -889,7 +899,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                 break;
 
             case R.id.layout_lsdomain:
-                getTagList(tagLists, Integer.parseInt(domainId), Integer.parseInt(subDomainId), sdomainName);
+                getTagList(tagLists, Integer.parseInt(domainId), Integer.parseInt(subDomainId), domainName);
 
                 break;
 
@@ -964,14 +974,15 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
                     progressHUD.dismiss();
                     Log.d(TAG,""+reasonPOJO.getMessage());
                     if (reasonPOJO.getOK()) {
-                        CleverTapAPI cleverTap = CleverTapAPI.getDefaultInstance(getActivity().getApplicationContext());
-                        HashMap<String, Object> loginEvent = new HashMap<String, Object>();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                        String currentDateandTime = sdf.format(new Date());
-                        loginEvent.put("request_string", personaName + "-" + reasonName);
-                        loginEvent.put("time_stamp", currentDateandTime);
-                        loginEvent.put("requestor_email_id", loginPOJO.getEmailId());
-                        cleverTap.pushEvent("Thriive_Meeting_Request",loginEvent);
+                        HashMap<String, Object> meeting_event = new HashMap<String, Object>();
+                        meeting_event.put("meeting_request_id", "");
+                        meeting_event.put("meeting_objective", reasonName);
+                        meeting_event.put("requested_persona", personaName);
+                        meeting_event.put("domain_requested", domainName);
+                        meeting_event.put("subdomain_requested", sdomainName);
+                        meeting_event.put("expertise_requested", expertiseName);
+                        meeting_event.put("location_requested", regionName);
+                        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Requested,meeting_event);
 
                         successDialog();
                         //  Toast.makeText(getContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
@@ -992,6 +1003,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void getTagList(List<MetaListPOJO.Child> children, Integer d_id, Integer s_id, String tagName) {
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3);
 
         layout_lsdomain.setVisibility(View.GONE);
         tagLists.clear();
@@ -1002,7 +1014,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
             subDomainId = ""+s_id;
             domainId = ""+d_id;
-            sdomainName = tagName;
+            domainName = tagName;
             txt_domains.setText(tagName);
             label_domain.setVisibility(View.GONE);
             layout_domain.setVisibility(View.GONE);
@@ -1021,7 +1033,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
             subDomainId = ""+s_id;
             domainId = ""+d_id;
-            sdomainName = tagName;
+            domainName = tagName;
             txt_domains.setText(tagName);
             label_domain.setVisibility(View.GONE);
             layout_domain.setVisibility(View.GONE);
@@ -1040,7 +1052,7 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
             label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
             subDomainId = ""+s_id;
             domainId = ""+d_id;
-            sdomainName = tagName;
+            domainName = tagName;
             txt_domains.setText(tagName);
             label_domain.setVisibility(View.GONE);
             layout_domain.setVisibility(View.GONE);

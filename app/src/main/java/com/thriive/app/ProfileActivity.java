@@ -3,27 +3,21 @@ package com.thriive.app;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.thriive.app.R;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
-import com.thriive.app.models.CommonCountryPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.CircleImageView;
@@ -31,8 +25,6 @@ import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
-
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

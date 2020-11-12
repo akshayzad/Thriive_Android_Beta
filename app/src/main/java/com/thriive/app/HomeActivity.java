@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.JsonObject;
@@ -63,7 +64,10 @@ import com.thriive.app.utilities.spacenavigation.SpaceOnClickListener;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -89,12 +93,12 @@ public class HomeActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private SharedData sharedData;
 
-    private   String meetingId = "", UUID = "", time_stamp = "", reason = "";;
+    private String meetingId = "", UUID = "", time_stamp = "", reason = "";;
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
     private static final String TAG = HomeActivity.class.getName();
-
+    private CleverTapAPI cleverTap;
     private int rating_int = 0, isRelevantMatchSelect;
     boolean isDidntMeet = false, isRelevantMatch = false  , isDidntMeetSelect ;
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -122,7 +126,7 @@ public class HomeActivity extends AppCompatActivity {
 
        // showMeetingDialog(meetingId);
 
-
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 try{
@@ -160,6 +164,8 @@ public class HomeActivity extends AppCompatActivity {
         spaceNavigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
             public void onCentreButtonClick() {
+
+                cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Initiated);
                 getMeetingCount();
 
                 // Toast.makeText(HomeActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
@@ -178,6 +184,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         if (getIntent().getStringExtra("intent_type").equals("NOTI")){
+            cleverTap.pushEvent(Utility.Viewed_Alerts);
             getMeetingById();
 
         }
@@ -601,11 +608,33 @@ public class HomeActivity extends AppCompatActivity {
                 if (isDidntMeet){
                     dialogs.dismiss();
                     flag_no_show = 1;
+
+                    HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                    visitEvent.put("meeting_request_id", meetingId);
+                    visitEvent.put("rating", (int) rating_meeting.getRating());
+                    visitEvent.put("review", isRelevantMatchSelect);
+                    visitEvent.put("usertype", sharedData.getStringData(SharedData.USER_TYPE));
+                    cleverTap.pushEvent(Utility.Meeting_Rated,visitEvent);
+
                     getSaveMeetingReview("",  isRelevantMatchSelect,  flag_no_show,
                             (int) rating_app.getRating(),  (int) rating_meeting.getRating());
+                  //  usertype(requestor/giver)
+
+
+
+
+
                 } else {
                     if (rating_app.getRating() != 0.0 && rating_meeting.getRating() != 0.0 && isRelevantMatch) {
                         dialogs.dismiss();
+
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", meetingId);
+                        visitEvent.put("rating", (int) rating_meeting.getRating());
+                        visitEvent.put("review", isRelevantMatchSelect);
+                        visitEvent.put("usertype", sharedData.getStringData(SharedData.USER_TYPE));
+                        cleverTap.pushEvent(Utility.Meeting_Rated,visitEvent);
+
                         getSaveMeetingReview("",  isRelevantMatchSelect,  0,
                                 (int) rating_app.getRating(), (int) rating_meeting.getRating());
 

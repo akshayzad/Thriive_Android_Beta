@@ -29,6 +29,7 @@ public class SharedData {
     public static final String REGISTER_URL = "REGISTER_URL";
     public static final String IS_MEETING_JOIN = "IS_MEETING_JOIN";
     public static final String MEETING_PARSON_NAME = "MEETING_PARSON_NAME";
+    public static final String USER_TYPE = "USER_TYPE";
     public static String PREFS_2 = "PREFS_2";
     private SharedPreferences prefs2 ;
 

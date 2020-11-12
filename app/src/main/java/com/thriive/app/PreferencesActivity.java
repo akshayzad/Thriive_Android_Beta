@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
@@ -67,7 +68,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private APIInterface apiInterface;
     private SharedData sharedData;
     private String title = "";
-
+    private CleverTapAPI cleverTap;
     public static final String TAG = PreferencesActivity.class.getName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class PreferencesActivity extends AppCompatActivity {
         loginPOJO = Utility.getLoginData(getApplicationContext());
 
         apiInterface = APIClient.getApiInterface();
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
     }
     @OnClick({R.id.img_close, R.id.view_interest, R.id.view_expertise, R.id.view_objective})
@@ -244,6 +246,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         if (pojo != null){
                             Log.d(TAG,""+pojo.getMessage());
                             if (pojo.getOK()) {
+                                cleverTap.pushEvent(Utility.Updated_Preferences);
                                 Toast.makeText(getApplicationContext(), ""+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
@@ -397,6 +400,8 @@ public class PreferencesActivity extends AppCompatActivity {
                         if (pojo != null){
                             Log.d(TAG,""+pojo.getMessage());
                             if (pojo.getOK()) {
+                                cleverTap.pushEvent(Utility.Updated_Preferences);
+
                                 Toast.makeText(getApplicationContext(), ""+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();

@@ -67,7 +67,7 @@ public class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.RecyclerAd
                 currentItem = position;
 
                 notifyDataSetChanged();
-               ((MeetingRequestFragment) fragment).getRegion_Id(item.getCountryId());
+               ((MeetingRequestFragment) fragment).getRegion_Id(item.getCountryId(), item.getCountryName());
 
             }
         });

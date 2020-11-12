@@ -45,6 +45,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -81,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -140,7 +142,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
     private APIInterface apiInterface;
-    private String cancelReason = "";
+    private String cancelReason = "", usertype = "";
 
     private static  String TAG = MeetingDetailsFragment.class.getName();
     String startTime, endTime, selectedDate;
@@ -149,7 +151,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
             Manifest.permission.READ_CALENDAR
     };
     private ArrayList<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList = new ArrayList<>();
-
+    private CleverTapAPI cleverTap;
     private  BottomSheetDialog dialogEditSlot;
     public MeetingDetailsFragment() {
         // Required empty public constructor
@@ -175,6 +177,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         apiInterface = APIClient.getApiInterface();
         loginPOJO = Utility.getLoginData(getActivity());
         meetingListPOJO = Utility.getMeetingDetailsData(getContext());
+        cleverTap = CleverTapAPI.getDefaultInstance(getActivity().getApplicationContext());
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -209,6 +212,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         try {
           //  txt_tag.setText(""+meetingListPOJO.getMeetingLabel());
             if (meetingListPOJO.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))){
+                usertype = "requestor";
                 txt_name.setText(meetingListPOJO.getGiverName());
                 if (meetingListPOJO.getGiverPicUrl().equals("")){
                     Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
@@ -294,6 +298,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));
 
             } else {
+                usertype = "giver";
                 txt_name.setText(meetingListPOJO.getRequestorName());
                 if (meetingListPOJO.getRequestorPicUrl().equals("")){
                     Typeface typeface = ResourcesCompat.getFont(getActivity(), R.font.roboto_medium);
@@ -426,7 +431,8 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
 
 
-    @OnClick({R.id.txt_cancel, R.id.join_meeting, R.id.img_close, R.id.layout_avail, R.id.btn_email, R.id.btn_linkedin, R.id.txt_add_calender})
+    @OnClick({R.id.txt_cancel, R.id.join_meeting, R.id.img_close, R.id.layout_avail, R.id.btn_email,
+            R.id.btn_linkedin, R.id.txt_add_calender})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_cancel:
@@ -555,6 +561,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
     private void getAddCalender() {
 
+
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+        cleverTap.pushEvent(Utility.Clicked_Add_to_Calendar,visitEvent);
+
         SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         long lnsTime = 0, lneTime = 0;
         Date dateObject;
@@ -680,6 +691,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             } else {
                 try {
+                    HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                    visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                    cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
 
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getGiverLinkedinUrl()));
                     intent.setPackage("com.linkedin.android");
@@ -701,6 +715,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 Toast.makeText(getActivity(), "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
 
             } else {
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
                 try {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetingListPOJO.getRequestorLinkedinUrl()));
                     intent.setPackage("com.linkedin.android");
@@ -724,6 +741,10 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 Toast.makeText(getActivity(), "Sorry email not found", Toast.LENGTH_SHORT).show();
 
             } else {
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
+
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ meetingListPOJO.getGiverEmailId()});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
@@ -754,6 +775,10 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 Toast.makeText(getActivity(), "Sorry email not found", Toast.LENGTH_SHORT).show();
 
             } else {
+                //add Matched_Users_Email
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ meetingListPOJO.getRequestorEmailId()});
@@ -916,6 +941,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 dialogs.dismiss();
                 startTime = s_time;
                 endTime = e_time;
+                HashMap<String, Object> meeting_reschedule = new HashMap<String, Object>();
+                meeting_reschedule.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                meeting_reschedule.put("meeting_start_datetime", startTime);
+                meeting_reschedule.put("usertype", usertype);
+                cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Reschedule,meeting_reschedule);
                 getResheduledMeeting();
             }
         });
@@ -1136,6 +1166,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
 
     private void callMeeting(){
+        HashMap<String, Object> meeting_join = new HashMap<String, Object>();
+        meeting_join.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+        meeting_join.put("usertype", usertype);
+        cleverTap.pushEvent(Utility.User_Joins_Meeting,meeting_join);
+
         Intent intent = new Intent(getActivity(), MeetingJoinActivity.class);
         intent.putExtra("meeting_id",""+ meetingDataPOJO.getMeetingId());
         intent.putExtra("meeting_channel", meetingDataPOJO.getMeetingChannel());
@@ -1217,7 +1252,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 dialogs.dismiss();
-                 cancelReason = btn_TimeMatch.getText().toString();
+                cancelReason = btn_TimeMatch.getText().toString();
 
                 getCancelMeeting();
             }
@@ -1236,6 +1271,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
 
     public void getCancelMeeting() {
+        HashMap<String, Object> meeting_cancel = new HashMap<String, Object>();
+        meeting_cancel.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+        meeting_cancel.put("cancel_reason", cancelReason);
+        meeting_cancel.put("usertype", usertype);
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Cancel,meeting_cancel);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")

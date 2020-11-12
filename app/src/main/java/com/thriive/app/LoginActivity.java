@@ -553,6 +553,7 @@ public class LoginActivity extends AppCompatActivity {
                                         HashMap<String, Object> profile = new HashMap<String, Object>();
 
                                         profile.put("Name", loginPOJO.getReturnEntity().getEntityName());
+                                        profile.put("Identity", loginPOJO.getReturnEntity().getRowcode());
                                         profile.put("Email", loginPOJO.getReturnEntity().getEmailId());
                                         profile.put("Platform", "android");
                                         profile.put("Type", l_login_method);
@@ -563,9 +564,9 @@ public class LoginActivity extends AppCompatActivity {
                                         HashMap<String, Object> loginEvent = new HashMap<String, Object>();
                                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                                         String currentDateandTime = sdf.format(new Date());
-                                        loginEvent.put("email_id", l_email);
-                                        loginEvent.put("time_stamp", currentDateandTime);
-                                        clevertapDefaultInstance.pushEvent("Thriive_Login",loginEvent);
+                                        loginEvent.put("user_id", loginPOJO.getReturnEntity().getEntityId());
+                                  //      loginEvent.put("time_stamp", currentDateandTime);
+                                        clevertapDefaultInstance.pushEvent(Utility.User_Profile,loginEvent);
 
 
                                      //   Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();

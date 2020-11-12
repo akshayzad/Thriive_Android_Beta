@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
@@ -31,6 +32,7 @@ import com.thriive.app.utilities.progressdialog.KProgressHUD;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +76,7 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
     private SharedData sharedData;
     CommonMeetingListPOJO.MeetingListPOJO  meetingListPOJO;
 
-
+    private CleverTapAPI cleverTap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +84,14 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_meeting_confirmed);
         ButterKnife.bind(this);
         apiInterface = APIClient.getApiInterface();
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
         sharedData = new SharedData(getApplicationContext());
-        loginPOJO  = Utility.getLoginData(getApplicationContext());
+        loginPOJO = Utility.getLoginData(getApplicationContext());
         getMeetingById();
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", getIntent().getStringExtra("meeting_id"));
+        cleverTap.pushEvent(Utility.View_Matched_Users_Profile,visitEvent);
     }
 
     private void getMeetingById() {

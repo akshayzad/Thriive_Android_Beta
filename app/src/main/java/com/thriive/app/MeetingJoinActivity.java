@@ -42,6 +42,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.material.snackbar.Snackbar;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
@@ -56,6 +57,7 @@ import com.thriive.app.utilities.progressdialog.KProgressHUD;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.agora.rtc.IRtcEngineEventHandler;
@@ -107,6 +109,9 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
     private String rating_int = "", call_duration = "";
     private  KProgressHUD progressHUD;
+
+    private CleverTapAPI cleverTap;
+
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
         @Override
         public void onJoinChannelSuccess(String channel, final int uid, int elapsed) {
@@ -168,6 +173,14 @@ public class MeetingJoinActivity extends AppCompatActivity {
         public void onUserJoined(int uid, int elapsed) {
             super.onUserJoined(uid, elapsed);
             Log.d(TAG, "on User Join  " + uid);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                    visitEvent.put("meeting_request_id", meeting_id);
+                    cleverTap.pushEvent(Utility.Meeting_Started,visitEvent);
+                }
+            });
            // setupRemoteVideo(uid);
         }
 
@@ -306,7 +319,11 @@ public class MeetingJoinActivity extends AppCompatActivity {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         Log.d(TAG, meeting_id + " meeting_token " + meeting_token +  "meeting_channel  " + meeting_channel);
+
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
+
         initUI();
+
         if(getIntent().getStringExtra("intent_type").equals("NOTI")){
             getStartMeeting();
         } else {
@@ -360,8 +377,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
                                 end_time = reasonPOJO.getMeetingData().getPlanEndTime();
                                 start_time = reasonPOJO.getMeetingData().getPlanStartTime();
                                 if (sharedData.getIntData(SharedData.USER_ID) == reasonPOJO.getMeetingData().getGiverId()){
+                                    sharedData.addStringData(SharedData.USER_TYPE, "giver");
                                     sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getRequestorName());
                                 }else {
+                                    sharedData.addStringData(SharedData.USER_TYPE, "requestor");
                                     sharedData.addStringData(SharedData.MEETING_PARSON_NAME, reasonPOJO.getMeetingData().getGiverName());
                                 }
                                 getStartTimer();
@@ -812,6 +831,10 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
 
     private void closeActivity() {
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", meeting_id);
+        cleverTap.pushEvent(Utility.Meeting_Ended,visitEvent);
+
         if (popupHandler != null) {
             popupHandler.removeCallbacks(popupRunnable);
             popupHandler.removeCallbacksAndMessages(null);

@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
@@ -121,7 +122,7 @@ public class EditProfileActivity extends AppCompatActivity {
     public static final String TAG = EditProfileActivity.class.getName();
     private Uri cameraUri = null;
     private String mCurrentPhotoPath;
-
+    private CleverTapAPI cleverTap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +138,7 @@ public class EditProfileActivity extends AppCompatActivity {
         rv_tags.setLayoutManager(gridLayout );
        // rv_tags.setAdapter(new PersonaTagsAdapter(getApplicationContext(),loginPOJO.()));
 
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
         setData();
     }
@@ -391,6 +393,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d(TAG,"Edit Image "+pojo.getMessage() + " " + pojo.getOK());
                         if (pojo != null){
                             if (pojo.getOK()) {
+                                cleverTap.pushEvent(Utility.Updated_Profile_Info);
                                 //Toast.makeText(getApplicationContext(), "success"+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                                 if (pojo.getPicUrl() != null){
                                     Log.d(TAG, pojo.getPicUrl());
@@ -696,6 +699,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         if (reasonPOJO != null){
                             Log.d(TAG,""+reasonPOJO.getMessage());
                             if (reasonPOJO.getOK()) {
+                                cleverTap.pushEvent(Utility.Updated_Profile_Info);
                                 if (reasonPOJO.getEntityObject() != null){
                                     Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                     Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
@@ -878,6 +882,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         try {
                             Log.d(TAG,""+reasonPOJO.getMessage());
                             if (reasonPOJO.getOK()) {
+                                cleverTap.pushEvent(Utility.Updated_Profile_Info);
                                 if (reasonPOJO.getEntityObject() != null){
                                     Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                     Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());
@@ -958,6 +963,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (reasonPOJO != null){
                         Log.d(TAG,""+reasonPOJO.getMessage());
                         if (reasonPOJO.getOK()) {
+                            cleverTap.pushEvent(Utility.Updated_Profile_Info);
                             if (reasonPOJO.getEntityObject() != null){
                                 Toast.makeText(getApplicationContext(), ""+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                 Utility.saveLoginData(getApplicationContext(), reasonPOJO.getEntityObject());

@@ -2,14 +2,10 @@ package com.thriive.app.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -17,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +34,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.onesignal.OneSignal;
 import com.thriive.app.MeetingJoinActivity;
@@ -65,6 +61,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -120,7 +117,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     public static final String TAG = MeetingsFragment.class.getName();
     private  String startTime, endTime, meetingCode, selectedDate, personaName, region_name, user_region = "";
 
-    private  String  meetingReason, title;
+    private  String  meetingReason, title, usertype;
     private long lnsTime, lneTime;
     private KProgressHUD progressHUD;
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
@@ -133,6 +130,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     private SchedulePagerAdapter schedulePagerAdapter;
     private RequestPagerAdapter requestPagerAdapter;
     private SwipeController swipeController = null;
+    private CleverTapAPI cleverTap;
     public MeetingsFragment() {
         // Required empty public constructor
     }
@@ -183,6 +181,7 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
         loginPOJO = Utility.getLoginData(getActivity());
         apiInterface = APIClient.getApiInterface();
         sharedData = new SharedData(getActivity());
+        cleverTap = CleverTapAPI.getDefaultInstance(getActivity().getApplicationContext());
 
         Log.d(TAG, loginPOJO.getActiveToken()   + "  " + loginPOJO.getRowcode());
         try {
@@ -465,7 +464,11 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
 
-    public void startMeeting(int meeting_id) {
+    public void startMeeting(int meeting_id, String user_type) {
+        HashMap<String, Object> meeting_join = new HashMap<String, Object>();
+        meeting_join.put("meeting_request_id", meeting_join);
+        meeting_join.put("usertype", user_type);
+        cleverTap.pushEvent(Utility.User_Joins_Meeting,meeting_join);
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
@@ -510,6 +513,8 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
     private void callMeeting(){
+
+
         Intent intent = new Intent(getContext(), MeetingJoinActivity.class);
         Log.d(TAG, "" + meetingDataPOJO.getMeetingId());
         intent.putExtra("meeting_id", ""+meetingDataPOJO.getMeetingId());
@@ -527,12 +532,13 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
 
 
-    public void getMeetingSlot(String meetingCode, String s, String m, String r_name, String user_country) {
+    public void getMeetingSlot(String meetingCode, String s, String m, String r_name, String user_country, String userType) {
         this.meetingCode = ""+meetingCode;
         meetingReason = m;
         personaName = s;
         region_name = r_name;
         user_region = user_country;
+        usertype = userType;
         progressHUD = KProgressHUD.create(getActivity())
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel("Please wait")
@@ -650,6 +656,11 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
                 dialogs.dismiss();
                 startTime = s_time;
                 endTime = e_time;
+                HashMap<String, Object> meeting_reschedule = new HashMap<String, Object>();
+                meeting_reschedule.put("meeting_request_id", meetingCode);
+                meeting_reschedule.put("meeting_start_datetime", startTime);
+                meeting_reschedule.put("usertype", usertype);
+                cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Reschedule, meeting_reschedule);
                 getResheduledMeeting();
             }
         });
@@ -794,7 +805,11 @@ public class MeetingsFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     }
 
-    public void getAddCalenderEvent(String e_title, String e_meetingReason, long lns_Time, long lne_Time) {
+    public void getAddCalenderEvent(String meeting_code, String e_title, String e_meetingReason, long lns_Time, long lne_Time) {
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", meeting_code);
+        cleverTap.pushEvent(Utility.Clicked_Add_to_Calendar,visitEvent);
+
         title = e_title;
         meetingReason = e_meetingReason;
         lneTime = lne_Time;

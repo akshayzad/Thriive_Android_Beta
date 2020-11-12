@@ -1,19 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
   },
   "applicationId": "com.thriive.app",
-  "variantName": "release",
+  "variantName": "processReleaseResources",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "properties": [],
-      "versionCode": 6,
-      "versionName": "1.0.4",
-      "enabled": true,
+      "versionCode": 8,
+      "versionName": "1.0.6",
       "outputFile": "app-release.apk"
     }
   ]

@@ -9,8 +9,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -69,6 +72,7 @@ public class LoginFragment extends BottomSheetDialogFragment {
     private KProgressHUD progressHUD;
     //private LoginPOJO.ReturnEntity loginPOJO;
    private APIInterface apiInterface;
+   private boolean isPasswordVisible ;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -93,6 +97,36 @@ public class LoginFragment extends BottomSheetDialogFragment {
        // UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
       //  sharedData = new SharedData(getActivity());
         apiInterface = APIClient.getApiInterface();
+
+
+        edt_password.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (edt_password.getRight() - edt_password.getCompoundDrawables()[RIGHT].getBounds().width())) {
+                        int selection = edt_password.getSelectionEnd();
+                        if (isPasswordVisible) {
+                            // set drawable image
+                            edt_password.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visibility_off, 0);
+                            // hide Password
+                            edt_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            isPasswordVisible = false;
+                        } else  {
+                            // set drawable image
+                            edt_password.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visible, 0);
+                            // show Password
+                            edt_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            isPasswordVisible = true;
+                        }
+                        edt_password.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
 
         return view;
     }

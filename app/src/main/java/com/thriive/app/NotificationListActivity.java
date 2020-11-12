@@ -1,19 +1,15 @@
 package com.thriive.app;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.format.DateFormat;
@@ -24,50 +20,37 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.flexbox.FlexWrap;
-import com.google.android.flexbox.FlexboxLayout;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.thriive.app.adapters.ExperienceAdapter;
 import com.thriive.app.adapters.ExperienceListAdapter;
-import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.adapters.MeetingSelectTagAdapter;
 import com.thriive.app.adapters.PendingNotificationAdapter;
 import com.thriive.app.adapters.SlotListAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
-import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonPOJO;
-import com.thriive.app.models.CommonRequesterPOJO;
-import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.CircleImageView;
 import com.thriive.app.utilities.SharedData;
-import com.thriive.app.utilities.SwipeController;
-import com.thriive.app.utilities.SwipeControllerActions;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 import com.thriive.app.utilities.textdrawable.TextDrawable;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,7 +80,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     public static String start_time  , end_time;
     private BottomSheetDialog dialogEditSlot;
     private AlertDialog dialogDetails ;
-
+    private CleverTapAPI cleverTap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +91,8 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         sharedData = new SharedData(getApplicationContext());
         loginPOJO  = Utility.getLoginData(getApplicationContext());
 
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
+
         refreshView.setOnRefreshListener(this);
         refreshView.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
@@ -116,7 +101,14 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
         refreshView.setRefreshing(false);
 
         if (getIntent().getStringExtra("intent_type").equals("NOTI")){
+//            HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+//            visitEvent.put("meeting_request_id", getIntent().getStringExtra("meeting_id"));
+//            cleverTap.pushEvent(Utility.Meeting_Request_Viewed,visitEvent);
+
+            cleverTap.pushEvent(Utility.Viewed_Alerts);
+
             getMeetingRequestById();
+
         }
         //getMeetingRequest();
     }
@@ -228,6 +220,9 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 
 
     public void detailsMeeting(CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO) {
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+        cleverTap.pushEvent(Utility.Meeting_Request_Viewed,visitEvent);
         try {
             meetingCode = meetingListPOJO.getMeetingCode();
             startTime = meetingListPOJO.getPlanStartTime();
@@ -583,7 +578,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                     //getAcceptMeeting();
                     dialog.dismiss();
 
-                    meetingConfirmation();
+                    meetingConfirmation("custom");
                 }
 //                dialog.dismiss();
 //                getAcceptMeeting();
@@ -597,7 +592,7 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
 
 
 
-    public void meetingConfirmation(){
+    public void meetingConfirmation(String availability_type){
         AlertDialog.Builder builder = new AlertDialog.Builder(NotificationListActivity.this, R.style.SheetDialog);
         LayoutInflater layoutInflater = this.getLayoutInflater();
         final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_confirmation, null);
@@ -634,6 +629,13 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
                 dialogs.dismiss();
                 startTime = start_time;
                 endTime = end_time;
+
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", meetingCode);
+                visitEvent.put("availability_type ", availability_type);
+                visitEvent.put("meeting_start_datetime", startTime);
+                cleverTap.pushEvent(Utility.Meeting_Request_Accepted,visitEvent);
+
                 getAcceptMeeting();
             }
         });
@@ -707,6 +709,9 @@ public class NotificationListActivity extends AppCompatActivity implements Swipe
     }
 
     public void getDeclineMeeting(String meetingCode) {
+        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+        visitEvent.put("meeting_request_id", meetingCode);
+        cleverTap.pushEvent(Utility.Meeting_Request_Declined,visitEvent);
         try {
             progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)

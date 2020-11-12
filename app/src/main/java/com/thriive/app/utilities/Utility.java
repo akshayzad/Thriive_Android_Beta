@@ -45,6 +45,32 @@ public class Utility {
     public static final String TERMS = "Terms of Service";
     public static final String REGISTER = "Register";
 
+    public static final String CLAVER_TAB_Meeting_Request_Initiated = "Meeting Request Initiated";
+    public static final String CLAVER_TAB_Meeting_Request_Step1 = "Meeting Request Step1";
+    public static final String CLAVER_TAB_Meeting_Request_Step2 = "Meeting Request Step2";
+    public static final String CLAVER_TAB_Meeting_Request_Step3 = "Meeting Request Step3";
+    public static final String CLAVER_TAB_Meeting_Requested = "Meeting Requested";
+    public static final String CLAVER_TAB_Meeting_Reschedule = "Meeting Reschedule";
+    public static final String CLAVER_TAB_Meeting_Cancel= "Meeting Cancel";
+    public  static final String Meeting_Request_Viewed ="Meeting Request Viewed";
+    public static final String Meeting_Request_Accepted = "Meeting Request Accepted";
+    public static final String Meeting_Request_Declined ="Meeting Request Declined";
+    public static final  String View_Matched_Users_Profile = "View Matched Users Profile";
+    public static final String Clicked_Matched_Users_Email = "Clicked Matched Users Email";
+    public static final  String Clicked_Matched_Users_LinkedIn = "Clicked Matched Users LinkedIn";
+    public static final String Clicked_Add_to_Calendar = "Clicked Add to Calendar";
+    public static final String User_Joins_Meeting = "User Joins Meeting";
+
+    public static final String Meeting_Started = "Meeting Started";
+    public static final String Meeting_Ended = "Meeting Ended";
+    public static final String Meeting_Rated = "Meeting Rated";
+
+    public static final String Viewed_Alerts = "Viewed Alerts";
+    public static final String Updated_Preferences= "Updated Preferences";
+    public static final String Viewed_Connections = "Viewed Connections";
+    public static final String Updated_Profile_Info= "Updated Profile Info";
+    public static final String User_Profile ="Login(IdentitySet)";
+
     public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
     public static RequestBody getJsonEncode(Activity activity) {
 

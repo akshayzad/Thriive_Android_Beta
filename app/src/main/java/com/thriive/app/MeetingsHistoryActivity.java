@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.thriive.app.adapters.MeetingHistoryAdapter;
 import com.thriive.app.adapters.RequesterListAdapter;
 import com.thriive.app.adapters.ScheduleListAdapter;
@@ -46,6 +47,9 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
     private LoginPOJO.ReturnEntity loginPOJO;
     private SharedData sharedData;
     private static String TAG = MeetingsHistoryActivity.class.getName();
+
+    private CleverTapAPI cleverTap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +60,8 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
         apiInterface = APIClient.getApiInterface();
 
         getMeetingHistory();
-
+        cleverTap = CleverTapAPI.getDefaultInstance(getApplicationContext());
+        cleverTap.pushEvent(Utility.Viewed_Connections);
 
     }
 

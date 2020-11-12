@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
+import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.thriive.app.R;
 import com.thriive.app.fragments.MeetingDetailsFragment;
@@ -35,6 +36,7 @@ import com.thriive.app.utilities.textdrawable.TextDrawable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -43,12 +45,14 @@ public class SchedulePagerAdapter extends PagerAdapter {
     private ArrayList<CommonMeetingListPOJO.MeetingListPOJO> arrayList;
     private SharedData sharedData;
     private Fragment fragment;
-
+    private CleverTapAPI cleverTap;
     public SchedulePagerAdapter(Context context, Fragment fragment, ArrayList<CommonMeetingListPOJO.MeetingListPOJO> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
         this.fragment = fragment;
         sharedData = new SharedData(context);
+        cleverTap = CleverTapAPI.getDefaultInstance(context);
+
     }
 
     @Override
@@ -268,11 +272,11 @@ public class SchedulePagerAdapter extends PagerAdapter {
             public void onClick(View view) {
                 if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
                     ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getGiverPersonaTags().get(0),
-                            item.getMeetingReason(), item.getGiverCountryName(), item.getRequestorCountryName());
+                            item.getMeetingReason(), item.getGiverCountryName(), item.getRequestorCountryName(), "requestor");
 
                 } else {
                     ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getRequestorPersonaTags().get(0),
-                            item.getMeetingReason(), item.getRequestorCountryName() , item.getGiverCountryName());
+                            item.getMeetingReason(), item.getRequestorCountryName() , item.getGiverCountryName(), "giver");
 
                 }
             }
@@ -292,7 +296,13 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         }.start();
                     } else {
 
-                        ((MeetingsFragment) fragment).startMeeting(item.getMeetingId());
+                        if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                            ((MeetingsFragment) fragment).startMeeting(item.getMeetingId(), "requestor");
+                        } else {
+                            ((MeetingsFragment) fragment).startMeeting(item.getMeetingId(), "giver");
+
+                        }
+
                     }
                  //   startMeeting();
                 } else {
@@ -316,6 +326,9 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     if (item.getGiverEmailId().equals("")){
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
                     } else {
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", item.getMeetingCode());
+                        cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
                         try {
                             Intent emailIntent = new Intent(Intent.ACTION_SEND);
                             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
@@ -342,6 +355,9 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         Toast.makeText(context, "Sorry email not found", Toast.LENGTH_SHORT).show();
 
                     } else {
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", item.getMeetingCode());
+                        cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
                         try {
                             Intent emailIntent = new Intent(Intent.ACTION_SEND);
                             emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
@@ -373,6 +389,10 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     if (item.getGiverLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
                     } else {
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", item.getMeetingCode());
+                        cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
+
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
                             intent.setPackage("com.linkedin.android");
@@ -392,6 +412,9 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     if (item.getRequestorLinkedinUrl().equals("")){
                         Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
                     } else {
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", item.getMeetingCode());
+                        cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
                             intent.setPackage("com.linkedin.android");
@@ -432,7 +455,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                     lneTime = dateObject.getTime();
                     Log.e("null", Long.toString(lneTime));
 
-                    ((MeetingsFragment)fragment).getAddCalenderEvent(title, item.getMeetingReason(), lnsTime, lneTime);
+                    ((MeetingsFragment)fragment).getAddCalenderEvent(item.getMeetingCode(), title, item.getMeetingReason(), lnsTime, lneTime);
 
                 }
 
