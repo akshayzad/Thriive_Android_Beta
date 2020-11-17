@@ -207,7 +207,12 @@ public class ProfileActivity extends AppCompatActivity {
                                 if (reasonPOJO.getOK()) {
                                     sharedData.addBooleanData(SharedData.isFirstVisit, false);
                                     sharedData.addBooleanData(SharedData.isLogged, false);
-                                    sharedData.clearPref(getApplicationContext());
+                                    if (sharedData.getBooleanData(SharedData.IS_REMEMBER_ME)) {
+                                        sharedData.addStringData(SharedData.ENTITY_PASSWORD, loginPOJO.getEntityPassword());
+                                    } else {
+                                        sharedData.clearPref(getApplicationContext());
+                                    }
+
                                     Utility.clearLogin(getApplicationContext());
                                     Utility.clearMeetingDetails(getApplicationContext());
                                     Handler mHandler = new Handler();

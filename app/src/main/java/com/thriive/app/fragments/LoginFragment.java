@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -63,6 +65,8 @@ public class LoginFragment extends BottomSheetDialogFragment {
     TextView txt_terms;
     @BindView(R.id.txt_privacy)
     TextView txt_privacy;
+    @BindView(R.id.cb_remember)
+    CheckBox cb_remember;
 
     SharedData sharedData;
     Unbinder unbinder;
@@ -97,6 +101,11 @@ public class LoginFragment extends BottomSheetDialogFragment {
        // UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
       //  sharedData = new SharedData(getActivity());
         apiInterface = APIClient.getApiInterface();
+        if (sharedData.getBooleanData(SharedData.IS_REMEMBER_ME)){
+            cb_remember.setChecked(true);
+            edt_password.setText(sharedData.getStringData(SharedData.ENTITY_PASSWORD));
+            edt_email.setText(sharedData.getStringData(SharedData.ENTITY_EMAIL));
+        }
 
 
         edt_password.setOnTouchListener(new View.OnTouchListener() {
@@ -158,10 +167,19 @@ public class LoginFragment extends BottomSheetDialogFragment {
                     email = edt_email.getText().toString();
                     password = edt_password.getText().toString();
                     //();
+                    boolean is_remember = false;
 
+                    if (cb_remember.isChecked()){
+                        Log.d(TAG, "Cha");
+                        is_remember = true;
+                     //   Toast.makeText(getActivity(), "cheked", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        is_remember = false;
+                    }
                     dismiss();
 
-                    ((LoginActivity)getActivity()).getLogin(email, password, "custom");
+                    ((LoginActivity)getActivity()).getLogin(email, password, "custom", is_remember);
                    // getLogin();
 
                 }

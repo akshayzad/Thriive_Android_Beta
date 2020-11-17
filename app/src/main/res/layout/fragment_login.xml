@@ -112,35 +112,54 @@
                 android:background="@drawable/reactangle_grey_outline"></EditText>
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10dp"
+                android:layout_marginRight="@dimen/_10dp"
+                android:layout_marginLeft="@dimen/_10dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/cb_remember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/darkGrey"
+                    android:textSize="@dimen/_13dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="Remember me"></CheckBox>
+
+                <TextView
+                    android:id="@+id/txt_forgetPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_13dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:layout_gravity="center"
+                    android:gravity="right"
+                    android:padding="@dimen/_1dp"
+                    android:textColor="@color/darkGrey"
+                    android:text="@string/forgot"
+                    />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:layout_marginRight="@dimen/_25dp"
                 android:layout_marginLeft="@dimen/_25dp"
                 android:layout_marginTop="@dimen/_20dp"
                 android:layout_marginBottom="@dimen/_5dp"
                 android:padding="2dp"
-                android:background="@drawable/filled_circle_terracota"
+                android:backgroundTint="@color/terracota"
+                android:background="@drawable/rectangle_white"
                 android:textColor="@color/whiteTwo"
                 android:textSize="@dimen/_16dp"
                 android:fontFamily="@font/roboto_bold"
-                android:text="Log IN"></Button>
+                android:text="Log In"></Button>
 
-            <TextView
-                android:id="@+id/txt_forgetPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
-                android:textSize="@dimen/_16dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@color/darkGrey"
-                android:layout_margin="@dimen/_14dp"
-                android:text="Forgot Password?"
-                />
 
 
             <LinearLayout

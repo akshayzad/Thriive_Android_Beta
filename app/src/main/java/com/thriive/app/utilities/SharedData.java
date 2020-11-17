@@ -31,6 +31,9 @@ public class SharedData {
     public static final String MEETING_PARSON_NAME = "MEETING_PARSON_NAME";
     public static final String USER_TYPE = "USER_TYPE";
     public static String PREFS_2 = "PREFS_2";
+    public static final String IS_REMEMBER_ME = "IS_REMEMBER_ME";
+    public static final String ENTITY_PASSWORD = "ENTITY_PASSWORD";
+    public static final String ENTITY_EMAIL= "ENTITY_EMAIL";
     private SharedPreferences prefs2 ;
 
     public SharedData(Context context)

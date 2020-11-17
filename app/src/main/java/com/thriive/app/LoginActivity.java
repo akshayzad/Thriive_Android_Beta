@@ -1,7 +1,6 @@
 package com.thriive.app;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.multidex.BuildConfig;
@@ -10,18 +9,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,13 +26,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInUser;
 import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
-import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInFromActivityBuilder;
 import com.bumptech.glide.Glide;
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -46,28 +40,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.onesignal.OneSignal;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.fragments.LoginFragment;
-import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.models.BaseUrlPOJo;
 import com.thriive.app.models.CommonPOJO;
-import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
 import com.thriive.app.utilities.Validation;
 import com.thriive.app.utilities.progressdialog.KProgressHUD;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,8 +62,6 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -356,7 +341,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    @OnClick({R.id.btn_login, R.id.btn_google, R.id.btn_linkedin, R.id.txt_forgetPassword, R.id.txt_terms,
+    @OnClick({R.id.btn_login, R.id.txt_forgetPassword, R.id.txt_terms,
             R.id.txt_privacy, R.id.btn_custom, R.id.btn_register})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -370,29 +355,30 @@ public class LoginActivity extends AppCompatActivity {
                     password = edt_password.getText().toString();
                     //();
 
-                    getLogin(email, password, login_method);
+                    boolean is_remember = false;
+                    getLogin(email, password, login_method, is_remember);
 
                 }
 
                 break;
 
-            case R.id.btn_google:
-
-                signInWithGoogle();
-
-                break;
-
-            case R.id.btn_linkedin:
-
-                login_method = "linkedin";
-                LinkedInFromActivityBuilder.getInstance(LoginActivity.this)
-                        .setClientID(CLIENT_ID)
-                        .setClientSecret(CLIENT_SECRET)
-                        .setRedirectURI(REDIRECTION_URL)
-                        .authenticate(100);
-             //   linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY);
-             //  signInWithLinkLined();
-                break;
+//            case R.id.btn_google:
+//
+//                signInWithGoogle();
+//
+//                break;
+//
+//            case R.id.btn_linkedin:
+//
+//                login_method = "linkedin";
+//                LinkedInFromActivityBuilder.getInstance(LoginActivity.this)
+//                        .setClientID(CLIENT_ID)
+//                        .setClientSecret(CLIENT_SECRET)
+//                        .setRedirectURI(REDIRECTION_URL)
+//                        .authenticate(100);
+//             //   linkedInRequestManager.showAuthenticateView(LinkedInRequestManager.MODE_EMAIL_ADDRESS_ONLY);
+//             //  signInWithLinkLined();
+//                break;
 
             case  R.id.txt_privacy:
 
@@ -451,7 +437,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG,"LinkedInLogin" + user.getFirstName());
                 Log.d(TAG,"LinkedInLogin" + user.getEmail());
                 email = user.getEmail();
-                getLogin(email, "" , login_method);
+                boolean is_remember = false;
+                getLogin(email, "" , login_method, is_remember);
 
             } else {
                 Log.d("LINKEDIN ERROR", data.getStringExtra("err_message"));
@@ -517,7 +504,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    public void getLogin(String l_email, String l_password, String l_login_method) {
+    public void getLogin(String l_email, String l_password, String l_login_method, boolean is_remember) {
         try {
             TimeZone timeZone = TimeZone.getDefault();
             Log.d(TAG, "time zone "+ timeZone.getID());
@@ -542,12 +529,22 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, response.toString());
                         LoginPOJO loginPOJO = response.body();
                         progressHUD.dismiss();
+                        if (is_remember){
+                            sharedData.addBooleanData(SharedData.IS_REMEMBER_ME, true);
+                            sharedData.addStringData(SharedData.ENTITY_PASSWORD, l_password);
+                            sharedData.addStringData(SharedData.ENTITY_EMAIL, l_email);
+                        } else{
+                            sharedData.addBooleanData(SharedData.IS_REMEMBER_ME, false);
+                            sharedData.addStringData(SharedData.ENTITY_PASSWORD, "");
+                            sharedData.addStringData(SharedData.ENTITY_EMAIL, "");
+                        }
                         try {
                             if (loginPOJO != null){
                                 Log.d(TAG, ""+loginPOJO.getMessage());
                                 if (loginPOJO.getOK()) {
                                     if (loginPOJO.getReturnEntity() != null){
                                         Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
+
 
 
                                         HashMap<String, Object> profile = new HashMap<String, Object>();
@@ -571,10 +568,15 @@ public class LoginActivity extends AppCompatActivity {
 
                                      //   Toast.makeText(LoginActivity.this, ""+loginPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                         sharedData.addBooleanData(SharedData.isLogged, true);
-                                        Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
-                                        intent.putExtra("intent_type", "FLOW");
-                                        startActivity(intent);
-                                        finish();
+                                        if (loginPOJO.getFirstTimeLogin()){
+                                            dialogChangeTemproryPassword(l_email);
+                                        } else {
+                                            Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
+                                            intent.putExtra("intent_type", "FLOW");
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
                                     }
                                 } else {
                                     if (loginPOJO.getLandData() != null){
@@ -613,6 +615,97 @@ public class LoginActivity extends AppCompatActivity {
                     progressHUD.dismiss();
                     //Log.d
                     Toast.makeText(LoginActivity.this,t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+    }
+
+    private void dialogChangeTemproryPassword(String l_email) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_change_temprory_password, null);
+        BottomSheetDialog dialog = new BottomSheetDialog(LoginActivity.this,R.style.SheetDialog);
+
+        dialog.setContentView(dialogView);
+
+        TextView txt_skip  = dialogView.findViewById(R.id.txt_skip);
+        EditText edt_newPassword  = dialogView.findViewById(R.id.edt_newPassword);
+        EditText edt_confirmPassword  = dialogView.findViewById(R.id.edt_confirmPassword);
+
+        Button btn_submit  = dialogView.findViewById(R.id.btn_submit);
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Validation.hasText(edt_newPassword) && Validation.hasText(edt_confirmPassword)) {
+                    if (edt_newPassword.getText().toString().equals(edt_confirmPassword.getText().toString())) {
+                        dialog.dismiss();
+                        getChangePassword(l_email, edt_confirmPassword.getText().toString());
+                    } else {
+                        Toast.makeText(LoginActivity.this, "New and confirm password did not match", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "Fill required field", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        txt_skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
+                intent.putExtra("intent_type", "FLOW");
+                startActivity(intent);
+                finish();
+            }
+        });
+        dialog.show();
+    }
+
+    private void getChangePassword(String l_email, String new_password) {
+        try {
+            progressHUD = KProgressHUD.create(this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getChangePassword(sharedData.getStringData(SharedData.API_URL) +
+                    "api/AppLogin/first-change-password", l_email, new_password);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO commonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            if (commonPOJO != null){
+                                if (commonPOJO.getOK()) {
+                                    LoginPOJO.ReturnEntity loginPOJO = Utility.getLoginData(getApplicationContext());
+                                    loginPOJO.setEntityPassword(new_password);
+                                    Utility.saveLoginData(getApplicationContext(),loginPOJO);
+
+                                    Toast.makeText(LoginActivity.this, ""+commonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(getApplicationContext(), QuickGuideActivity.class);
+                                    intent.putExtra("intent_type", "FLOW");
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, ""+commonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e){
+                            e.getMessage();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    //   Toast.makeText(LoginAccountActivity.this, Utility.SERVER_ERROR, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e){
@@ -663,7 +756,8 @@ public class LoginActivity extends AppCompatActivity {
 //            Uri personPhoto = acct.getPhotoUrl();
             login_method = "google";
             Log.d(TAG, email +" dn " + acct.getDisplayName() + " pgn " + acct.getGivenName() + " fn " + acct.getFamilyName());
-            getLogin(email, "", login_method);
+            boolean is_remember = false;
+            getLogin(email, "", login_method, is_remember);
 
         }
     }

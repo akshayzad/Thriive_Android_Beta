@@ -12,6 +12,8 @@ public class LoginPOJO {
     private String message;
     @SerializedName("return_entity")
     private ReturnEntity returnEntity = null;
+    @SerializedName("first_time_login")
+    private Boolean firstTimeLogin;
     @SerializedName("land_data")
     private LandData landData = null;
     public Boolean getOK() {
@@ -44,6 +46,14 @@ public class LoginPOJO {
 
     public void setLandData(LandData landData) {
         this.landData = landData;
+    }
+
+    public Boolean getFirstTimeLogin() {
+        return firstTimeLogin;
+    }
+
+    public void setFirstTimeLogin(Boolean firstTimeLogin) {
+        this.firstTimeLogin = firstTimeLogin;
     }
 
     public class ReturnEntity {

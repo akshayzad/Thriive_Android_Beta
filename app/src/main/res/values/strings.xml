@@ -111,7 +111,7 @@
     <string name="relevant_match">"Was your match relevant? "</string>
     <string name="experience">How was your conversation </string>
     <string name="app_experience">Rate your experience with\nThriive</string>
-    <string name="register">Not registered? Sign-up</string>
+    <string name="register">Don’t have an account? <u>Sign-up</u></string>
     <string name="expertise">Expertise</string>
     <string name="update">Update</string>
     <string name="linkedin_progress_dialog_message">Loading, Please wait</string>
@@ -143,4 +143,6 @@
     <string name="land_message_flag_under_review">Thank you for your interest in joining Thriive.<br/><br/>
         <font color='#CE593F'>We are currently reviewing your profile.</font><br/><br/>You will hear from us very soon.</string>
     <string name="thriive">©Thriive 2020</string>
+    <string name="forgot"><u>Forgot Password?</u></string>
+    <string name="skip_underline"><u>SKIP</u></string>
 </resources>

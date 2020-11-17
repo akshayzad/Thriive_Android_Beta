@@ -85,7 +85,7 @@ public class Utility {
 //                + info.versionCode + "\nVersionName = " + info.versionName);
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", 3);
+        jsonParams.put("internal_app_version", 4);
 
         Log.e("params", jsonParams.toString());
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
