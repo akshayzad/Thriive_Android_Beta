@@ -17,9 +17,12 @@ import android.text.Editable;
 
 import android.text.Html;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -112,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
     private String REDIRECTION_URL = "http://localhost:4200/redirect";
     private KProgressHUD progressHUD;
 
+    private boolean isPasswordVisibleC, isPasswordVisibleN;
 
     private String email = "", password = "", login_method = "", time_stamp, first_name = "", last_name = "";
     private APIInterface apiInterface;
@@ -632,8 +636,64 @@ public class LoginActivity extends AppCompatActivity {
         TextView txt_skip  = dialogView.findViewById(R.id.txt_skip);
         EditText edt_newPassword  = dialogView.findViewById(R.id.edt_newPassword);
         EditText edt_confirmPassword  = dialogView.findViewById(R.id.edt_confirmPassword);
-
         Button btn_submit  = dialogView.findViewById(R.id.btn_submit);
+
+        edt_newPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (edt_newPassword.getRight() - edt_newPassword.getCompoundDrawables()[RIGHT].getBounds().width())) {
+                        int selection = edt_newPassword.getSelectionEnd();
+                        if (isPasswordVisibleN) {
+                            // set drawable image
+                            edt_newPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visibility_off, 0);
+                            // hide Password
+                            edt_newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            isPasswordVisibleN = false;
+                        } else  {
+                            // set drawable image
+                            edt_newPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visible, 0);
+                            // show Password
+                            edt_newPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            isPasswordVisibleN = true;
+                        }
+                        edt_newPassword.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        edt_confirmPassword.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int RIGHT = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (edt_confirmPassword.getRight() - edt_confirmPassword.getCompoundDrawables()[RIGHT].getBounds().width())) {
+                        int selection = edt_confirmPassword.getSelectionEnd();
+                        if (isPasswordVisibleC) {
+                            // set drawable image
+                            edt_confirmPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visibility_off, 0);
+                            // hide Password
+                            edt_confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            isPasswordVisibleC = false;
+                        } else  {
+                            // set drawable image
+                            edt_confirmPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_password_visible, 0);
+                            // show Password
+                            edt_confirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            isPasswordVisibleC = true;
+                        }
+                        edt_confirmPassword.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
