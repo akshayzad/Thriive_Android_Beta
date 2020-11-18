@@ -566,6 +566,21 @@ public class LoginActivity extends AppCompatActivity {
                                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                                         String currentDateandTime = sdf.format(new Date());
                                         loginEvent.put("user_id", loginPOJO.getReturnEntity().getEntityId());
+                                        loginEvent.put("Name", loginPOJO.getReturnEntity().getEntityName());
+                                        loginEvent.put("Email", loginPOJO.getReturnEntity().getEmailId());
+                                        loginEvent.put("Identity", loginPOJO.getReturnEntity().getRowcode());
+                                        loginEvent.put("Country", loginPOJO.getReturnEntity().getCountryName());
+                                        loginEvent.put("Domain", "");
+                                        loginEvent.put("Subdomain", "");
+                                        loginEvent.put("Expertise", "");
+                                        loginEvent.put("persona giver", "");
+//                                        for( int i = 0; i < loginPOJO.getReturnEntity().getEntityPersonaList().size(); i++){
+//                                            loginEvent.put("Domain" + "" + (i + 1) ,
+//                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getDomainName());
+//                                            loginEvent.put("Subdomain" + "" + (i + 1) ,
+//                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getSubDomainName());
+//                                        }
+
                                   //      loginEvent.put("time_stamp", currentDateandTime);
                                         clevertapDefaultInstance.pushEvent(Utility.User_Profile,loginEvent);
 

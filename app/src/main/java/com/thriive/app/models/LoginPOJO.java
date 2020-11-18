@@ -57,6 +57,7 @@ public class LoginPOJO {
     }
 
     public class ReturnEntity {
+
         @SerializedName("entity_persona_list")
         private List<EntityPersonaList> entityPersonaList = null;
         @SerializedName("entity_id")
@@ -141,7 +142,24 @@ public class LoginPOJO {
         private String platformVer;
         @SerializedName("voip_token")
         private String voipToken;
-
+        @SerializedName("time_zone_name")
+        private Object timeZoneName;
+        @SerializedName("time_stamp")
+        private Object timeStamp;
+        @SerializedName("flag_approved")
+        private Boolean flagApproved;
+        @SerializedName("flag_waitlist")
+        private Boolean flagWaitlist;
+        @SerializedName("flag_rejected")
+        private Boolean flagRejected;
+        @SerializedName("ref_code")
+        private String refCode;
+        @SerializedName("ref_by")
+        private String refBy;
+        @SerializedName("request_count")
+        private Integer requestCount;
+        @SerializedName("first_login_done")
+        private Boolean firstLoginDone;
 
         public List<EntityPersonaList> getEntityPersonaList() {
             return entityPersonaList;
@@ -478,6 +496,78 @@ public class LoginPOJO {
         public void setVoipToken(String voipToken) {
             this.voipToken = voipToken;
         }
+
+        public Object getTimeZoneName() {
+            return timeZoneName;
+        }
+
+        public void setTimeZoneName(Object timeZoneName) {
+            this.timeZoneName = timeZoneName;
+        }
+
+        public Object getTimeStamp() {
+            return timeStamp;
+        }
+
+        public void setTimeStamp(Object timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+
+        public Boolean getFlagApproved() {
+            return flagApproved;
+        }
+
+        public void setFlagApproved(Boolean flagApproved) {
+            this.flagApproved = flagApproved;
+        }
+
+        public Boolean getFlagWaitlist() {
+            return flagWaitlist;
+        }
+
+        public void setFlagWaitlist(Boolean flagWaitlist) {
+            this.flagWaitlist = flagWaitlist;
+        }
+
+        public Boolean getFlagRejected() {
+            return flagRejected;
+        }
+
+        public void setFlagRejected(Boolean flagRejected) {
+            this.flagRejected = flagRejected;
+        }
+
+        public String getRefCode() {
+            return refCode;
+        }
+
+        public void setRefCode(String refCode) {
+            this.refCode = refCode;
+        }
+
+        public String getRefBy() {
+            return refBy;
+        }
+
+        public void setRefBy(String refBy) {
+            this.refBy = refBy;
+        }
+
+        public Integer getRequestCount() {
+            return requestCount;
+        }
+
+        public void setRequestCount(Integer requestCount) {
+            this.requestCount = requestCount;
+        }
+
+        public Boolean getFirstLoginDone() {
+            return firstLoginDone;
+        }
+
+        public void setFirstLoginDone(Boolean firstLoginDone) {
+            this.firstLoginDone = firstLoginDone;
+        }
     }
 
     public class EntityPersonaList {
@@ -517,6 +607,28 @@ public class LoginPOJO {
         private Boolean deleted;
         @SerializedName("rowcode")
         private String rowcode;
+        @SerializedName("domain_id")
+        private Integer domainId;
+        @SerializedName("domain_name")
+        private String domainName;
+        @SerializedName("sub_domain_id")
+        private Integer subDomainId;
+        @SerializedName("sub_domain_name")
+        private String subDomainName;
+        @SerializedName("str_funds_raised")
+        private String strFundsRaised;
+        @SerializedName("str_company_size")
+        private String strCompanySize;
+        @SerializedName("str_investor_type")
+        private String strInvestorType;
+        @SerializedName("str_revenue")
+        private String strRevenue;
+        @SerializedName("company_name")
+        private String companyName;
+        @SerializedName("str_last_funding")
+        private String strLastFunding;
+        @SerializedName("country_name")
+        private String countryName;
 
         public Integer getEntityPersonaId() {
             return entityPersonaId;
@@ -660,6 +772,94 @@ public class LoginPOJO {
 
         public void setRowcode(String rowcode) {
             this.rowcode = rowcode;
+        }
+
+        public Integer getDomainId() {
+            return domainId;
+        }
+
+        public void setDomainId(Integer domainId) {
+            this.domainId = domainId;
+        }
+
+        public String getDomainName() {
+            return domainName;
+        }
+
+        public void setDomainName(String domainName) {
+            this.domainName = domainName;
+        }
+
+        public Integer getSubDomainId() {
+            return subDomainId;
+        }
+
+        public void setSubDomainId(Integer subDomainId) {
+            this.subDomainId = subDomainId;
+        }
+
+        public String getSubDomainName() {
+            return subDomainName;
+        }
+
+        public void setSubDomainName(String subDomainName) {
+            this.subDomainName = subDomainName;
+        }
+
+        public String getStrFundsRaised() {
+            return strFundsRaised;
+        }
+
+        public void setStrFundsRaised(String strFundsRaised) {
+            this.strFundsRaised = strFundsRaised;
+        }
+
+        public String getStrCompanySize() {
+            return strCompanySize;
+        }
+
+        public void setStrCompanySize(String strCompanySize) {
+            this.strCompanySize = strCompanySize;
+        }
+
+        public String getStrInvestorType() {
+            return strInvestorType;
+        }
+
+        public void setStrInvestorType(String strInvestorType) {
+            this.strInvestorType = strInvestorType;
+        }
+
+        public String getStrRevenue() {
+            return strRevenue;
+        }
+
+        public void setStrRevenue(String strRevenue) {
+            this.strRevenue = strRevenue;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
+
+        public String getStrLastFunding() {
+            return strLastFunding;
+        }
+
+        public void setStrLastFunding(String strLastFunding) {
+            this.strLastFunding = strLastFunding;
+        }
+
+        public String getCountryName() {
+            return countryName;
+        }
+
+        public void setCountryName(String countryName) {
+            this.countryName = countryName;
         }
     }
 

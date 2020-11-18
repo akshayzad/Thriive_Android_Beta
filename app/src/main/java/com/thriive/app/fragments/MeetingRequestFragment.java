@@ -438,7 +438,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void getPersona(String reason_id, String reason_name) {
-        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step1);
+        HashMap<String, Object> mr1Event = new HashMap<String, Object>();
+        mr1Event.put("meeting_objective", reason_name);
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step1, mr1Event);
 
         txt_reason.setText(""+reason_name);
         progressHUD = KProgressHUD.create(getActivity())
@@ -648,7 +650,9 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
     public void getMetaDomain(String persona_id, String persona_name) {
         // ddapter.re();omainA
-        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step2);
+        HashMap<String, Object> mr2Event = new HashMap<String, Object>();
+        mr2Event.put("requested_persona", persona_name);
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step2, mr2Event);
 
         label_noMeta.setVisibility(View.GONE);
         layout_lexpertise.setVisibility(View.GONE);
@@ -809,6 +813,13 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
 
 
     public void setMeeting(Integer d_id, Integer s_id, String subDomainName) {
+
+        HashMap<String, Object> mr3Event = new HashMap<String, Object>();
+        mr3Event.put("domain_requested", domainName);
+        mr3Event.put("subdomain_requested", subDomainName);
+        mr3Event.put("expertise_requested", "");
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3, mr3Event);
+
         Utility.hideKeyboard(getActivity());
        // scrollView.scrollTo(0,scrollView.getBottom());
         label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
@@ -840,7 +851,12 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void setExpertise(Integer expertise_id, String expertise_name) {
-        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3);
+        HashMap<String, Object> mr3Event = new HashMap<String, Object>();
+        mr3Event.put("domain_requested", "");
+        mr3Event.put("subdomain_requested", "");
+        mr3Event.put("expertise_requested", expertise_name);
+
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3, mr3Event);
 
         label_region.setText(getResources().getString(R.string.tag_region) + " "+ personaName+" to be from?");
         txt_expertise.setText(""+expertise_name);
@@ -1003,7 +1019,11 @@ public class MeetingRequestFragment extends BottomSheetDialogFragment {
     }
 
     public void getTagList(List<MetaListPOJO.Child> children, Integer d_id, Integer s_id, String tagName) {
-        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3);
+        HashMap<String, Object> mr3Event = new HashMap<String, Object>();
+        mr3Event.put("domain_requested", tagName);
+        mr3Event.put("subdomain_requested", tagName);
+        mr3Event.put("expertise_requested", "");
+        cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Request_Step3, mr3Event);
 
         layout_lsdomain.setVisibility(View.GONE);
         tagLists.clear();

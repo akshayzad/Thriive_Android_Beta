@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.clevertap.android.sdk.ActivityLifecycleCallback;
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.onesignal.OneSignal;
 
@@ -15,6 +16,7 @@ import com.thriive.app.utilities.SharedData;
 public class ThriiveApplication extends Application {
     @Override
     public void onCreate() {
+       // ActivityLifecycleCallback.register(this);
         super.onCreate();
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
