@@ -570,16 +570,17 @@ public class LoginActivity extends AppCompatActivity {
                                         loginEvent.put("Email", loginPOJO.getReturnEntity().getEmailId());
                                         loginEvent.put("Identity", loginPOJO.getReturnEntity().getRowcode());
                                         loginEvent.put("Country", loginPOJO.getReturnEntity().getCountryName());
-                                        loginEvent.put("Domain", "");
-                                        loginEvent.put("Subdomain", "");
                                         loginEvent.put("Expertise", "");
-                                        loginEvent.put("persona giver", "");
-//                                        for( int i = 0; i < loginPOJO.getReturnEntity().getEntityPersonaList().size(); i++){
-//                                            loginEvent.put("Domain" + "" + (i + 1) ,
-//                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getDomainName());
-//                                            loginEvent.put("Subdomain" + "" + (i + 1) ,
-//                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getSubDomainName());
-//                                        }
+
+                                        for( int i = 0; i < loginPOJO.getReturnEntity().getEntityPersonaList().size(); i++){
+                                            Log.d(TAG, "Subdomain" + "" + (i + 1));
+                                            loginEvent.put("Domain" + "" + (i + 1) ,
+                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getDomainName());
+                                            loginEvent.put("Subdomain" + "" + (i + 1) ,
+                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getSubDomainName());
+                                            loginEvent.put("persona giver" + "" + (i + 1),
+                                                    loginPOJO.getReturnEntity().getEntityPersonaList().get(i).getPersonaName());
+                                        }
 
                                   //      loginEvent.put("time_stamp", currentDateandTime);
                                         clevertapDefaultInstance.pushEvent(Utility.User_Profile,loginEvent);
