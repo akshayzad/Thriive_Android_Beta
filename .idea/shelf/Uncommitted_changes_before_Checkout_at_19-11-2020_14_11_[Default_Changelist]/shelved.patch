@@ -1,0 +1,17 @@
+Index: app/src/main/java/com/thriive/app/fragments/MeetingRequestNewFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.thriive.app.fragments;\r\n\r\nimport android.os.Bundle;\r\n\r\nimport androidx.fragment.app.Fragment;\r\n\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport com.google.android.material.bottomsheet.BottomSheetDialogFragment;\r\nimport com.thriive.app.R;\r\n\r\nimport static androidx.fragment.app.DialogFragment.STYLE_NORMAL;\r\n\r\npublic class MeetingRequestNewFragment extends BottomSheetDialogFragment {\r\n\r\n    // TODO: Rename parameter arguments, choose names that match\r\n    \r\n\r\n    public MeetingRequestNewFragment() {\r\n        // Required empty public constructor\r\n    }\r\n\r\n    public static MeetingRequestNewFragment newInstance() {\r\n        MeetingRequestNewFragment fragment = new MeetingRequestNewFragment();\r\n\r\n        return fragment;\r\n    }\r\n\r\n\r\n    @Override\r\n    public void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setStyle(STYLE_NORMAL, R.style.SheetDialog);\r\n      \r\n    }\r\n\r\n    @Override\r\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\r\n                             Bundle savedInstanceState) {\r\n        // Inflate the layout for this fragment\r\n        return inflater.inflate(R.layout.fragment_meeting_request_new,\r\n                container, false);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/thriive/app/fragments/MeetingRequestNewFragment.java	(revision 7f5885819ccc8e5caccc950c73e4f80fdd612904)
++++ app/src/main/java/com/thriive/app/fragments/MeetingRequestNewFragment.java	(date 1605775290483)
+@@ -42,5 +42,6 @@
+         // Inflate the layout for this fragment
+         return inflater.inflate(R.layout.fragment_meeting_request_new,
+                 container, false);
++
+     }
+ }
+\ No newline at end of file
