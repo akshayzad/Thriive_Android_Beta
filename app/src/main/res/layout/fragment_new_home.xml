@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.thriive.app.fragments.NewHomeFragment">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layout_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10dp"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginRight="@dimen/_10dp"
+                    android:layout_marginBottom="@dimen/_10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txt_11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Hi "
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/_20dp" />
+
+                    <TextView
+                        android:id="@+id/txt_nName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Alex"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/_20dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_start_journey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_25dp"
+                    android:layout_marginTop="@dimen/_30dp"
+                    android:layout_marginEnd="@dimen/_25dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/txt_start_journey_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="@string/journey_title"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/_15dp" />
+
+                    <TextView
+                        android:id="@+id/txt_start_journey_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_13dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="@string/journey_desc"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/_13dp" />
+
+                </LinearLayout>
+
+
+                <FrameLayout
+                    android:id="@+id/layout_recommended"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_25dp"
+                    android:layout_marginTop="@dimen/_12dp"
+                    android:layout_marginEnd="@dimen/_25dp"
+                    android:visibility="gone">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/recommended_card_dark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:layout_marginTop="@dimen/_12dp"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/card_color_dark"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/_11dp">
+
+                            <LinearLayout
+                                android:id="@+id/layout_recommended_card"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_17dp"
+                                android:layout_marginEnd="@dimen/_7dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/txt_journey_header_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/roboto_medium"
+                                    android:text="@string/journey_title"
+                                    android:textColor="@color/space_white"
+                                    android:textSize="@dimen/_15dp" />
+
+                                <TextView
+                                    android:id="@+id/txt_journey_desc_card"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_13dp"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:text="@string/journey_desc"
+                                    android:textColor="@color/space_white"
+                                    android:textSize="@dimen/_13dp" />
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/img_recommended"
+                                android:layout_width="95dp"
+                                android:layout_height="93dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:src="@drawable/profile_pic_card" />
+
+                        </LinearLayout>
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_marginEnd="@dimen/_14dp"
+                        android:background="@drawable/background_card_accent"
+                        android:elevation="@dimen/_10dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:paddingStart="@dimen/_10dp"
+                        android:paddingTop="@dimen/_5dp"
+                        android:paddingEnd="@dimen/_10dp"
+                        android:paddingBottom="@dimen/_5dp"
+                        android:text="Recommended"
+                        android:textColor="@color/space_white"
+                        android:textSize="@dimen/_12dp" />
+
+                </FrameLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_next_meeting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_25dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="@dimen/_25dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Your Next Meeting"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/_15dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/next_meeting_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginBottom="@dimen/_5dp"
+                        android:background="@color/colorWhite"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="6dp"
+                        app:cardPreventCornerOverlap="false"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:background="@color/colorWhite"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="6dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/black_01"/>
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="@dimen/_2dp"
+                                android:layout_marginTop="@dimen/_15dp"
+                                android:layout_marginBottom="@dimen/_11dp"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:id="@+id/nm_container"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toStartOf="@id/nm_img_user"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/_5dp">
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_14dp">
+
+                                        <TextView
+                                            android:id="@+id/nm_name"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="@dimen/_10dp"
+                                            android:fontFamily="@font/roboto_medium"
+                                            android:gravity="bottom"
+                                            android:padding="1dp"
+                                            android:text="Michael Thompson"
+                                            android:textColor="@color/colorBlack"
+                                            android:textSize="@dimen/_12dp" />
+
+                                        <TextView
+                                            android:id="@+id/nm_connection_count"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:layout_alignParentEnd="true"
+                                            android:background="@drawable/circle_terracota_40"
+                                            android:drawableEnd="@drawable/ic_group"
+                                            android:drawablePadding="@dimen/_3dp"
+                                            android:fontFamily="@font/roboto_medium"
+                                            android:gravity="center"
+                                            android:padding="1dp"
+                                            android:paddingStart="@dimen/_7dp"
+                                            android:paddingTop="@dimen/_5dp"
+                                            android:paddingEnd="@dimen/_7dp"
+                                            android:paddingBottom="@dimen/_5dp"
+                                            android:text="43"
+                                            android:textColor="@color/terracota"
+                                            android:textSize="@dimen/_12dp"
+                                            android:visibility="gone"/>
+
+                                    </RelativeLayout>
+
+                                    <TextView
+                                        android:id="@+id/nm_reason_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_14dp"
+                                        android:layout_marginTop="@dimen/_5dp"
+                                        android:layout_marginRight="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:padding="1dp"
+                                        android:text="Meeting for Consulting"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="@dimen/_12dp" />
+
+                                    <TextView
+                                        android:id="@+id/nm_meeting_tag"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="0"
+                                        android:paddingTop="@dimen/_7dp"
+                                        android:paddingBottom="@dimen/_7dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:layout_marginTop="@dimen/_7dp"
+                                        android:layout_marginStart="@dimen/_14dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/black_01"
+                                        android:textSize="@dimen/_10dp"
+                                        android:ellipsize="middle"
+                                        android:fontFamily="@font/roboto_light"
+                                        android:background="@drawable/outline_background_next_meeting"
+                                        android:text="Borning Inc - 1 year"
+                                        android:singleLine="true" />
+
+                                    <androidx.recyclerview.widget.RecyclerView
+                                        android:id="@+id/rv_tags"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_14dp"
+                                        android:layout_marginRight="@dimen/_5dp"
+                                        android:visibility="gone" />
+
+                                    <!--<RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_14dp"
+                                        android:layout_marginTop="@dimen/_7dp"
+                                        android:visibility="gone">
+
+                                        <TextView
+                                            android:id="@+id/nm_label_date"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="@dimen/_10dp"
+                                            android:drawableStart="@drawable/ic_calendar_15"
+                                            android:drawablePadding="6dp"
+                                            android:fontFamily="@font/roboto_light"
+                                            android:padding="1dp"
+                                            android:text="8th Jan 2020"
+                                            android:textColor="@color/darkGrey"
+                                            android:textSize="@dimen/_12dp" />
+
+                                        <TextView
+                                            android:id="@+id/nm_label_time"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginRight="@dimen/_3dp"
+                                            android:layout_toEndOf="@id/nm_label_date"
+                                            android:drawableStart="@drawable/ic_time_15"
+                                            android:drawablePadding="6dp"
+                                            android:fontFamily="@font/roboto_light"
+                                            android:padding="1dp"
+                                            android:text="10:30 - 11:00"
+                                            android:textColor="@color/darkGrey"
+                                            android:textSize="@dimen/_12dp" />
+
+                                    </RelativeLayout>-->
+
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="17dp"
+                                    android:padding="@dimen/_2dp"
+                                    android:layout_below="@id/nm_container">
+
+                                    <TextView
+                                        android:id="@+id/nm_label_date"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="@dimen/_10dp"
+                                        android:drawableStart="@drawable/ic_calendar_15"
+                                        android:drawablePadding="6dp"
+                                        android:fontFamily="@font/roboto_light"
+                                        android:padding="1dp"
+                                        android:text="8th Jan 2020"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="@dimen/_12dp" />
+
+                                    <TextView
+                                        android:id="@+id/nm_label_time"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginRight="@dimen/_3dp"
+                                        android:layout_toEndOf="@id/nm_label_date"
+                                        android:drawableStart="@drawable/ic_time_15"
+                                        android:drawablePadding="6dp"
+                                        android:fontFamily="@font/roboto_light"
+                                        android:padding="1dp"
+                                        android:text="10:30 - 11:00"
+                                        android:textColor="@color/colorBlack"
+                                        android:textSize="@dimen/_12dp" />
+
+                                </RelativeLayout>
+
+                                <com.thriive.app.utilities.CircleImageView
+                                    android:id="@+id/nm_img_user"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:layout_centerVertical="true"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_marginEnd="@dimen/_20dp"
+                                    android:layout_margin="@dimen/_20dp"
+                                    android:layout_weight="0"
+                                    android:scaleType="centerInside"
+                                    android:src="@drawable/user"></com.thriive.app.utilities.CircleImageView>
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layoutRecent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_25dp"
+                    android:layout_marginTop="34dp"
+                    android:layout_marginEnd="@dimen/_25dp"
+                    android:background="@color/space_transparent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Recent"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/_15dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_18dp"
+                        android:background="@color/card_color_dark"
+                        android:visibility="visible"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="6dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/card_color_dark"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tag_recent_objective"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_16dp"
+                                    android:layout_marginTop="@dimen/_10dp"
+                                    android:fontFamily="@font/roboto_medium"
+                                    android:text="Seeking Advice"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="@dimen/_17dp" />
+
+                                <com.google.android.flexbox.FlexboxLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="9dp"
+                                    android:layout_marginEnd="38dp"
+                                    android:layout_marginTop="@dimen/_5dp"
+                                    android:layout_marginBottom="@dimen/_12dp"
+                                    app:alignContent="stretch"
+                                    app:flexWrap="wrap">
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_l1attribute"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Startup Professional"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_persona"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_l2attribute"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_expertise"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_domain"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_subdomain"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_recent_region"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/background_summary_tags"
+                                        android:text="India"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_11dp"
+                                        android:visibility="gone"/>
+
+                                </com.google.android.flexbox.FlexboxLayout>
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:id="@+id/img_overview_objective"
+                                android:layout_width="95dp"
+                                android:layout_height="93dp"
+                                android:layout_marginTop="@dimen/_10dp"
+                                android:layout_marginEnd="@dimen/_10dp"
+                                android:layout_marginBottom="@dimen/_10dp"
+                                android:src="@drawable/profile_pic_card" />
+
+                        </LinearLayout>
+
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_featured_thriivers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_30dp"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_25dp"
+                        android:layout_marginEnd="@dimen/_25dp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Featured Thriivers"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/_15dp" />
+
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_18dp"
+                        android:visibility="visible"
+                        app:cardCornerRadius="@dimen/_10dp"
+                        app:cardElevation="6dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/paleGrey"
+                            android:orientation="vertical">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_featured_thriivers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="@dimen/_12dp"
+                                android:layout_marginBottom="6dp"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_25dp"
+                                android:layout_marginEnd="@dimen/_5dp"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:text="Interested in:"
+                                    android:textColor="@color/black_01"
+                                    android:textSize="@dimen/_11dp" />
+
+                                <com.google.android.flexbox.FlexboxLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="9dp"
+                                    android:layout_marginEnd="38dp"
+                                    android:layout_marginTop="@dimen/_5dp"
+                                    android:layout_marginBottom="@dimen/_12dp"
+                                    app:alignContent="stretch"
+                                    app:flexWrap="wrap">
+
+                                    <TextView
+                                        android:id="@+id/tag_intrestedin_domain"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/outline_background_next_meeting"
+                                        android:text="Startup Professional"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_10dp"
+                                        android:visibility="visible"/>
+
+                                    <TextView
+                                        android:id="@+id/tag_intrestedin_expertise"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="@dimen/_10dp"
+                                        android:layout_marginTop="9dp"
+                                        android:paddingTop="6dp"
+                                        android:paddingBottom="6dp"
+                                        android:paddingStart="@dimen/_10dp"
+                                        android:paddingEnd="@dimen/_10dp"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:background="@drawable/outline_background_next_meeting"
+                                        android:text="Seeking Advice"
+                                        android:textColor="@color/txt_tag"
+                                        android:textSize="@dimen/_10dp"
+                                        android:visibility="visible"/>
+
+                                </com.google.android.flexbox.FlexboxLayout>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_featured_objectives"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_25dp"
+                    android:layout_marginStart="@dimen/_25dp"
+                    android:layout_marginEnd="@dimen/_25dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Featured Objectives"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/_15dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_featured_obj"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

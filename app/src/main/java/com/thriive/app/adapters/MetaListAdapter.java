@@ -24,6 +24,7 @@ public class MetaListAdapter extends RecyclerView.Adapter<MetaListAdapter.Recycl
     private ArrayList<MetaListPOJO.TagList> tagLists;
     private Fragment fragment;
     private int currentItem = -1;
+    private boolean isFromSummary;
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.txt_name)
@@ -37,10 +38,11 @@ public class MetaListAdapter extends RecyclerView.Adapter<MetaListAdapter.Recycl
         }
     }
 
-    public MetaListAdapter(Context context, Fragment fragment, ArrayList<MetaListPOJO.TagList> tagLists) {
+    public MetaListAdapter(Context context, Fragment fragment, ArrayList<MetaListPOJO.TagList> tagLists, boolean isFromSummary) {
         this.context = context;
         this.tagLists = tagLists;
         this.fragment = fragment;
+        this.isFromSummary = isFromSummary;
     }
 
     @Override
@@ -61,6 +63,7 @@ public class MetaListAdapter extends RecyclerView.Adapter<MetaListAdapter.Recycl
         } else {
             holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.background_expertise));
         }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

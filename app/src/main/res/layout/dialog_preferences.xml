@@ -23,7 +23,8 @@
             android:layout_marginBottom="@dimen/_10dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_gravity="right"
-            android:src="@drawable/ic_close"></ImageView>
+            android:src="@drawable/ic_close">
+        </ImageView>
         <TextView
             android:id="@+id/label_title"
             android:layout_width="match_parent"

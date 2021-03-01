@@ -109,8 +109,8 @@ class BadgeHelper {
      */
     static ShapeDrawable makeShapeDrawable(int color) {
         ShapeDrawable badgeBackground = new ShapeDrawable(new OvalShape());
-        badgeBackground.setIntrinsicWidth(10);
-        badgeBackground.setIntrinsicHeight(10);
+        badgeBackground.setIntrinsicWidth(8);
+        badgeBackground.setIntrinsicHeight(8);
         badgeBackground.getPaint().setColor(color);
         return badgeBackground;
     }

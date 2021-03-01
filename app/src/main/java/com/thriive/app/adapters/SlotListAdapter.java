@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.thriive.app.NotificationListActivity;
 import com.thriive.app.R;
+import com.thriive.app.fragments.NotificationFragment;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
@@ -24,6 +26,7 @@ import butterknife.ButterKnife;
 public class SlotListAdapter extends RecyclerView.Adapter<SlotListAdapter.RecyclerAdapterHolder> {
     private Context context;
     private ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList;
+    private Fragment fragment;
     private SharedData sharedData;
     private int select = -1;
     public String startTime = "", endTime = "", meetingReason = "", personaName = "";
@@ -45,10 +48,11 @@ private  String intent_type ;
             ButterKnife.bind(this, itemView);
         }
     }
-    public SlotListAdapter(Context context, ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList, String intent_type){
+    public SlotListAdapter(Context context, Fragment fragment, ArrayList<CommonEntitySlotsPOJO.EntitySlotList> slotList, String intent_type){
         this.context = context;
         this.slotList = slotList;
         this.intent_type = intent_type;
+        this.fragment = fragment;
         sharedData = new SharedData(context);
     }
     @Override
@@ -82,9 +86,13 @@ private  String intent_type ;
 
                 //notifyDataSetChanged();
                 if (intent_type.equals("ACCEPT")){
-                    NotificationListActivity.start_time = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
+                    /*NotificationListActivity.start_time = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
                     NotificationListActivity.end_time = Utility.ConvertUTCToUserTimezone(item.getPlanEndTime());
-                    ((NotificationListActivity)context).meetingConfirmation("preset");
+                    ((NotificationListActivity)context).meetingConfirmation("preset");*/
+
+                    ((NotificationFragment)fragment).start_time = Utility.ConvertUTCToUserTimezone(item.getPlanStartTime());
+                    ((NotificationFragment)fragment).end_time = Utility.ConvertUTCToUserTimezone(item.getPlanEndTime());
+                    ((NotificationFragment)fragment).meetingConfirmation("preset");
                 }
 
             }

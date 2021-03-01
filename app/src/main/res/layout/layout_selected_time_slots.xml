@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/layout_remove_slot"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/bg_cross"
+        android:paddingTop="-10dp"
+        android:layout_gravity="top|right"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="@dimen/_15dp"
+            android:layout_height="@dimen/_15dp"
+            android:src="@drawable/ic_close"
+            android:layout_centerInParent="true"
+            android:layout_gravity="top|right"
+            android:adjustViewBounds="true"
+            android:scaleType="fitStart"
+            android:textSize="@dimen/_14dp"
+            android:backgroundTint="#969696"
+            android:visibility="visible">
+        </ImageView>
+    </RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="85dp"
+        android:id="@+id/layout_select"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
+        app:cardElevation="3dp"
+        app:cardBackgroundColor="#fff"
+        app:cardCornerRadius="@dimen/_10dp"
+        android:layout_marginLeft="@dimen/_10dp"
+        android:layout_marginRight="@dimen/_10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/_10dp"
+        card_view:cardElevation="8dp"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:id="@+id/layout_circle"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/txt_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_18dp"
+                android:textColor="@color/colorAccent"
+                android:text="16 Nov" />
+            <TextView
+                android:id="@+id/txt_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="@dimen/_15dp"
+                android:textColor="#231F20"
+                android:text="Mon" />
+            <TextView
+                android:id="@+id/txt_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="@dimen/_12dp"
+                android:textColor="#231F20"
+                android:text="13:00" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

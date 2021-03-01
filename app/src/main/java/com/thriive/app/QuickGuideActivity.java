@@ -176,7 +176,7 @@ public class QuickGuideActivity extends AppCompatActivity {
                 txt_next.setVisibility(View.VISIBLE);
             }
             if (position == 0){
-                layout_wh1.setVisibility(View.GONE);
+                layout_wh1.setVisibility(View.VISIBLE);
                 txt_prev.setVisibility(View.INVISIBLE);
                 txt_next.setVisibility(View.VISIBLE);
                 //txt_close.setVisibility(View.GONE);

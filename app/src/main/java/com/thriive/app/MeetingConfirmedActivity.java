@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,10 +63,10 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
     RecyclerView rv_tags;
     @BindView(R.id.txt_reason)
     TextView txt_reason;
-    @BindView(R.id.txt_expertise)
-    TextView txt_expertise;
+    @BindView(R.id.txt_time)
+    TextView txt_time;
     @BindView(R.id.layout_data)
-    LinearLayout layout_data;
+    RelativeLayout layout_data;
 
     private KProgressHUD progressHUD;
 
@@ -143,12 +145,18 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
         switch (view.getId()) {
 
             case R.id.btn_view:
-
-               // finish();
+                // finish();
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent.putExtra("intent_type", "MEETING_DETAILS");
+                intent.putExtra("meeting_id", meetingListPOJO.getMeetingId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Utility.saveMeetingDetailsData(getApplicationContext(), meetingListPOJO);
-                MeetingDetailsFragment meetingDetailsFragment =
-                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
-                meetingDetailsFragment.show(getSupportFragmentManager(), "MeetingDetailsFragment");
+                startActivity(intent);
+                finish();
+
+//                MeetingDetailsFragment meetingDetailsFragment =
+//                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
+//                meetingDetailsFragment.show(getSupportFragmentManager(), "MeetingDetailsFragment");
                 break;
 
 
@@ -164,7 +172,9 @@ public class MeetingConfirmedActivity extends AppCompatActivity {
         txt_meeting.setText(meetingObject.getGiverName() + " has confirmed to meet with you");
         txt_giverName.setText(meetingObject.getGiverSubTitle());
         txt_region.setText(meetingObject.getGiverCountryName());
-        //txt_expertise.setText(meetingObject.getGiverPersonaTags());
+        txt_time.setText(Utility.getMeetingDateWithTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())) + ", " +
+                Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
+                        Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime())));
         if (meetingObject.getGiverPicUrl().equals("")){
             Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
             TextDrawable drawable = TextDrawable.builder()

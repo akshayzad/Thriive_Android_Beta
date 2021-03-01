@@ -39,7 +39,7 @@ public class ExpertiseListAdapter extends RecyclerView.Adapter<ExpertiseListAdap
         }
     }
 
-    public ExpertiseListAdapter(Context context, Fragment fragment, ArrayList<ExpertiseListPOJO> domainList) {
+    public ExpertiseListAdapter(Context context, Fragment fragment, ArrayList<ExpertiseListPOJO> domainList, boolean domainFlag) {
         this.context = context;
         this.domainList = domainList;
         this.fragment = fragment;
@@ -68,7 +68,8 @@ public class ExpertiseListAdapter extends RecyclerView.Adapter<ExpertiseListAdap
             public void onClick(View view) {
                 currentItem = position;
                 notifyDataSetChanged();
-                ((MeetingRequestFragment) fragment).setExpertise(item.getExpertiseId(), item.getExpertiseName());
+                //((MeetingRequestFragment) fragment).setExpertise(item.getExpertiseId(), item.getExpertiseName());
+                ((MeetingRequestFragment) fragment).setNewDomain(item.getExpertiseId(), item.getExpertiseName());
 
             }
         });

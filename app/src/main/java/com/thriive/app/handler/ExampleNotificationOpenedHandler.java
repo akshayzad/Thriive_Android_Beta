@@ -27,6 +27,7 @@ public class ExampleNotificationOpenedHandler implements OneSignal.NotificationO
         if (result != null) {
             JSONObject data = result.notification.payload.additionalData;
             Log.d(TAG, data.toString());
+            Log.e(TAG, "notificationOpened: "+data.toString() );
             try {
               //  JSONObject jsonObject = data.getJSONObject("data");
                 String meeting_trigger = data.getString("meeting_trigger");
@@ -56,9 +57,11 @@ public class ExampleNotificationOpenedHandler implements OneSignal.NotificationO
                         break;
 
                     case "giver_meeting_request":
-                        intent = new Intent(context, NotificationListActivity.class);
+//                        intent = new Intent(context, NotificationListActivity.class);
+                        intent = new Intent(context, HomeActivity.class);
                         intent.putExtra("meeting_id", meeting_id);
                         intent.putExtra("intent_type", "NOTI");
+                        intent.putExtra("view_type", "NOTI");
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intent);

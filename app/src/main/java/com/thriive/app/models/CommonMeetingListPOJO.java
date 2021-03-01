@@ -125,6 +125,61 @@ public class CommonMeetingListPOJO {
         private String meetingLabel;
         @SerializedName("meeting_tag")
         private List<String> meetingTag = null;
+
+        @SerializedName("meeting_req_text")
+        private String meeting_req_text;
+
+        @SerializedName("meeting_l1_attrib_name")
+        private String meeting_l1_attrib_name;
+        @SerializedName("meeting_l2_attrib_name")
+        private String meeting_l2_attrib_name;
+
+        @SerializedName("slot_list")
+        private List<MeetingDetailPOJO> slot_list = null;
+
+        @SerializedName("sel_meeting")
+        private SelMeetingPOJO sel_meeting;
+
+        public SelMeetingPOJO getSel_meeting() {
+            return sel_meeting;
+        }
+
+        public void setSel_meeting(SelMeetingPOJO sel_meeting) {
+            this.sel_meeting = sel_meeting;
+        }
+
+        public List<MeetingDetailPOJO> getSlot_list() {
+            return slot_list;
+        }
+
+        public void setSlot_list(List<MeetingDetailPOJO> slot_list) {
+            this.slot_list = slot_list;
+        }
+
+        public String getMeeting_l1_attrib_name() {
+            return meeting_l1_attrib_name;
+        }
+
+        public void setMeeting_l1_attrib_name(String meeting_l1_attrib_name) {
+            this.meeting_l1_attrib_name = meeting_l1_attrib_name;
+        }
+
+        public String getMeeting_l2_attrib_name() {
+            return meeting_l2_attrib_name;
+        }
+
+        public void setMeeting_l2_attrib_name(String meeting_l2_attrib_name) {
+            this.meeting_l2_attrib_name = meeting_l2_attrib_name;
+        }
+
+        public String getMeeting_req_text() {
+            return meeting_req_text;
+        }
+
+        public void setMeeting_req_text(String meeting_req_text) {
+            this.meeting_req_text = meeting_req_text;
+        }
+
         public String getMeetingLabel() {
             return meetingLabel;
         }

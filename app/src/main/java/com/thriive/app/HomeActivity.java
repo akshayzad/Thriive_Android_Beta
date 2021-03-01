@@ -4,11 +4,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,37 +26,44 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.gson.JsonObject;
 import com.onesignal.OneSignal;
 import com.thriive.app.adapters.ExperienceAdapter;
-import com.thriive.app.adapters.RequesterListAdapter;
-import com.thriive.app.adapters.ScheduleListAdapter;
+import com.thriive.app.adapters.MeetingNewTimeAdapter;
+import com.thriive.app.adapters.MeetingNewTimeAdapterForActivity;
+import com.thriive.app.adapters.RequestPagerAdapter;
 import com.thriive.app.adapters.ViewPagerAdapter;
 import com.thriive.app.api.APIClient;
 import com.thriive.app.api.APIInterface;
 import com.thriive.app.fragments.HomeFragment;
+import com.thriive.app.fragments.MeetingDetailFragment;
 import com.thriive.app.fragments.MeetingDetailsFragment;
 import com.thriive.app.fragments.MeetingRequestFragment;
 import com.thriive.app.fragments.MeetingsFragment;
 
+import com.thriive.app.fragments.NewHomeFragment;
+import com.thriive.app.fragments.NewRequstMeetingFragment;
+import com.thriive.app.fragments.NotificationFragment;
 import com.thriive.app.fragments.ProfileFragment;
 import com.thriive.app.models.CommonHomePOJO;
 import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
 import com.thriive.app.models.CommonPOJO;
+import com.thriive.app.models.CommonRequestTimeSlots;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.MeetingDetailPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
 import com.thriive.app.utilities.SharedData;
 import com.thriive.app.utilities.Utility;
@@ -64,10 +75,9 @@ import com.thriive.app.utilities.spacenavigation.SpaceOnClickListener;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -78,6 +88,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity {
+    @BindView(R.id.layout_toolbar_blank)
+    CardView layout_toolbar_blank;
+    @BindView(R.id.layout_toolbar_with_icon)
+    LinearLayout layout_toolbar_with_icon;
+    @BindView(R.id.rootContainer)
+    RelativeLayout rootContainer;
+    @BindView(R.id.toolbar_name)
+    TextView toolbar_name;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindView(R.id.space)
@@ -90,10 +108,11 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.space1)
     SpaceNavigationView spaceNavigationView1;
 
+    private NotificationFragment notificationFragment;
     private ViewPagerAdapter viewPagerAdapter;
     private SharedData sharedData;
 
-    private String meetingId = "", UUID = "", time_stamp = "", reason = "";;
+    private String meetingId = "", UUID = "", time_stamp = "", reason = "",meeting_slot_id="",startTime, endTime;
     private APIInterface apiInterface;
     private KProgressHUD progressHUD;
     private LoginPOJO.ReturnEntity loginPOJO;
@@ -101,6 +120,11 @@ public class HomeActivity extends AppCompatActivity {
     private CleverTapAPI cleverTap;
     private int rating_int = 0, isRelevantMatchSelect;
     boolean isDidntMeet = false, isRelevantMatch = false  , isDidntMeetSelect ;
+
+    private AlertDialog dialogDetails;
+    LinearLayout layout_accept_enable;
+    Bundle bundle = null;
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,13 +133,13 @@ public class HomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         apiInterface = APIClient.getApiInterface();
+        notificationFragment = new NotificationFragment();
 
         sharedData = new SharedData(getApplicationContext());
         loginPOJO  = Utility.getLoginData(getApplicationContext());
         if (loginPOJO != null){
             sharedData.addIntData(SharedData.USER_ID, loginPOJO.getEntityId());
         }
-
 
         String mydate = "2020-10-06T16:30:00";
         String utc = "2020-10-06T16:30:00";
@@ -149,12 +173,17 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, " UUID "+ UUID);
 
         spaceNavigationView1.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
-        spaceNavigationView1.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));
+        spaceNavigationView1.addSpaceItem(new SpaceItem("Meetings", R.drawable.ic_my_meetings));
+        spaceNavigationView1.addSpaceItem(new SpaceItem("Requests", R.drawable.ic_notifications));
+        spaceNavigationView1.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
         spaceNavigationView1.setCentreButtonIconColorFilterEnabled(false);
 
 
         spaceNavigationView.addSpaceItem(new SpaceItem("Home", R.drawable.ic_home));
-        spaceNavigationView.addSpaceItem(new SpaceItem("My Meetings", R.drawable.ic_group));
+        spaceNavigationView.addSpaceItem(new SpaceItem("Meetings", R.drawable.ic_my_meetings));
+        spaceNavigationView.addSpaceItem(new SpaceItem("Requests", R.drawable.ic_notifications));
+        spaceNavigationView.addSpaceItem(new SpaceItem("Profile", R.drawable.ic_profile));
+
         Typeface typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.roboto_medium);
         spaceNavigationView.setFont(typeface);
         spaceNavigationView.setCentreButtonIconColorFilterEnabled(false);
@@ -173,6 +202,21 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(int itemIndex, String itemName) {
+                if (itemIndex == 2){
+                    layout_toolbar_blank.setVisibility(View.VISIBLE);
+                    layout_toolbar_with_icon.setVisibility(View.GONE);
+                    rootContainer.setBackgroundColor(getResources().getColor(R.color.color_requests_background));
+                    toolbar_name.setText("Meeting Request Received");
+                } else if (itemIndex == 3){
+                    layout_toolbar_blank.setVisibility(View.VISIBLE);
+                    layout_toolbar_with_icon.setVisibility(View.GONE);
+                    rootContainer.setBackgroundColor(getResources().getColor(R.color.color_requests_background));
+                    toolbar_name.setText("Account");
+                }else {
+                    layout_toolbar_blank.setVisibility(View.GONE);
+                    layout_toolbar_with_icon.setVisibility(View.VISIBLE);
+                    rootContainer.setBackground(getResources().getDrawable(R.drawable.home_background));
+                }
                 viewPager.setCurrentItem(itemIndex);
                 //   Toast.makeText(HomeActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
             }
@@ -184,9 +228,38 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         if (getIntent().getStringExtra("intent_type").equals("NOTI")){
-            cleverTap.pushEvent(Utility.Viewed_Alerts);
-            getMeetingById();
+            if (getIntent().getStringExtra("view_type")!= null) {
+                if (getIntent().getStringExtra("view_type").equals("NOTI")) {
+                    bundle = new Bundle();
+                    bundle.putString("intent_type", "NOTI");
+                    notificationFragment.setArguments(bundle);
+                    setupViewPager(viewPager);
+                    viewPager.setCurrentItem(2);
+                    spaceNavigationView.changeCurrentItem(2);
+                    layout_toolbar_blank.setVisibility(View.VISIBLE);
+                    layout_toolbar_with_icon.setVisibility(View.GONE);
+                    rootContainer.setBackgroundColor(getResources().getColor(R.color.color_requests_background));
+                    toolbar_name.setText("Meeting Request Received");
+                }else {
+                    cleverTap.pushEvent(Utility.Viewed_Alerts);
+                    getMeetingById();
+                }
+            } else {
+                cleverTap.pushEvent(Utility.Viewed_Alerts);
+                getMeetingById();
+            }
 
+        }
+
+        if (getIntent().getStringExtra("intent_type").equals("MEETING_DETAILS")){
+            MeetingDetailsFragment meetingDetailsFragment =
+                        (MeetingDetailsFragment) MeetingDetailsFragment.newInstance();
+                meetingDetailsFragment.show(getSupportFragmentManager(), "MeetingDetailsFragment");
+        }
+
+        if (getIntent().getStringExtra("intent_type").equals("TIME")){
+            cleverTap.pushEvent(Utility.Viewed_Alerts);
+            getProPoseNewTime();
         }
 
         //showMeetingRatingDialog(meetingId);
@@ -222,11 +295,13 @@ public class HomeActivity extends AppCompatActivity {
                                         }
                                     }
                                 } catch (Exception e){
+                                    progressHUD.dismiss();
                                     Log.d(TAG, " "+ e.getMessage());
                                 }
 
                             }
                         } catch (Exception e){
+                            progressHUD.dismiss();
                             e.getMessage();
                         }
 
@@ -239,6 +314,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e){
+            progressHUD.dismiss();
             e.getMessage();
         }
 
@@ -266,8 +342,6 @@ public class HomeActivity extends AppCompatActivity {
         });
         dialogs.show();
     }
-
-
 
     public void getLogoutApp() {
 //        progressHUD = KProgressHUD.create(this)
@@ -323,6 +397,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         }
                     } catch (Exception e){
+                        progressHUD.dismiss();
                         e.getMessage();
                     }
 
@@ -337,29 +412,445 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    private void getProPoseNewTime() {
+        progressHUD = KProgressHUD.create(this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("Please wait")
+                .setCancellable(false)
+                .show();
+        Call<CommonMeetingPOJO> call = apiInterface.getMeetingById(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meeting", loginPOJO.getActiveToken(),
+                getIntent().getStringExtra("meeting_id"));
+        call.enqueue(new Callback<CommonMeetingPOJO>() {
+            @Override
+            public void onResponse(Call<CommonMeetingPOJO> call, Response<CommonMeetingPOJO> response) {
+                if(response.isSuccessful()) {
+                    Log.d(TAG, response.toString());
+                    progressHUD.dismiss();
+                    try {
+                        CommonMeetingPOJO pojo = response.body();
+                        if (pojo != null){
+                            Log.d(TAG,""+pojo.getMessage());
+                            if (pojo.getOK()) {
+
+                                setMeetingNewTime(pojo.getMeetingObject());
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (Exception e){
+                        progressHUD.dismiss();
+                        e.getMessage();
+                    }
+
+
+                }
+            }
+            @Override
+            public void onFailure(Call<CommonMeetingPOJO> call, Throwable t) {
+                progressHUD.dismiss();
+                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setMeetingNewTime(CommonMeetingListPOJO.MeetingListPOJO item) {
+        if (item != null){
+            try {
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+                    LayoutInflater layoutInflater = this.getLayoutInflater();
+                    final View view1 = layoutInflater.inflate(R.layout.dialog_new_time, null);
+
+                    ImageView img_close = view1.findViewById(R.id.img_close);
+                    TextView label_date = view1.findViewById(R.id.label_date);
+                    TextView txt_persona = view1.findViewById(R.id.txt_persona);
+                    RecyclerView rv_tags = view1.findViewById(R.id.rv_tags);
+                    TextView txt_reason = view1.findViewById(R.id.txt_reason);
+                    TextView txt_tags = view1.findViewById(R.id.txt_tags);
+                    TextView txt_support = view1.findViewById(R.id.txt_support);
+                    ImageButton img_accept_step2_enable = view1.findViewById(R.id.img_accept_step2_enable);
+                    RecyclerView rv_slots = view1.findViewById(R.id.rv_slots);
+                    layout_accept_enable = view1.findViewById(R.id.layout_accept_enable);
+                    layout_accept_enable.setVisibility(View.GONE);
+
+                    txt_persona.setText("with "+item.getGiverName());
+                    txt_reason.setText("Meeting for "+item.getMeetingReason());
+                    //txt_tags.setText(""+item.getMeetingLabel());
+                    ArrayList<String> arrayList = new ArrayList<>();
+                    /*arrayList.addAll(item.getRequestorDomainTags());
+                    arrayList.addAll(item.getRequestorSubDomainTags());
+                    arrayList.addAll(item.getRequestorExpertiseTags());*/
+                    arrayList.add(item.getSel_meeting().getDomain_name());
+                    arrayList.add(item.getSel_meeting().getSub_domain_name());
+                    arrayList.add(item.getSel_meeting().getExpertise_name());
+                    arrayList.add(item.getSel_meeting().getCountry_name());
+                    ArrayList<String> finalArrayList = new ArrayList<>();
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        if (i <= 3 && !arrayList.get(i).equals("")){
+                            finalArrayList.add(arrayList.get(i));
+                        }
+                    }
+
+                    FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(HomeActivity.this);
+                    rv_tags.setLayoutManager(gridLayout );
+                    if (finalArrayList.size() > 0){
+                        txt_tags.setVisibility(View.VISIBLE);
+                    } else {
+                        txt_tags.setVisibility(View.GONE);
+                    }
+                    rv_tags.setAdapter(new ExperienceAdapter(HomeActivity.this, finalArrayList));
+
+                    rv_slots.setLayoutManager(new GridLayoutManager(HomeActivity.this, 3));
+
+                    ArrayList<MeetingDetailPOJO> reverse_new_time = reverseArrayList((ArrayList<MeetingDetailPOJO>) item.getSlot_list());
+
+                    ArrayList<MeetingDetailPOJO> dialog_new_time = new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        MeetingDetailPOJO data = reverse_new_time.get(i);
+                        dialog_new_time.add(data);
+                    }
+
+                    ArrayList<MeetingDetailPOJO> reverse__time = reverseArrayList((ArrayList<MeetingDetailPOJO>) dialog_new_time);
+
+                    if (reverse__time.size() > 0){
+                        rv_slots.setAdapter(new MeetingNewTimeAdapterForActivity(HomeActivity.this,
+                                (ArrayList<MeetingDetailPOJO>) reverse__time));
+                    }
+
+                    //txt_details.setText(""+item.getSel_meeting().getReq_text());
+                    label_date.setText("Request sent "+Utility.ConvertUTCToUserTimezoneForSlot(item.getSel_meeting().getRequest_date()));
+                    builder.setView(view1);
+                    dialogDetails = builder.create();
+                    dialogDetails.setCancelable(false);
+
+                    img_accept_step2_enable.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getAcceptMeeting(item,item.getSel_meeting().getMeeting_code(),true);
+                        }
+                    });
+                    img_close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialogDetails.dismiss();
+                        }
+                    });
+
+                    txt_support.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialogThriiveSupport(item,item.getSel_meeting().getMeeting_code(),false);
+                        }
+                    });
+
+                    dialogDetails.show();
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+                    LayoutInflater layoutInflater = this.getLayoutInflater();
+                    final View view1 = layoutInflater.inflate(R.layout.dialog_new_time, null);
+
+                    ImageView img_close = view1.findViewById(R.id.img_close);
+                    TextView label_date = view1.findViewById(R.id.label_date);
+                    TextView txt_persona = view1.findViewById(R.id.txt_persona);
+                    RecyclerView rv_tags = view1.findViewById(R.id.rv_tags);
+                    TextView txt_reason = view1.findViewById(R.id.txt_reason);
+                    TextView txt_tags = view1.findViewById(R.id.txt_tags);
+                    TextView txt_support = view1.findViewById(R.id.txt_support);
+                    ImageButton img_accept_step2_enable = view1.findViewById(R.id.img_accept_step2_enable);
+                    RecyclerView rv_slots = view1.findViewById(R.id.rv_slots);
+                    layout_accept_enable = view1.findViewById(R.id.layout_accept_enable);
+                    layout_accept_enable.setVisibility(View.GONE);
+
+
+                    txt_persona.setText("with "+item.getGiverName());
+                    txt_reason.setText("Meeting for "+item.getMeetingReason());
+                    //txt_tags.setText(""+item.getMeetingLabel());
+                    ArrayList<String> arrayList = new ArrayList<>();
+                    arrayList.addAll(item.getGiverDomainTags());
+                    arrayList.addAll(item.getGiverSubDomainTags());
+                    arrayList.addAll(item.getGiverExpertiseTags());
+                    ArrayList<String> finalArrayList = new ArrayList<>();
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        if (i <= 3){
+                            finalArrayList.add(arrayList.get(i));
+                        }
+                    }
+                    FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(HomeActivity.this);
+                    rv_tags.setLayoutManager(gridLayout );
+                    if (finalArrayList.size() > 0){
+                        txt_tags.setVisibility(View.VISIBLE);
+                    } else {
+                        txt_tags.setVisibility(View.GONE);
+                    }
+                    rv_tags.setAdapter(new ExperienceAdapter(HomeActivity.this, finalArrayList));
+
+                    rv_slots.setLayoutManager(new GridLayoutManager(HomeActivity.this, 3));
+
+                    ArrayList<MeetingDetailPOJO> reverse_new_time = reverseArrayList((ArrayList<MeetingDetailPOJO>) item.getSlot_list());
+
+                    ArrayList<MeetingDetailPOJO> dialog_new_time = new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        MeetingDetailPOJO data = reverse_new_time.get(i);
+                        dialog_new_time.add(data);
+                    }
+
+                    ArrayList<MeetingDetailPOJO> reverse__time = reverseArrayList((ArrayList<MeetingDetailPOJO>) dialog_new_time);
+
+                    if (reverse__time.size() > 0){
+                        rv_slots.setAdapter(new MeetingNewTimeAdapterForActivity(HomeActivity.this,
+                                (ArrayList<MeetingDetailPOJO>) reverse__time));
+                    }
+
+                    //txt_details.setText(""+item.getSel_meeting().getReq_text());
+                    label_date.setText("Request sent on "+Utility.ConvertUTCToUserTimezoneForSlot(item.getSel_meeting().getRequest_date()));
+                    builder.setView(view1);
+                    dialogDetails = builder.create();
+                    dialogDetails.setCancelable(false);
+
+                    img_accept_step2_enable.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getAcceptMeeting(item,item.getSel_meeting().getMeeting_code(),true);
+                        }
+                    });
+
+                    img_close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialogDetails.dismiss();
+                        }
+                    });
+
+                    txt_support.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialogThriiveSupport(item,item.getSel_meeting().getMeeting_code(),false);
+                        }
+                    });
+
+                    dialogDetails.show();
+                }
+
+
+            } catch(Exception e){
+                e.getMessage();
+            }
+        }
+    }
+
+    public void acceptMeetingNewTime(MeetingDetailPOJO item){
+        ArrayList<CommonRequestTimeSlots.EntitySlotsListPOJO> selectItem = new ArrayList<>();
+        if (item != null){
+            layout_accept_enable.setVisibility(View.VISIBLE);
+            meeting_slot_id =  ""+item.getMeeting_slot_id();
+            startTime =  item.getSlot_from_date();
+            endTime = item.getSlot_to_date();
+        }
+    }
+
+    private void getAcceptMeeting(CommonMeetingListPOJO.MeetingListPOJO item, String meeting_code, boolean flag) {
+        try {
+            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
+            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
+
+            progressHUD = KProgressHUD.create(HomeActivity.this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonPOJO> call = apiInterface.getRequestorAction(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/requestor-action", loginPOJO.getActiveToken(),
+                    meeting_code, loginPOJO.getRowcode(),flag,meeting_slot_id ,startTime, endTime);
+            call.enqueue(new Callback<CommonPOJO>() {
+                @Override
+                public void onResponse(Call<CommonPOJO> call, Response<CommonPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonPOJO reasonPOJO = response.body();
+                        progressHUD.dismiss();
+                        try {
+                            Log.d(TAG,""+reasonPOJO.getMessage());
+                            if (reasonPOJO.getOK()) {
+                                if (dialogDetails != null){
+                                    dialogDetails.dismiss();
+                                }
+                                //   Toast.makeText(getApplicationContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                                if (flag){
+                                    successDialogAccept();
+                                }else {
+                                    sentEmailToThriiveSupport(item);
+                                }
+
+                            } else {
+                                Toast.makeText(HomeActivity.this, " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e){
+                            progressHUD.dismiss();
+                            e.getMessage();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonPOJO> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(HomeActivity.this, " " +t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            progressHUD.dismiss();
+            e.getMessage();
+        }
+    }
+
+    public void sentEmailToThriiveSupport(CommonMeetingListPOJO.MeetingListPOJO item){
+        if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+            if (item.getGiverEmailId().equals("")){
+                Toast.makeText(HomeActivity.this, "Sorry email not found", Toast.LENGTH_SHORT).show();
+            } else {
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", item.getSel_meeting().getMeeting_code());
+                cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
+                try {
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getGiverEmailId()});
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "admin@thriive.app"});
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                    emailIntent.setType("text/plain");
+                    emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                    final PackageManager pm = getPackageManager();
+                    final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                    ResolveInfo best = null;
+                    for(final ResolveInfo info : matches)
+                        if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                            best = info;
+                    if (best != null)
+                        emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                    startActivity(emailIntent);
+                } catch (Exception e){
+                    e.getMessage();
+                }
+            }
+
+        } else {
+            if (item.getRequestorEmailId().equals("")){
+                Toast.makeText(HomeActivity.this, "Sorry email not found", Toast.LENGTH_SHORT).show();
+
+            } else {
+                HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                visitEvent.put("meeting_request_id", item.getMeetingCode());
+                cleverTap.pushEvent(Utility.Clicked_Matched_Users_Email,visitEvent);
+                try {
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ item.getRequestorEmailId()});
+                    emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "admin@thriive.app"});
+                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+                    emailIntent.setType("text/plain");
+                    emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+                    final PackageManager pm = getPackageManager();
+                    final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
+                    ResolveInfo best = null;
+                    for(final ResolveInfo info : matches)
+                        if (info.activityInfo.packageName.endsWith(".gm") || info.activityInfo.name.toLowerCase().contains("gmail"))
+                            best = info;
+                    if (best != null)
+                        emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+                    startActivity(emailIntent);
+                } catch (Exception e){
+                    e.getMessage();
+                }
+
+            }
+        }
+    }
+
+    public void successDialogAccept() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_confirmed, null);
+        TextView label_close = view1.findViewById(R.id.label_close);
+
+        //    tv_msg.setText("Session Added Successfully.");
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        label_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+
+            }
+        });
+        dialogs.show();
+    }
+
+    public void dialogThriiveSupport(CommonMeetingListPOJO.MeetingListPOJO item,String meeting_code, boolean flag) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_thriive_support, null);
+        TextView label_close = view1.findViewById(R.id.label_close);
+        ImageView img_02 = view1.findViewById(R.id.img_02);
+
+        img_02.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getAcceptMeeting(item,meeting_code,false);
+            }
+        });
+
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        label_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        dialogs.show();
+    }
 
     public void setNoti(int noti) {
         if (noti != 0){
             txt_notification.setText(""+noti);
-            txt_notification.setVisibility(View.VISIBLE);
+//            txt_notification.setVisibility(View.VISIBLE);
+            spaceNavigationView.showBadgeAtIndex(2, noti, getResources().getColor(R.color.black_01));
+            spaceNavigationView.shouldShowFullBadgeText(false);
         } else {
             txt_notification.setVisibility(View.GONE);
+            spaceNavigationView.hideBadgeAtIndex(2);
+        }
+    }
+
+    public void setMeetingBadge(int noti) {
+        if (noti != 0){
+            spaceNavigationView.showBadgeAtIndex(1, noti, getResources().getColor(R.color.black_01));
+        } else {
+            spaceNavigationView.hideBadgeAtIndex(1);
+            spaceNavigationView.shouldShowFullBadgeText(false);
         }
 
     }
 
-
-
     public void setupViewPager(ViewPager viewPager) {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new HomeFragment());
+//        viewPagerAdapter.addFragment(new HomeFragment());
+        viewPagerAdapter.addFragment(new NewHomeFragment());
         viewPagerAdapter.addFragment(new MeetingsFragment());
+        viewPagerAdapter.addFragment(notificationFragment);
+        viewPagerAdapter.addFragment(new ProfileFragment());
         viewPager.setAdapter(viewPagerAdapter);
     }
 
-    public void setMeetingFragment() {
-        viewPager.setCurrentItem(1);
-        spaceNavigationView.changeCurrentItem(1);
+    public void setMeetingFragment(PendingMeetingRequestPOJO.MeetingRequestList item) {
+//        viewPager.setCurrentItem(1);
+//        spaceNavigationView.changeCurrentItem(1);
+        if (item !=null){
+            MeetingDetailFragment.item = item;
+            MeetingDetailFragment addPhotoBottomDialogFragment =
+                    (MeetingDetailFragment) MeetingDetailFragment.newInstance();
+            addPhotoBottomDialogFragment.show(HomeActivity.this.getSupportFragmentManager(),
+                    "MeetingDetailFragment");
+        }
     }
 
     @Override
@@ -393,7 +884,7 @@ public class HomeActivity extends AppCompatActivity {
             // popupMeetingRequest(pojo.getMeetingObject());
 
         } else if (event.getEvent() == Utility.MEETING_BOOK){
-            setMeetingFragment();
+            //setMeetingFragment();
         } else if (event.getEvent() == Utility.END_CALL_DIALOG){
 //            Toast.makeText(this, "ended", Toast.LENGTH_SHORT).show();
 //            Log.d(TAG, "event  " +  event.getMeeting_id());
@@ -410,11 +901,11 @@ public class HomeActivity extends AppCompatActivity {
             meetingId = sharedData.getStringData(SharedData.MEETING_ID);
             showMeetingRatingDialog(meetingId);
         }
-        //getMeetingHome();
+//        getMeetingHome();
     }
 
 
-    private void getMeetingHome() {
+    public void getMeetingHome() {
         TimeZone timeZone = TimeZone.getDefault();
         Log.d(TAG, "time zone "+ timeZone.getID());
         UUID = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
@@ -422,7 +913,7 @@ public class HomeActivity extends AppCompatActivity {
             UUID = "";
         }
         Log.d(TAG, " token "+ sharedData.getStringData(SharedData.PUSH_TOKEN));
-        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(sharedData.getStringData(SharedData.API_URL) + "api/Meeting/get-meetings-home", loginPOJO.getActiveToken(),
+        Call<CommonHomePOJO> call = apiInterface.getMeetingHome(sharedData.getStringData(SharedData.API_URL) + "api/AppHome/get-meetings-home", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode(),  UUID, ""+timeZone.getID(), time_stamp);
         call.enqueue(new Callback<CommonHomePOJO>() {
             @Override
@@ -435,6 +926,14 @@ public class HomeActivity extends AppCompatActivity {
                         if (pojo != null){
                             if (pojo.getOK()) {
                                 setNoti(pojo.getPendingRequestCount());
+//                                setMeetingBadge(pojo.getMeetingScheduledList().size());
+                                /*int meetingCount = 0;
+                                for (int i=0; i<pojo.getMeetingRequestList().size(); i++) {
+                                    if (pojo.getMeetingRequestList().get(i).getSel_meeting().isFlag_giver_prop_time()){
+                                        meetingCount++;
+                                    }
+                                }
+                                setMeetingBadge(meetingCount);*/
                                 // recycler_requested.setAdapter(requestedAdapter);
                                 // Toast.makeText(getContext(), "Success "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -442,6 +941,7 @@ public class HomeActivity extends AppCompatActivity {
                                 //Toast.makeText(getContext(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
+                        getMeetingRequest();
                     } catch (Exception e){
                         e.getMessage();
                     }
@@ -457,6 +957,45 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+
+    private void getMeetingRequest() {
+        try {
+            Call<PendingMeetingRequestPOJO> call = apiInterface.getPendingMeeting(sharedData.getStringData(SharedData.API_URL) + "api/AppHome/get-pending-meetings", loginPOJO.getActiveToken(),
+                    loginPOJO.getRowcode());
+            call.enqueue(new Callback<PendingMeetingRequestPOJO>() {
+                @Override
+                public void onResponse(Call<PendingMeetingRequestPOJO> call, Response<PendingMeetingRequestPOJO> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        PendingMeetingRequestPOJO pojo = response.body();
+                        Log.d(TAG,""+pojo.getMessage());
+                        if (pojo != null){
+                            if (pojo.getOK()) {
+                                if (pojo.getMeetingRequestList() != null){
+                                    int meetingCount = 0;
+                                    for (int i=0; i<pojo.getMeetingRequestList().size(); i++) {
+                                        if (pojo.getMeetingRequestList().get(i).getSel_meeting().isFlag_giver_prop_time()){
+                                            meetingCount++;
+                                        }
+                                    }
+                                    setMeetingBadge(meetingCount);
+                                }
+                            }
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<PendingMeetingRequestPOJO> call, Throwable t) {
+                    //progressHUD.dismiss();
+                    Toast.makeText(getApplicationContext(), ""+t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch(Exception e){
+            e.getMessage();
+        }
+
+    }
 
 
     public void showMeetingRatingDialog(String meeting_Id) {
@@ -660,8 +1199,6 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-
-
     public void showMeetingDialog(String meeting_Id) {
         meetingId = meeting_Id;
         AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this, R.style.SheetDialog);
@@ -860,6 +1397,7 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         }
                     } catch (Exception e){
+                        progressHUD.dismiss();
                         e.getMessage();
                     }
 
@@ -873,6 +1411,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void popupMeetingRequest(CommonMeetingListPOJO.MeetingListPOJO meetingObject) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.SheetDialog);
@@ -932,9 +1471,24 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void callFragment() {
+
         MeetingRequestFragment addPhotoBottomDialogFragment =
                 (MeetingRequestFragment) MeetingRequestFragment.newInstance();
         addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                 "MeetingRequestFragment");
+
+//        NewRequstMeetingFragment addPhotoBottomDialogFragment =
+//                (NewRequstMeetingFragment) NewRequstMeetingFragment.newInstance();
+//        addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+//                "MeetingRequestFragment");
+    }
+
+    public ArrayList<MeetingDetailPOJO> reverseArrayList(ArrayList<MeetingDetailPOJO> alist) {
+        ArrayList<MeetingDetailPOJO> revArrayList = new ArrayList<MeetingDetailPOJO>();
+        for (int i = alist.size() - 1; i >= 0; i--) {
+            // Append the elements in reverse order
+            revArrayList.add(alist.get(i));
+        }
+        return revArrayList;
     }
 }

@@ -72,7 +72,7 @@ public class MeetingsHistoryActivity extends AppCompatActivity {
                 .setCancellable(false)
                 .show();
         Call<CommonMeetingListPOJO> call = apiInterface.getMeetingHistory(sharedData.getStringData(SharedData.API_URL) +
-                "api/Meeting/get-history-meetings", loginPOJO.getActiveToken(),
+                "api/AppHome/get-history-meetings", loginPOJO.getActiveToken(),
                 loginPOJO.getRowcode());
         call.enqueue(new Callback<CommonMeetingListPOJO>() {
             @Override

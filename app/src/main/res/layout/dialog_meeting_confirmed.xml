@@ -23,7 +23,7 @@
             android:id="@+id/label_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto_medium"
             android:textSize="@dimen/_18dp"
             android:layout_below="@id/img_02"
             android:layout_centerHorizontal="true"

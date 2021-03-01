@@ -2,6 +2,7 @@ package com.thriive.app.utilities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,7 +19,9 @@ import androidx.multidex.BuildConfig;
 
 import com.google.gson.Gson;
 import com.thriive.app.models.CommonMeetingListPOJO;
+import com.thriive.app.models.HomeDisplayPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.MeetingListPOJO;
 
 import org.json.JSONObject;
 
@@ -72,6 +75,47 @@ public class Utility {
     public static final String User_Profile ="Login(IdentitySet)";
 
     public static final String BASEURL = "https://api.thriive.app/api/default/GetBaseUrl" ;
+
+    public static final String SLOT_JSON = "{\n" +
+            "    \"IsOK\": true,\n" +
+            "    \"Message\": \"\",\n" +
+            "    \"slot_list\": [\n" +
+            "        {\n" +
+            "            \"from_hour\":10,\n" +
+            "\t    \"from_min\":30,\n" +
+            "\t    \"to_hour\":11,\n" +
+            "\t    \"to_min\":0,\n" +
+            "\t    \"for_date\": \"2020-10-01T00:00:00Z\"\n" +
+            "\t    \n" +
+            "        },\n" +
+            " \t{\n" +
+            "            \"from_hour\":11,\n" +
+            "\t    \"from_min\":30,\n" +
+            "\t    \"to_hour\":12,\n" +
+            "\t    \"to_min\":0,\n" +
+            "\t    \"for_date\": \"2020-10-01T00:00:00Z\"\n" +
+            "\t    \n" +
+            "        },\n" +
+            "    \t{\n" +
+            "            \"from_hour\":14,\n" +
+            "\t    \"from_min\":30,\n" +
+            "\t    \"to_hour\":15,\n" +
+            "\t    \"to_min\":0,\n" +
+            "\t    \"for_date\": \"2020-10-01T00:00:00Z\"\n" +
+            "\t    \n" +
+            "        },\n" +
+            " \t{\n" +
+            "            \"from_hour\":16,\n" +
+            "\t    \"from_min\":30,\n" +
+            "\t    \"to_hour\":17,\n" +
+            "\t    \"to_min\":0,\n" +
+            "\t    \"for_date\": \"2020-10-01T00:00:00Z\"\n" +
+            "\t    \n" +
+            "        }\n" +
+            "        \n" +
+            "    ]\n" +
+            "}";
+
     public static RequestBody getJsonEncode(Activity activity) {
 
 //        PackageManager manager = activity.getPackageManager();
@@ -83,17 +127,18 @@ public class Utility {
 //        }
 //        Log.d("TAG", "PackageName = " + info.packageName + "\nVersionCode = "
 //                + info.versionCode + "\nVersionName = " + info.versionName);
+
         Map<String, Object> jsonParams = new ArrayMap<>();
         jsonParams.put("platform_name", "android");
-        jsonParams.put("internal_app_version", 4);
+        jsonParams.put("internal_app_version", 9);
 
         Log.e("params", jsonParams.toString());
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                 (new JSONObject(jsonParams)).toString());
         Log.d("params", jsonParams.toString());
         return body;
-
     }
+
     public static void saveLoginData(Context context, LoginPOJO.ReturnEntity loginPOJOData){
         SharedPreferences sharedPreferences = context.getSharedPreferences("login_pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor  editor = sharedPreferences.edit();
@@ -137,6 +182,21 @@ public class Utility {
         return  gson.fromJson(login, CommonMeetingListPOJO.MeetingListPOJO.class);
     }
 
+    public static void saveNextMeetingDetailsData(Context context, HomeDisplayPOJO.MeetingData meetingPOJOData){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("meeting_pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor  editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(meetingPOJOData);
+        editor.putString("next_meeting_data",json);
+        editor.apply();
+    }
+
+    public static HomeDisplayPOJO.MeetingData getNextMeetingDetailsData(Context context){
+        String login = context.getSharedPreferences("meeting_pref", Context.MODE_PRIVATE).getString("next_meeting_data", "");
+        Gson gson = new Gson();
+        return  gson.fromJson(login, HomeDisplayPOJO.MeetingData.class);
+    }
+
 
     public static NetworkInfo checkInternet(Context context){
         ConnectivityManager ConnectionManager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -150,6 +210,19 @@ public class Utility {
         }
         assert imm != null;
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void closeKeyboard(Context context){
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
+    public static Activity unwrap(Context context) {
+        while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+
+        return (Activity) context;
     }
 
     public  static  String getEncodedName(String name){
@@ -471,6 +544,30 @@ public class Utility {
 
     }
 
+    public static String getMeetingDateWithTime(String date){
+        String dtStart = "";
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat out_format = new SimpleDateFormat("d MMM");
+
+        SimpleDateFormat time_format = new SimpleDateFormat("hh:mm aa");
+
+        try {
+            String resultDate = out_format.format(in_format.parse(date));
+            //String sDate = time_format.format(in_format.parse(date));
+            //   String eDate = time_format.format(in_format.parse(endDate));
+            Log.d("samedate",resultDate);
+            dtStart = resultDate;
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        return  dtStart;
+
+    }
+
     public static String getMeetingTime(String date, String endDate){
         String dtStart = "";
         SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -604,8 +701,28 @@ public class Utility {
         }
 
         return  dtStart;
-
     }
+
+    public static String convertLocaleToUtc(String datetime){
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd");
+        in_format.setTimeZone(TimeZone.getDefault());
+
+        SimpleDateFormat out_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        out_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "user "+ parsed);
+        Log.d("UTILITY", "utc "+ date);
+
+        return ""+date;
+    }
+
     public static String getOneHour(String date){
        // String dtStart = "2019-08-15T09:27:37Z";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -641,12 +758,34 @@ public class Utility {
     }
 
 
-    public static  String ConvertUTCToUserTimezone(String datetime)
+    public static  String ConvertUTCToUserTimezoneForSlot(String datetime)
     {
         SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        SimpleDateFormat out_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        SimpleDateFormat out_format = new SimpleDateFormat("MMM d");
+        SimpleDateFormat out_format = new SimpleDateFormat("d MMM");
+        out_format.setTimeZone(TimeZone.getDefault());
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "utc "+ parsed);
+        Log.d("UTILITY", "user "+ date);
+
+        return ""+date;
+    }
+
+    public static  String ConvertUTCToUserTimezoneForSlotDay(String datetime)
+    {
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SimpleDateFormat out_format = new SimpleDateFormat("EEE");
         out_format.setTimeZone(TimeZone.getDefault());
 
         Date parsed = null;
@@ -683,6 +822,70 @@ public class Utility {
 
         return ""+date;
 
+    }
+
+
+    public static  String ConvertUTCToUserTimezoneForSlotTime(String datetime)
+    {
+        SimpleDateFormat in_format = new SimpleDateFormat("HH:mm");
+        in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SimpleDateFormat out_format = new SimpleDateFormat("HH:mm");
+        out_format.setTimeZone(TimeZone.getDefault());
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "utc "+ parsed);
+        Log.d("UTILITY", "user "+ date);
+
+        return ""+date;
+    }
+
+    public static String ConvertUTCToUserTimezone(String datetime)
+    {
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SimpleDateFormat out_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        out_format.setTimeZone(TimeZone.getDefault());
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "utc "+ parsed);
+        Log.d("UTILITY", "user "+ date);
+
+        return ""+date;
+    }
+
+    public static  String ConvertUTCToUserTimezoneWithTime(String datetime)
+    {
+        SimpleDateFormat in_format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        in_format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        SimpleDateFormat out_format = new SimpleDateFormat("HH:mm");
+        out_format.setTimeZone(TimeZone.getDefault());
+
+        Date parsed = null;
+        try {
+            parsed = in_format.parse(datetime);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String date = out_format.format(parsed);
+        Log.d("UTILITY", "utc "+ parsed);
+        Log.d("UTILITY", "user "+ date);
+
+        return ""+date;
     }
 
     public static long getTimeDifferenceWithCurrentTime(String datetime){
@@ -741,4 +944,34 @@ public class Utility {
         return diff;
     }
 
+    public static long getNotificationTimer(String addedDate, String datetime){
+        boolean call = false;
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getDefault());
+
+        Calendar calendar = Calendar.getInstance();
+        Date parsed = null;
+        Date parsed1 = null;
+        try {
+            parsed = sourceFormat.parse(datetime);
+            parsed1 = sourceFormat.parse(addedDate);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        String server_date = sourceFormat.format(parsed);
+        String system_date = sourceFormat.format(parsed1);
+        Date d1 = null;
+        Date d2 = null;
+        try {
+            d1 = sourceFormat.parse(server_date);
+            d2 = sourceFormat.parse(system_date);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        Log.d("D1", " "+ d1);
+        Log.d("D2", " "+ d2);
+        long diff = d1.getTime() - d2.getTime();
+
+        return diff;
+    }
 }

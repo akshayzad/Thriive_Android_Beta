@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,10 +54,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.thriive.app.MeetingJoinActivity;
 import com.thriive.app.R;
 
+import com.thriive.app.adapters.DetailRescheduleSlotAdapter;
 import com.thriive.app.adapters.ExperienceListAdapter;
 import com.thriive.app.adapters.ExpertiseAdapter;
 import com.thriive.app.adapters.MeetingSelectTagAdapter;
 import com.thriive.app.adapters.MeetingTagAdapter;
+import com.thriive.app.adapters.RescheduleTimeSlotAdapter;
+import com.thriive.app.adapters.SelectedRescheduleTimeSlot;
 import com.thriive.app.adapters.SlotListAdapter;
 import com.thriive.app.adapters.SlotListFragmentAdapter;
 import com.thriive.app.api.APIClient;
@@ -64,6 +68,7 @@ import com.thriive.app.api.APIInterface;
 import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonPOJO;
+import com.thriive.app.models.CommonRequestTimeSlots;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.EventBusPOJO;
 import com.thriive.app.models.LoginPOJO;
@@ -77,14 +82,17 @@ import com.thriive.app.utilities.textdrawable.TextDrawable;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
@@ -135,6 +143,9 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     TextView label_experience;
     @BindView(R.id.txt_country)
     TextView txt_country;
+    @BindView(R.id.txt_details)
+    TextView txt_details;
+
 
     private CommonStartMeetingPOJO.MeetingDataPOJO meetingDataPOJO;
     private CommonMeetingListPOJO.MeetingListPOJO meetingListPOJO;
@@ -145,7 +156,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     private String cancelReason = "", usertype = "";
 
     private static  String TAG = MeetingDetailsFragment.class.getName();
-    String startTime, endTime, selectedDate;
+    String startTime = "", endTime = "", selectedDate,currentDate;
     private static final String[] REQUESTED_PERMISSIONS = {
             Manifest.permission.WRITE_CALENDAR,
             Manifest.permission.READ_CALENDAR
@@ -153,6 +164,23 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     private ArrayList<CommonEntitySlotsPOJO.EntitySlotList> entitySlotList = new ArrayList<>();
     private CleverTapAPI cleverTap;
     private  BottomSheetDialog dialogEditSlot;
+    private AlertDialog dialogDetails ;
+    TextView txt_year;
+    TextView txt_month;
+    TextView txt_day;
+    RecyclerView rv_select_time_slots;
+    RecyclerView rv_time_slots;
+    LinearLayout layout_empty_view;
+    TextView txt_toaster;
+    LinearLayout layout_confirm;
+    LinearLayout layout_confirm_disabled;
+    int giverID = 0;
+    int requestorId = 0;
+    Calendar calendar = Calendar.getInstance();
+    Date date1;
+    String year1, month1, day, newDate;
+
+    String txtYear="",txtMonth="",txtDay="";
     public MeetingDetailsFragment() {
         // Required empty public constructor
     }
@@ -192,15 +220,10 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                         dialog.findViewById(R.id.design_bottom_sheet);
                 BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-               // behavior.setPeekHeight(0); // Remove this line to hide a dark background if you manually hide the dialog.
             }
         });
-       // arrayList.add(new CommonReOJO());
 
         setData();
-
-        // get the views and attach the listener
-
 
         img_bg.setMaxHeight(layout_data.getHeight());
 
@@ -238,23 +261,14 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                             .into(img_user);
                 }
 
-//                if (meetingListPOJO.getGiverDesignationTags().size() > 0){
-//                    txt_profession.setText(meetingListPOJO.getGiverDesignationTags().get(0));
-//                } else {
-//                    txt_profession.setText("");
-//                }
-
                 txt_profession.setText(""+meetingListPOJO.getGiverSubTitle());
                 txt_country.setText(""+meetingListPOJO.getGiverCountryName());
 
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.addAll(meetingListPOJO.getGiverExpertiseTags());
-                //arrayList.addAll(meetingListPOJO.getGiverDomainTags());
-               // arrayList.addAll(meetingListPOJO.getGiverSubDomainTags());
                 arrayList.addAll(meetingListPOJO.getMeetingTag());
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout );
-
 
                 ArrayList<String> array1 = new ArrayList<>();
                 // array1.addAll(meetingListPOJO.getMeetingTag());
@@ -272,26 +286,63 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
                 combine_array.clear();
                 combine_array.addAll(hs);
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+                ArrayList<String> final_array = new ArrayList<>();
+                for (int i =0; i< combine_array.size(); i++) {
+                    if (i < 4){
+                        final_array.add(combine_array.get(i));
+                    }
+                }
+
+                ArrayList<String> array2 = new ArrayList<>();
+                if (meetingListPOJO.getMeetingExpertise()!= null) {
+                    array2.add(meetingListPOJO.getMeetingExpertise());
+                }
+                if (meetingListPOJO.getMeetingDomain()!= null) {
+                    array2.add(meetingListPOJO.getMeetingDomain());
+                }
+                if (meetingListPOJO.getMeetingSubDomain()!= null) {
+                    array2.add(meetingListPOJO.getMeetingSubDomain());
+                }
+
+                ArrayList<String> meeting_tag_array = new ArrayList<>();
+                for (int i = 0; i < array2.size(); i++){
+                    if (!array2.get(i).equals("")){
+                        meeting_tag_array.add(array2.get(i));
+                    }
+                }
+
+                /*ArrayList<String> array2 = new ArrayList<>();
+                array2.addAll(meetingListPOJO.getRequestorDomainTags());
+                array2.addAll(meetingListPOJO.getRequestorSubDomainTags());
+                array2.addAll(meetingListPOJO.getRequestorExpertiseTags());
+
+                ArrayList<String> requester_array = new ArrayList<>();
+                for (int i = 0; i < array2.size(); i++){
+                    if (!array2.get(i).equals("")){
+                        requester_array.add(array1.get(i));
+                    }
+                }
+
+                ArrayList<String> final_requester_array = new ArrayList<>();
+                for (int i =0; i< requester_array.size(); i++) {
+                    if (i < 4){
+                        final_requester_array.add(requester_array.get(i));
+                    }
+                }*/
+
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) meeting_tag_array));
+//                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+//                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) final_requester_array));
 
                 if (meetingListPOJO.getGiverExpertiseTags() != null){
                 }
 
                 txt_email.setText(meetingListPOJO.getGiverEmailId());
                 ArrayList<String> arrayList1 = new ArrayList<>();
-//            for (int i = 0; i<meetingListPOJO.getGiverDesignationTags().size(); i++)
-//            {
-//                if (i != 0){
-//                    arrayList1.add(meetingListPOJO.getGiverDesignationTags().get(i));
-//                }
-//            }
-              //  arrayList1.addAll(meetingListPOJO.getGiverExperienceTags());
 
                 if (meetingListPOJO.getGiverExperienceTags() != null){
                     label_experience.setText("Total " +meetingListPOJO.getGiverExperienceTags().get(0));
                 }
-
-
 
                 arrayList1.addAll(meetingListPOJO.getGiverDesignationTags());
                 rv_experience.setLayoutManager(new FlexboxLayoutManager(getContext()) );
@@ -314,9 +365,6 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                             .endConfig()
                             .buildRect(Utility.getInitialsName(meetingListPOJO.getRequestorName()) ,getResources().getColor(R.color.whiteTwo));
 
-//                TextDrawable drawable = TextDrawable.builder().width(60)  // width in px
-//                        .height(60)
-//                        .buildRound(""+meetingListPOJO.getGiverName().charAt(0), R.color.darkGreyBlue);
                     img_user.setImageDrawable(drawable);
                 } else {
                     img_user.setMinimumWidth(120);
@@ -328,11 +376,6 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                             .into(img_user);
                 }
 
-//                if (meetingListPOJO.getRequestorDesignationTags().size() > 0){
-//                    txt_profession.setText(meetingListPOJO.getRequestorDesignationTags().get(0));
-//                } else {
-//                    txt_profession.setText("");
-//                }
                 txt_profession.setText(""+meetingListPOJO.getRequestorSubTitle());
                 txt_country.setText(""+meetingListPOJO.getRequestorCountryName());
 
@@ -343,33 +386,6 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 array1.addAll(meetingListPOJO.getRequestorSubDomainTags());
                 array1.addAll(meetingListPOJO.getRequestorExpertiseTags());
 
-//                for (int i = 0; i< array1.size(); i++){
-//                    for (int j = 0; j < meetingListPOJO.getMeetingTag().size(); j++){
-//                        if (array1.get(i).equals(meetingListPOJO.getMeetingTag().get(j))){
-//                            array1.remove(i);
-//                        }
-//                    }
-//                }
-
-//                ArrayList<String> combine_array = new ArrayList<>();
-//                for (int i = 0; i < meetingListPOJO.getMeetingTag().size(); i++){
-//                    if (!meetingListPOJO.getMeetingTag().get(i).equals("")){
-//                        combine_array.add(meetingListPOJO.getMeetingTag().get(i));
-//                    }
-//                }
-//                combine_array.addAll(array1);
-
-//                ArrayList<String> combine_array = new ArrayList<>();
-//                combine_array.addAll(meetingListPOJO.getMeetingTag());
-//                combine_array.addAll(array1);
-
-//                ArrayList<String> final_array = new ArrayList<>();
-//                for (int i =0; i< combine_array.size(); i++)
-//                {
-//                    if (i < 3){
-//                        final_array.add(combine_array.get(i));
-
-
                 ArrayList<String> combine_array = new ArrayList<>();
                 for (int i = 0; i < array1.size(); i++){
                     if (!array1.get(i).equals("")){
@@ -377,37 +393,64 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                     }
                 }
 
-//
-//            ArrayList<String> combine_array = new ArrayList<>();
-//            combine_array.addAll(item.getMeetingTag());
-//            combine_array.addAll(array1);
-
                 HashSet hs = new HashSet();
                 hs.addAll(combine_array); // demoArrayList= name of arrayList from which u want to remove duplicates
                 combine_array.clear();
                 combine_array.addAll(hs);
+                ArrayList<String> final_array = new ArrayList<>();
+                for (int i =0; i< combine_array.size(); i++) {
+                    if (i < 4){
+                        final_array.add(combine_array.get(i));
+                    }
+                }
+
+
+                ArrayList<String> array2 = new ArrayList<>();
+                if (meetingListPOJO.getMeetingExpertise()!= null) {
+                    array2.add(meetingListPOJO.getMeetingExpertise());
+                }
+                if (meetingListPOJO.getMeetingDomain()!= null) {
+                    array2.add(meetingListPOJO.getMeetingDomain());
+                }
+                if (meetingListPOJO.getMeetingSubDomain()!= null) {
+                    array2.add(meetingListPOJO.getMeetingSubDomain());
+                }
+
+                ArrayList<String> meeting_tag_array = new ArrayList<>();
+                for (int i = 0; i < array2.size(); i++){
+                    if (!array2.get(i).equals("")){
+                        meeting_tag_array.add(array2.get(i));
+                    }
+                }
+
+                /*ArrayList<String> array2 = new ArrayList<>();
+                array2.addAll(meetingListPOJO.getGiverDomainTags());
+                array2.addAll(meetingListPOJO.getGiverSubDomainTags());
+                array2.addAll(meetingListPOJO.getGiverExpertiseTags());
+
+                ArrayList<String> giver_array = new ArrayList<>();
+                for (int i = 0; i < array2.size(); i++){
+                    if (!array2.get(i).equals("")){
+                        giver_array.add(array1.get(i));
+                    }
+                }
+
+                ArrayList<String> final_giver_array = new ArrayList<>();
+                for (int i =0; i< giver_array.size(); i++) {
+                    if (i < 4){
+                        final_giver_array.add(giver_array.get(i));
+                    }
+                }*/
+
                 FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(getContext());
                 rv_tags.setLayoutManager(gridLayout);
-                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), combine_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
-//                if (meetingListPOJO.getMeetingTag() != null){
-//
-//                }
-//                if (meetingListPOJO.getRequestorExpertiseTags() != null){
-//                    rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getRequestorExpertiseTags()));
-//                }
+                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) meeting_tag_array));
+//                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) meetingListPOJO.getMeetingTag()));
+//                rv_tags.setAdapter(new MeetingSelectTagAdapter(getContext(), final_array, (ArrayList<String>) final_giver_array));
 
-
-             //   rv_tags.setAdapter(new ExpertiseAdapter(getContext(), (ArrayList<String>) meetingListPOJO.getMeetingTag()));
                 txt_email.setText(meetingListPOJO.getRequestorEmailId());
 
                 ArrayList<String> arrayList1 = new ArrayList<>();
-//            for (int i = 0; i<meetingListPOJO.getRequestorDesignationTags().size(); i++)
-//            {
-//                if (i != 0){
-//                    arrayList1.add(meetingListPOJO.getRequestorDesignationTags().get(i));
-//                }
-//            }
-              //  arrayList1.addAll(meetingListPOJO.getRequestorExperienceTags());
 
                 if (meetingListPOJO.getGiverExperienceTags() != null){
                     label_experience.setText("Total "+meetingListPOJO.getRequestorExperienceTags().get(0));
@@ -418,18 +461,25 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 rv_experience.setAdapter(new ExperienceListAdapter(getContext(), arrayList1));
             }
 
-            txt_reason.setText("Meeting for " +meetingListPOJO.getMeetingReason());
-            txt_date.setText(Utility.getMeetingDate(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())));
+            if (!meetingListPOJO.getMeeting_l1_attrib_name().equals("")){
+                txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason() + " (" + meetingListPOJO.getMeeting_l1_attrib_name() +")");
+            }else {
+                txt_reason.setText("Meeting for "+meetingListPOJO.getMeetingReason());
+            }
+
+            txt_details.setText(meetingListPOJO.getMeeting_req_text());
+
+            //String str = Utility.getMeetingDateWithTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())) + Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
+             //       Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime()));
+
+            txt_date.setText(Utility.getMeetingDateWithTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime())) +", " + Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
+                    Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime()))) ;
             txt_time.setText(Utility.getMeetingTime(Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanStartTime()),
                     Utility.ConvertUTCToUserTimezone(meetingListPOJO.getPlanEndTime())));
         } catch (Exception e){
             e.getMessage();
         }
-
-
     }
-
-
 
     @OnClick({R.id.txt_cancel, R.id.join_meeting, R.id.img_close, R.id.layout_avail, R.id.btn_email,
             R.id.btn_linkedin, R.id.txt_add_calender})
@@ -479,7 +529,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             case R.id.layout_avail:
 
-                getMeetingSlot();
+                alertDialogForRechedule();
 
                 break;
 
@@ -808,6 +858,457 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
     }
 
 
+    public void alertDialogForRechedule() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_reschedule_confirm, null);
+        TextView label_close = view1.findViewById(R.id.label_close);
+        Button btn_reschedule = view1.findViewById(R.id.btn_reschedule);
+
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        btn_reschedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                rescheduleMeeting();
+            }
+        });
+        label_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+            }
+        });
+        dialogs.show();
+    }
+
+    public void rescheduleMeeting() {
+
+        try {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.SheetDialog);
+            LayoutInflater layoutInflater = this.getLayoutInflater();
+            final View view1 = layoutInflater.inflate(R.layout.dialog_rescedule_layout, null);
+            ImageView img_close = view1.findViewById(R.id.img_close);
+            ImageView img_info = view1.findViewById(R.id.img_info);
+            layout_empty_view = view1.findViewById(R.id.layout_empty_view);
+            layout_empty_view.setVisibility(View.VISIBLE);
+            rv_time_slots = view1.findViewById(R.id.rv_time_slots);
+            rv_time_slots.setVisibility(View.GONE);
+            ImageView img_backward = view1.findViewById(R.id.img_backward);
+            ImageView img_forward = view1.findViewById(R.id.img_forward);
+            LinearLayout layout_circle = view1.findViewById(R.id.layout_circle);
+            layout_confirm = view1.findViewById(R.id.layout_confirm);
+            layout_confirm_disabled = view1.findViewById(R.id.layout_confirm_disabled);
+
+            layout_confirm.setVisibility(View.GONE);
+            layout_confirm_disabled.setVisibility(View.VISIBLE);
+
+            txt_toaster = view1.findViewById(R.id.txt_toaster);
+
+            txt_year = view1.findViewById(R.id.txt_year);
+            txt_month = view1.findViewById(R.id.txt_month);
+            txt_day = view1.findViewById(R.id.txt_day);
+            rv_select_time_slots = view1.findViewById(R.id.rv_select_time_slots);
+
+            setDefaultDate();
+
+            builder.setView(view1);
+            dialogDetails = builder.create();
+            dialogDetails.setCancelable(false);
+
+            img_info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCustomToast(true);
+                }
+            });
+            layout_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HashMap<String, Object> meeting_reschedule = new HashMap<String, Object>();
+                    meeting_reschedule.put("meeting_request_id", meetingListPOJO.getMeetingCode());
+                    meeting_reschedule.put("meeting_start_datetime", startTime);
+                    meeting_reschedule.put("usertype", usertype);
+                    cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Reschedule, meeting_reschedule);
+                    getResheduledMeeting();
+
+                }
+            });
+
+            img_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogDetails.dismiss();
+                }
+            });
+
+            img_backward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    previousDate();
+                }
+            });
+
+            img_forward.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    nextDate();
+                }
+            });
+
+            layout_circle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    meetingEditDate();
+                }
+            });
+
+            dialogDetails.show();
+        } catch(Exception e){
+            e.getMessage();
+        }
+
+    }
+
+    private void setDefaultDate(){
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,1);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        selectedDate = df.format(calendar.getTime());
+        currentDate = df.format(calendar.getTime());
+        SimpleDateFormat dfYear = new SimpleDateFormat("yyyy", Locale.getDefault());
+        txtYear = dfYear.format(calendar.getTime());
+
+        SimpleDateFormat dfMM = new SimpleDateFormat("dd MMM", Locale.getDefault());
+        txtMonth = dfMM.format(calendar.getTime());
+
+        SimpleDateFormat dfDay = new SimpleDateFormat("EEE", Locale.getDefault());
+        txtDay = dfDay.format(calendar.getTime());
+
+        txt_year.setText(txtYear);
+        txt_month.setText(txtMonth);
+        txt_day.setText(txtDay);
+
+        String utc_date = Utility.convertLocaleToUtc(selectedDate);
+        if (utc_date != null && utc_date.length() > 0){
+            get_meeting_time_slots(utc_date);
+        }
+    }
+
+    public void meetingEditDate()  {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_select_slot_date, null);
+
+        ImageView img_close = view1.findViewById(R.id.img_close);
+        Button btn_done = view1.findViewById(R.id.btn_done);
+        CalendarView calender_view = view1.findViewById(R.id.calender);
+        //calender_view.setMinDate(new Date().getTime());
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,+1);
+        calender_view.setMinDate(calendar.getTime().getTime());
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = format.parse(selectedDate);
+            calender_view.setDate(date.getTime(),true,true);
+
+
+            try {
+                SimpleDateFormat formatt = new SimpleDateFormat("yyyy-MM-dd");
+                Date date1 = formatt.parse(selectedDate);
+                calendar.setTime(date1);
+                SimpleDateFormat dfYear = new SimpleDateFormat("yyyy");
+                year1 = dfYear.format(date1);
+
+                SimpleDateFormat dfMonth = new SimpleDateFormat("dd MMM");
+                month1 = dfMonth.format(date1.getTime());
+
+                SimpleDateFormat dfDay = new SimpleDateFormat("EEE");
+                day = dfDay.format(date1.getTime());
+
+                txt_year.setText("" + year1);
+                txt_month.setText(month1);
+                txt_day.setText(day);
+
+                newDate = selectedDate;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("NEW_DATE", selectedDate);
+
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+
+        calender_view.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+            @Override
+            public void onSelectedDayChange(CalendarView arg0, int year, int month,
+                                            int date) {
+                month = month + 1;
+                // output to log cat **not sure how to format year to two places here**
+                newDate = year+"-"+month+"-"+date;
+                Log.d("NEW_DATE", newDate);
+//                selectedDate = newDate;
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    date1 = format.parse(newDate);
+//                    calendar.setTime(date1);
+                    SimpleDateFormat dfYear = new SimpleDateFormat("yyyy");
+                    txtYear = dfYear.format(date1);
+
+                    SimpleDateFormat dfMonth = new SimpleDateFormat("dd MMM");
+                    txtMonth = dfMonth.format(date1.getTime());
+
+                    SimpleDateFormat dfDay = new SimpleDateFormat("EEE");
+                    txtDay = dfDay.format(date1.getTime());
+
+                    /*txt_year.setText(""+txtYear);
+                    txt_month.setText(txtMonth);
+                    txt_day.setText(txtDay);*/
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                if (year1 != null && month1 != null && day != null && newDate!= null && date1!= null) {
+                    selectedDate = newDate;
+                    calendar.setTime(date1);
+                    txt_year.setText("" + txtYear);
+                    txt_month.setText(txtMonth);
+                    txt_day.setText(txtDay);
+                }
+                String utc_date = Utility.convertLocaleToUtc(selectedDate);
+                if (utc_date != null && utc_date.length() > 0){
+                    get_meeting_time_slots(utc_date);
+                }
+            }
+        });
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogs.dismiss();
+            }
+        });
+        dialogs.show();
+
+    }
+
+    private void nextDate(){
+
+        calendar.add(Calendar.DATE, 1);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        selectedDate = df.format(calendar.getTime());
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date date1 = format.parse(selectedDate);
+
+            SimpleDateFormat dfYear = new SimpleDateFormat("yyyy");
+            txtYear = dfYear.format(date1);
+
+            SimpleDateFormat dfMonth = new SimpleDateFormat("dd MMM");
+            txtMonth = dfMonth.format(date1.getTime());
+
+            SimpleDateFormat dfDay = new SimpleDateFormat("EEE");
+            txtDay = dfDay.format(date1.getTime());
+
+            txt_year.setText(""+txtYear);
+            txt_month.setText(txtMonth);
+            txt_day.setText(txtDay);
+
+            String utc_date = Utility.convertLocaleToUtc(selectedDate);
+            if (utc_date != null && utc_date.length() > 0){
+                get_meeting_time_slots(utc_date);
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    private void previousDate(){
+//        calendar.add(Calendar.DATE, -1);
+//        //calendar.se.setMinDate(System.currentTimeMillis() - 1000);
+//
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        selectedDate = df.format(calendar.getTime());
+//
+//        SimpleDateFormat dfYear = new SimpleDateFormat("yyyy");
+//        txtYear = dfYear.format(calendar.getTime());
+//
+//        SimpleDateFormat dfMM = new SimpleDateFormat("dd MMM");
+//        txtMonth = dfMM.format(calendar.getTime());
+//
+//        SimpleDateFormat dfDay = new SimpleDateFormat("EEE");
+//        txtDay = dfDay.format(calendar.getTime());
+//
+//        txt_year.setText(txtYear);
+//        txt_month.setText(txtMonth);
+//        txt_day.setText(txtDay);
+//
+//        String utc_date = Utility.convertLocaleToUtc(selectedDate);
+//        if (utc_date != null && utc_date.length() > 0){
+//            get_meeting_time_slots(utc_date);
+//        }
+//
+//    }
+
+    private void previousDate(){
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date current_date = format.parse(currentDate);
+            Date selected_date = format.parse(selectedDate);
+            if (selected_date.before(current_date) || selected_date.equals(current_date)){
+                Toast.makeText(getActivity(), "You can't select past date.", Toast.LENGTH_SHORT).show();
+            }else {
+                calendar.add(Calendar.DATE, -1);
+                //calendar.se.setMinDate(System.currentTimeMillis() - 1000);
+
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                selectedDate = df.format(calendar.getTime());
+
+                SimpleDateFormat dfYear = new SimpleDateFormat("yyyy");
+                String year = dfYear.format(calendar.getTime());
+
+                SimpleDateFormat dfMM = new SimpleDateFormat("dd MMM");
+                String month = dfMM.format(calendar.getTime());
+
+                SimpleDateFormat dfDay = new SimpleDateFormat("EEE");
+                String day = dfDay.format(calendar.getTime());
+
+                txt_year.setText(year);
+                txt_month.setText(month);
+                txt_day.setText(day);
+
+                String utc_date = Utility.convertLocaleToUtc(selectedDate);
+                if (utc_date != null && utc_date.length() > 0){
+
+                    get_meeting_time_slots(utc_date);
+                }
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void get_meeting_time_slots(String utc_date) {
+        try {
+            progressHUD = KProgressHUD.create(getActivity())
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setLabel("Please wait")
+                    .setCancellable(false)
+                    .show();
+            Call<CommonRequestTimeSlots> call = apiInterface.getTimeSlotsForGiver(sharedData.getStringData(SharedData.API_URL) +
+                    "api/MRCalls/get-time-slots-for-reschedule", loginPOJO.getActiveToken(), meetingListPOJO.getRequestorId(), meetingListPOJO.getGiverId(), utc_date);
+            call.enqueue(new Callback<CommonRequestTimeSlots>() {
+                @Override
+                public void onResponse(Call<CommonRequestTimeSlots> call, Response<CommonRequestTimeSlots> response) {
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, response.toString());
+                        CommonRequestTimeSlots pojo = response.body();
+                        progressHUD.dismiss();
+                        if (pojo != null){
+                            Log.d(TAG,""+pojo.getMessage());
+                            if (pojo.getOK()) {
+                                if (pojo.getSlotsListPOJOS().size() > 0 ){
+                                    rv_select_time_slots.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                                    DetailRescheduleSlotAdapter meetingRequestTimeSlotAdapter = new DetailRescheduleSlotAdapter(getActivity(),MeetingDetailsFragment.this,
+                                            (ArrayList<CommonRequestTimeSlots.EntitySlotsListPOJO>) pojo.getSlotsListPOJOS(),selectedDate);
+                                    rv_select_time_slots.setAdapter(meetingRequestTimeSlotAdapter);
+                                    meetingRequestTimeSlotAdapter.notifyDataSetChanged();
+                                }else {
+                                    Toast.makeText(getActivity(), ""+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), " "+pojo.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }else {
+                        progressHUD.dismiss();
+                        Toast.makeText(getActivity(), "Data not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<CommonRequestTimeSlots> call, Throwable t) {
+                    progressHUD.dismiss();
+                    Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e){
+            e.getMessage();
+        }
+    }
+
+    public void showCustomToast(boolean flag) {
+        try {
+            if (flag){
+                txt_toaster.setVisibility(View.VISIBLE);
+                TimeZone timeZone = TimeZone.getDefault();
+                Log.d(TAG, "time zone "+ timeZone.getID());
+                String  time_stamp = "Limit of 1 time per day. Times are based on the region you’ve selected. Time is displayed in "+timeZone.getDisplayName();
+                txt_toaster.setText(time_stamp);
+            }else{
+                txt_toaster.setVisibility(View.VISIBLE);
+                String  time_stamp = "This time is unavailable because it has already been allocated for a meeting.";
+                txt_toaster.setText(time_stamp);
+            }
+
+
+        } catch(Exception e){
+            e.getMessage();
+        }
+
+        txt_toaster.postDelayed(new Runnable() {
+            public void run() {
+                txt_toaster.setVisibility(View.GONE);
+            }
+        }, 2000);
+    }
+
+    public void setSelectedTimeSlot(CommonRequestTimeSlots.EntitySlotsListPOJO slot,String time){
+        if (slot != null){
+            layout_empty_view.setVisibility(View.GONE);
+            rv_time_slots.setVisibility(View.VISIBLE);
+            layout_confirm.setVisibility(View.VISIBLE);
+            layout_confirm_disabled.setVisibility(View.GONE);
+            startTime = slot.getSlot_from_date();
+            ArrayList<CommonRequestTimeSlots.EntitySlotsListPOJO> arrayList = new ArrayList<>();
+            arrayList.add(slot);
+//            rv_time_slots.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            rv_time_slots.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            SelectedRescheduleTimeSlot meetingRequestTimeSlotAdapter = new SelectedRescheduleTimeSlot(getActivity(),
+                    (ArrayList<CommonRequestTimeSlots.EntitySlotsListPOJO>) arrayList);
+            rv_time_slots.setAdapter(meetingRequestTimeSlotAdapter);
+            meetingRequestTimeSlotAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+
+
     public void getMeetingSlot() {
       //  meetingCode = ""+m;
         try {
@@ -928,7 +1429,7 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
             txt_time.setText(Utility.getMeetingTime(startTime, endTime) + " (" + meetingListPOJO.getGiverCountryName() + " time)");
         }
-        txt_date.setText(Utility.getMeetingDate(startTime));
+        txt_date.setText(Utility.getMeetingDateWithTime(startTime));
         decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -946,51 +1447,51 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                 meeting_reschedule.put("meeting_start_datetime", startTime);
                 meeting_reschedule.put("usertype", usertype);
                 cleverTap.pushEvent(Utility.CLAVER_TAB_Meeting_Reschedule,meeting_reschedule);
-                getResheduledMeeting();
+                //getResheduledMeeting();
             }
         });
         dialogs.show();
     }
 
-    public void meetingEditDate() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
-        BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
-        Button btn_next = dialogView.findViewById(R.id.btn_next);
-        ImageView img_close = dialogView.findViewById(R.id.img_close);
-        CalendarView calender_view = dialogView.findViewById(R.id.calender);
-        calender_view.setMinDate(new Date().getTime());
-        selectedDate = DateFormat.format("yyyy-MM-dd", calender_view.getDate()).toString();
-        Log.d("NEW_DATE", selectedDate);
-        calender_view.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView arg0, int year, int month,
-                                            int date) {
-                month = month + 1;
-                // output to log cat **not sure how to format year to two places here**
-                String newDate = year+"-"+month+"-"+date;
-                Log.d("NEW_DATE", newDate);
-              //  Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
-                selectedDate = newDate;
-            }
-        });
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                meetingEditTime();
-            }
-        });
-        dialog.setContentView(dialogView);
-        dialog.show();
-
-
-    }
+//    public void meetingEditDate() {
+//        View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_date, null);
+//        BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), R.style.SheetDialog);
+//        Button btn_next = dialogView.findViewById(R.id.btn_next);
+//        ImageView img_close = dialogView.findViewById(R.id.img_close);
+//        CalendarView calender_view = dialogView.findViewById(R.id.calender);
+//        calender_view.setMinDate(new Date().getTime());
+//        selectedDate = DateFormat.format("yyyy-MM-dd", calender_view.getDate()).toString();
+//        Log.d("NEW_DATE", selectedDate);
+//        calender_view.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+//            @Override
+//            public void onSelectedDayChange(CalendarView arg0, int year, int month,
+//                                            int date) {
+//                month = month + 1;
+//                // output to log cat **not sure how to format year to two places here**
+//                String newDate = year+"-"+month+"-"+date;
+//                Log.d("NEW_DATE", newDate);
+//              //  Toast.makeText(getContext(),date+ "/"+month+"/"+year + "  "+arg0.getDate(),Toast.LENGTH_LONG).show();
+//                selectedDate = newDate;
+//            }
+//        });
+//        img_close.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//            }
+//        });
+//        btn_next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.dismiss();
+//                meetingEditTime();
+//            }
+//        });
+//        dialog.setContentView(dialogView);
+//        dialog.show();
+//
+//
+//    }
 
     public void meetingEditTime() {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_select_meeting_time, null);
@@ -1054,15 +1555,11 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
         dialog.setContentView(dialogView);
         dialog.show();
 
-
     }
 
 
     private void getResheduledMeeting() {
         try {
-            startTime = Utility.ConvertUserTimezoneToUTC(startTime);
-            endTime  = Utility.ConvertUserTimezoneToUTC(endTime);
-            Log.d(TAG, startTime + "  " + endTime);
             progressHUD = KProgressHUD.create(getActivity())
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                     .setLabel("Please wait")
@@ -1081,12 +1578,13 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
                         try {
                             Log.d(TAG,""+reasonPOJO.getMessage());
                             if (reasonPOJO.getOK()) {
-                                if (dialogEditSlot != null){
-                                    dialogEditSlot.dismiss();
+                                if (dialogDetails != null){
+                                    dialogDetails.dismiss();
                                 }
                                 // Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
                                 EventBus.getDefault().post(new EventBusPOJO(Utility.MEETING_CANCEL));
                                 dismiss();
+                                successDialogForReshedule();
                                 //  successDialog();
                             } else {
                                 Toast.makeText(getContext(), " "+reasonPOJO.getMessage(), Toast.LENGTH_SHORT).show();
@@ -1162,8 +1660,6 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
             Toast.makeText(getActivity(), "Please check internet connection", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     private void callMeeting(){
         HashMap<String, Object> meeting_join = new HashMap<String, Object>();
@@ -1318,4 +1814,25 @@ public class MeetingDetailsFragment extends BottomSheetDialogFragment {
 
     }
 
+    public void successDialogForReshedule() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.SheetDialog);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        final View view1 = layoutInflater.inflate(R.layout.dialog_meeting_reschedule_confirmed, null);
+        TextView label_close = view1.findViewById(R.id.label_close);
+        TextView label_title = view1.findViewById(R.id.label_title);
+
+        label_title.setText(getActivity().getResources().getText(R.string.msg_reshedule));
+        //    tv_msg.setText("Session Added Successfully.");
+        builder.setView(view1);
+        final AlertDialog dialogs = builder.create();
+        dialogs.setCancelable(false);
+        label_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+
+            }
+        });
+        dialogs.show();
+    }
 }

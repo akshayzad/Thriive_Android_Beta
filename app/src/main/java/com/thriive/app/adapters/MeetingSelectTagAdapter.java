@@ -47,14 +47,26 @@ public class MeetingSelectTagAdapter extends RecyclerView.Adapter<MeetingSelectT
     public void onBindViewHolder(final MeetingSelectTagAdapter.RecyclerAdapterHolder holder,int position) {
         String item  = arrayList.get(position);
         holder.txt_expertise.setText(item);
+        int j=0;
         for (int i = 0; i < matchList.size(); i++){
             if (item.equals(matchList.get(i))){
+                j++;
+            }
+            /*if (item.equals(matchList.get(i))){
                 holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_darkseagreen));
                 holder.txt_expertise.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
             } else {
                 holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_gray));
                 holder.txt_expertise.setTextColor(context.getResources().getColor(R.color.darkGrey));
-            }
+            }*/
+        }
+
+        if (j>0){
+            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_darkseagreen));
+            holder.txt_expertise.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
+        } else {
+            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_gray));
+            holder.txt_expertise.setTextColor(context.getResources().getColor(R.color.darkGrey));
         }
     }
 

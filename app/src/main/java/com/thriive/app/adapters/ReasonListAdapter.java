@@ -68,20 +68,15 @@ public class ReasonListAdapter extends RecyclerView.Adapter<ReasonListAdapter.Re
         Glide.with(context)
                 .load(sharedData.getStringData(SharedData.API_URL) +"reason_button/"+ item.getRowcode() + ".png")
                 .into(holder.image);
-//        if(currentItem == position){
-//            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_circle_tarcoto));
-//
-//        } else {
-//            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.background_expertise));
-//        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                ((MeetingRequestFragment) fragment ).getPersona(""+item.getReasonId(), ""+item.getReasonName());
+                ((MeetingRequestFragment) fragment ).get_l1_attrib(""+item.getReasonId(), ""+item.getReasonName(),
+                        sharedData.getStringData(SharedData.API_URL) +"reason_button/"+ item.getRowcode() + ".png");
             }
         });
-
     }
 
     @Override

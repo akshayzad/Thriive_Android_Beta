@@ -30,11 +30,13 @@ public class MeetingDomainAdapter extends RecyclerView.Adapter<MeetingDomainAdap
             ButterKnife.bind(this, itemView);
         }
     }
+
     public MeetingDomainAdapter(Context context, ArrayList<String> arrayList, ArrayList<String> meetingTag){
         this.context = context;
         this.arrayList = arrayList;
         this.matchList = meetingTag;
     }
+
     @Override
     public MeetingDomainAdapter.RecyclerAdapterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -47,15 +49,28 @@ public class MeetingDomainAdapter extends RecyclerView.Adapter<MeetingDomainAdap
     public void onBindViewHolder(final MeetingDomainAdapter.RecyclerAdapterHolder holder,int position) {
         String item  = arrayList.get(position);
         holder.txt_experience.setText(item);
+        int j=0;
         for (int i = 0; i < matchList.size(); i++){
             if (item.equals(matchList.get(i))){
+                j++;
+            }
+            /*if (item.equals(matchList.get(i))){
                holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
-                holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
+               holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
             } else {
                 holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_background_experience));
                 holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkGrey));
-            }
+            }*/
         }
+
+        if (j > 0){
+            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_select_experience));
+            holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkSeaGreen));
+        } else {
+            holder.layout_select.setBackground(context.getResources().getDrawable(R.drawable.outline_background_experience));
+            holder.txt_experience.setTextColor(context.getResources().getColor(R.color.darkGrey));
+        }
+
     }
 
     @Override

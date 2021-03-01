@@ -26,6 +26,6 @@
         android:textSize="@dimen/_15dp"
         android:padding="@dimen/_1dp"
         android:layout_weight="1"
-        android:fontFamily="@font/roboto_regular"
+        android:fontFamily="@font/roboto_medium"
         android:text="Borning Inc - 1 yea d r"></TextView>
     </LinearLayout>

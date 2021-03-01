@@ -11,7 +11,9 @@
     <string name="cancel">Cancel</string>
     <string name="join">Join</string>
     <string name="label_meeting_request">Who do you want to meet </string>
+    <string name="label_meeting_request_attribute_l1">Select the kind of partnership you are looking </string>
     <string name="label_meeting_request1">The business match you\'ve been waiting for is just a click away.</string>
+    <string name="label_meeting_request_persona">Who would you like to meet for your </string>
     <string name="request_meeting">Request a Meeting</string>
     <string name="close">Close</string>
     <string name="consulting">Consulting</string>
@@ -39,6 +41,8 @@
     <string name="meeting_preference">Meeting preference</string>
     <string name="agora_access_token">006ed22bc424c1d49d1af31bcb11d187009IABpItn8QF6UnUVYQrwBFKWkAYOmRCcPFn2TgvO9i9KrbaHYMoUAAAAAEAAShR76xzxsXwEAAQDGPGxf</string>
     <string name="meeting_request_success">Thank you. \n\nYour meeting is now confirmed.</string>
+    <string name="meeting_reschedule_msg">We understand that plans can change. Just be aware that you can only reschedule a confirmed meeting once.</string>
+    <string name="meeting_propose_success">Your proposed new time have now been sent for confirmation. \n\nExpect a notification within \n<b>12 hrs</b>.</string>
     <!--    <string name="rate_meeting">How relevant was your match with </string>-->
     <string name="rate_meeting">How was your meeting? </string>
     <!--    <string name="rate_meeting">How relevant was your match </string>-->
@@ -46,6 +50,7 @@
     <string name="thankyou">Thank you for your feedback. It helps us improve our platform so we can make sure that every meeting matters.</string>
     <string name="rateapptext">Please rate your experience with Thriive so far?</string>
     <string name="meeting_request">Your meeting request has been submitted.\n\nBusiness-changing meetings start here.</string>
+    <string name="meeting_request_close_msg">Are you sure you want to close the meeting request, you will lose all your selections.</string>
     <string name="mr_quide1">Thriive platform received your request</string>
     <string name="mr_quide2">Thriive AI-based people conector is doing the heavy lifting and finding you the best match</string>
     <string name="mr_guide4">"Thriive sets up a 1:1 match of highly releveant professionals. You should receive a notification soon "</string>
@@ -63,11 +68,25 @@
     <string name="waste_time">A waste of time</string>
     <string name="great_match">Great match!</string>
     <string name="tag_expertise">Please select the expertise of the </string>
-    <string name="tag_domain">Please select the domain of the </string>
+    <string name="tag_domain">Look up and select the domain of the </string>
+    <string name="msg_reshedule">Your meeting has been rescheduled </string>
+    <string name="tag_select_one_slot_msg">Limit of 1 time per day. Times are based on standard business hours in the region you’ve selected. Time is displayed in AEDT. </string>
+    <string name="tag_slot_limit_reached">You have already selected 3 slots.</string>
+    <string name="label_text_box">Please provide additional details of your requirement (160 characters) </string>
     <string name="awaiting">Awaiting Confirmation</string>
+    <string name="text_region_msg">We’re in Beta and building our users every day, but we’ll try our best to match you with your selected region.</string>
+    <string name="overview">Overview</string>
+    <string name="text_select_3_meeting_times">Select 3 preferred meeting dates with 1 time slot per day</string>
+    <string name="text_select_3_1_meeting_times">Meetings are 30 mins. Times are based on standard business hours in the region you’ve selected.</string>
+    <string name="text_select_4_meeting_times">Unfortunately , the match we found couldn\'t make your preferred time.Please select one of the alternate time slots, as proposed by your match:</string>
+    <string name="text_select_5_meeting_times">You’ve proposed the following alternate time slots. Now awaiting confirmation.</string>
+    <string name="text_select_6_meeting_times">Times are displayed in (GMT+11:00) Eastern Australia Time</string>
     <string name="tag_camera">Select From Camera</string>
+    <string name="tag_support">We understand everyone has different schedules. If you can’t make the provided times please reach out to the Thriive team at:</string>
+    <string name="tag_support_1">We’ll try our best to sort something out and make this match work!</string>
     <string name="tag_gallery">Select From Gallery</string>
     <string name="remove_photo">Remove Profile Photo</string>
+    <string name="toster_msg">Limit of 1 time per day. Times are based on standard business hours in the region you’ve selected. Time is displayed in AEDT.</string>
 
     <string name="crop_image_activity_title">Crop Image</string>
     <string name="crop_image_menu_rotate_left">Rotate counter clockwise</string>
@@ -113,6 +132,7 @@
     <string name="app_experience">Rate your experience with\nThriive</string>
     <string name="register">Don’t have an account? <u>Sign-up</u></string>
     <string name="expertise">Expertise</string>
+    <string name="my_specialization">Specialisation</string>
     <string name="update">Update</string>
     <string name="linkedin_progress_dialog_message">Loading, Please wait</string>
     <string name="skip">Skip</string>
@@ -145,4 +165,9 @@
     <string name="thriive">©Thriive 2020</string>
     <string name="forgot"><u>Forgot Password?</u></string>
     <string name="skip_underline"><u>SKIP</u></string>
+    <string name="string_circle"><html></html></string>
+
+    <string name="journey_title">Start your Journey</string>
+    <string name="journey_desc">As a startup entrepreneur in the Fintech domain we will help you in every step of your journey and set you off on the right path of success</string>
+
 </resources>

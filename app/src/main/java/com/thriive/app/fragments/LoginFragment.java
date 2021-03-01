@@ -177,7 +177,7 @@ public class LoginFragment extends BottomSheetDialogFragment {
                     } else {
                         is_remember = false;
                     }
-                    dismiss();
+//                    dismiss();
 
                     ((LoginActivity)getActivity()).getLogin(email, password, "custom", is_remember);
                    // getLogin();

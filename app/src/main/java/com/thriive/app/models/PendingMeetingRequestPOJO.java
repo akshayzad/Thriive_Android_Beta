@@ -59,6 +59,48 @@ public class PendingMeetingRequestPOJO {
         String requestDate;
         @SerializedName("meeting_label")
         private String meetingLabel;
+        @SerializedName("giver_email_id")
+        private String giver_email_id;
+        @SerializedName("requestor_email_id")
+        private String requestor_email_id;
+
+        @SerializedName("slot_list")
+        private List<MeetingDetailPOJO> slot_list = null;
+
+        @SerializedName("sel_meeting")
+        private SelMeetingPOJO sel_meeting;
+
+        public String getGiver_email_id() {
+            return giver_email_id;
+        }
+
+        public void setGiver_email_id(String giver_email_id) {
+            this.giver_email_id = giver_email_id;
+        }
+
+        public String getRequestor_email_id() {
+            return requestor_email_id;
+        }
+
+        public void setRequestor_email_id(String requestor_email_id) {
+            this.requestor_email_id = requestor_email_id;
+        }
+
+        public SelMeetingPOJO getSel_meeting() {
+            return sel_meeting;
+        }
+
+        public void setSel_meeting(SelMeetingPOJO sel_meeting) {
+            this.sel_meeting = sel_meeting;
+        }
+
+        public List<MeetingDetailPOJO> getSlot_list() {
+            return slot_list;
+        }
+
+        public void setSlot_list(List<MeetingDetailPOJO> slot_list) {
+            this.slot_list = slot_list;
+        }
 
         public List<String> getDomainTags() {
             return domainTags;
@@ -140,4 +182,6 @@ public class PendingMeetingRequestPOJO {
             this.meetingLabel = meetingLabel;
         }
     }
+
+
 }

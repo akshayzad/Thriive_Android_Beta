@@ -351,7 +351,7 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (adapter.count_selected > 2){
+                if (adapter.count_selected > 0){
 //                    Gson gson = new GsonBuilder().create();
 //                    JsonArray myCustomArray = gson.toJsonTree(adapter.getExpertiseLists()).getAsJsonArray();
 //

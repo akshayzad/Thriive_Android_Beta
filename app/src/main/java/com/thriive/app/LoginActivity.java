@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.LinkedInUser;
 import com.thriive.app.utilities.linkedinsdkutil.linkedinsdk.ui.linkedin_builder.LinkedInBuilder;
 import com.bumptech.glide.Glide;
@@ -172,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
 
         clevertapDefaultInstance = CleverTapAPI.getDefaultInstance(getApplicationContext());
 
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -267,9 +267,11 @@ public class LoginActivity extends AppCompatActivity {
         try {
             progressHUD = KProgressHUD.create(this)
                     .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+
                     .setLabel("Please wait")
                     .setCancellable(false)
                     .show();
+
             Call<BaseUrlPOJo> call = apiInterface.GetBaseUrl("application/json",
                     ""+Utility.BASEURL, Utility.getJsonEncode(LoginActivity.this));
             call.enqueue(new Callback<BaseUrlPOJo>() {
@@ -549,10 +551,10 @@ public class LoginActivity extends AppCompatActivity {
                                     if (loginPOJO.getReturnEntity() != null){
                                         Utility.saveLoginData(LoginActivity.this, loginPOJO.getReturnEntity());
 
-
+                                        String fcmRegId = FirebaseInstanceId.getInstance().getToken();
+                                        clevertapDefaultInstance.pushFcmRegistrationId(fcmRegId,true);
 
                                         HashMap<String, Object> profile = new HashMap<String, Object>();
-
                                         profile.put("Name", loginPOJO.getReturnEntity().getEntityName());
                                         profile.put("Identity", loginPOJO.getReturnEntity().getRowcode());
                                         profile.put("Email", loginPOJO.getReturnEntity().getEmailId());
@@ -560,7 +562,6 @@ public class LoginActivity extends AppCompatActivity {
                                         profile.put("Type", l_login_method);
                                         // clevertapDefaultInstance.pushProfile(profileUpdate);
                                         clevertapDefaultInstance.onUserLogin(profile);
-
 
                                         HashMap<String, Object> loginEvent = new HashMap<String, Object>();
                                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -936,4 +937,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
 }

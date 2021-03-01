@@ -1,6 +1,8 @@
 package com.thriive.app.api;
 
 import com.thriive.app.models.BaseUrlPOJo;
+import com.thriive.app.models.CommonAttributeL1POJO;
+import com.thriive.app.models.CommonAttributeL2POJO;
 import com.thriive.app.models.CommonCountryPOJO;
 import com.thriive.app.models.CommonDomainPOJO;
 import com.thriive.app.models.CommonEntityImagePOJO;
@@ -9,6 +11,7 @@ import com.thriive.app.models.CommonEntitySlotsPOJO;
 import com.thriive.app.models.CommonExpertisePOJO;
 import com.thriive.app.models.CommonHomePOJO;
 import com.thriive.app.models.CommonInterestsPOJO;
+import com.thriive.app.models.CommonMatchingPOJO;
 import com.thriive.app.models.CommonMeetingCountPOJO;
 import com.thriive.app.models.CommonMeetingListPOJO;
 import com.thriive.app.models.CommonMeetingPOJO;
@@ -18,17 +21,24 @@ import com.thriive.app.models.CommonObjectivesPOJO;
 import com.thriive.app.models.CommonPOJO;
 import com.thriive.app.models.CommonPersonaPOJO;
 import com.thriive.app.models.CommonReasonPOJO;
+import com.thriive.app.models.CommonRequestTimeSlots;
 import com.thriive.app.models.CommonRequesterPOJO;
 import com.thriive.app.models.CommonScheduleMeetingPOJO;
 import com.thriive.app.models.CommonStartMeetingPOJO;
 import com.thriive.app.models.ExpertiseBodyPOJO;
+import com.thriive.app.models.HomeDisplayPOJO;
 import com.thriive.app.models.IntrestsBodyPOJO;
 import com.thriive.app.models.LoginPOJO;
+import com.thriive.app.models.MeetingSlotBodyPOJO;
 import com.thriive.app.models.MetaListPOJO;
 import com.thriive.app.models.ObjectiveBodyPOJO;
 import com.thriive.app.models.PendingMeetingRequestPOJO;
+import com.thriive.app.models.SendProposeTimeBody;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import okhttp3.MultipartBody;
@@ -70,6 +80,17 @@ public interface APIInterface {
 //         "requestor_persona_name": "Entrepreneur",
 
 
+    @FormUrlEncoded
+    @POST
+    Call<HomeDisplayPOJO> getNewHome(@Url String url, @Header("Authorization") String authorization, @Field("rowcode") String rowcode, @Field("push_token") String push_token,
+                                @Field("time_zone_name") String time_zone_name, @Field("time_stamp") String time_stamp);
+
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonAttributeL1POJO> getAttributeL1(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
+                                          @Field("requestor_persona_id") int requestor_persona_id,
+                                          @Field("requestor_persona_name") String requestor_persona_name,@Field("reason_id") String reason_id);
 
     @FormUrlEncoded
     @POST
@@ -82,14 +103,20 @@ public interface APIInterface {
     @POST
     Call<CommonPersonaPOJO> getPersona(@Url String url,@Header("Authorization") String authorization,@Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
                                        @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
-                                       @Field("reason_id") String reason_id);
+                                       @Field("reason_id") String reason_id, @Field("l1_attrib_id") String l1_attrib_id);
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonAttributeL2POJO> getAttributeL2(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
+                                               @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
+                                               @Field("reason_id") String reason_id, @Field("l1_attrib_id") String l1_attrib_id, @Field("giver_persona_id") String persona_id);
 
    // api/MRCalls/get-meta-v2
    @FormUrlEncoded
    @POST
    Call<CommonMetaPOJO> getMetaList(@Url String url,@Header("Authorization") String authorization, @Field("requestor_id") String requestor_id, @Field("requestor_name") String requestor_name,
                                     @Field("requestor_persona_id") String requestor_persona_id, @Field("requestor_persona_name") String requestor_persona_name,
-                                    @Field("reason_id") String reason_id, @Field("giver_persona_id") String giver_persona_id);
+                                    @Field("reason_id") String reason_id, @Field("giver_persona_id") String giver_persona_id, @Field("l1_attrib_id") String l1_attrib_id, @Field("l2_attrib_id") String l2_attrib_id);
 
     @FormUrlEncoded
     @POST("api/MRCalls/get-meta-v2")
@@ -112,13 +139,33 @@ public interface APIInterface {
 
     @FormUrlEncoded
     @POST
-    Call<CommonPOJO> getSaveMeetingRequest(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") int requestor_id,
-                                           @Field("reason_id") String reason_id,
-                                           @Field("giver_persona_id") String giver_persona_id,
-                                           @Field("sel_domain_id") String sel_domain_id,
-                                           @Field("sel_sub_domain_id") String sel_sub_domain_id,
-                                           @Field("sel_expertise_id") String sel_expertise_id,
-                                           @Field("sel_country_id") String sel_country_id);
+    Call<CommonRequestTimeSlots> getTimeSlots(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") int requestor_id,
+                                  @Field("country_id") int country_id,
+                                  @Field("slot_date") String slot_date);
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonRequestTimeSlots> getTimeSlotsForGiver(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") int requestor_id,
+                                  @Field("giver_id") int giver_id,
+                                  @Field("slot_date") String slot_date);
+
+
+    @POST
+    @Headers({ "Content-Type: application/json;charset=UTF-8"})
+    Call<CommonMatchingPOJO> getSaveMeetingRequest(@Url String url, @Header("Authorization") String authorization, @Body MeetingSlotBodyPOJO meetingSlotBodyPOJO);
+
+
+    // @FormUrlEncoded
+//    @POST
+//    @Headers({ "Content-Type: application/json;charset=UTF-8"})
+//    Call<CommonMatchingPOJO> getSaveMeetingRequest(@Url String url, @Header("Authorization") String authorization, @Field("requestor_id") int requestor_id,
+//                                                   @Field("reason_id") String reason_id,
+//                                                   @Field("giver_persona_id") String giver_persona_id,
+//                                                   @Field("sel_domain_id") String sel_domain_id,
+//                                                   @Field("sel_sub_domain_id") String sel_sub_domain_id,
+//                                                   @Field("sel_expertise_id") String sel_expertise_id,
+//                                                   @Field("sel_country_id") String sel_country_id, @Field("l2_attrib_id") String l2_attrib_id
+//                                           , @Field("l1_attrib_id") String l1_attrib_id, @Field("req_text") String req_text, @Body MeetingSlotBodyPOJO meetingSlotBodyPOJO);
 
     @FormUrlEncoded
     @POST
@@ -142,9 +189,23 @@ public interface APIInterface {
     Call<CommonPOJO> getAcceptMeeting(@Url String url, @Header("Authorization") String authorization,
                                       @Field("meeting_code") String meeting_code,
                                       @Field("rowcode") String rowcode,
-                                      @Field("start_time") String start_time,
-                                      @Field("end_time") String end_time);
+                                      @Field("flag_giver_prop_time") boolean flag_giver_prop_time,
+                                      @Field("sel_meeting_slot_id") String sel_meeting_slot_id);
 
+
+    @POST
+    Call<CommonPOJO> getSendProposeNewTime(@Url String url, @Header("Authorization") String authorization, @Body SendProposeTimeBody timeBody);
+
+
+    @FormUrlEncoded
+    @POST
+    Call<CommonPOJO> getRequestorAction(@Url String url, @Header("Authorization") String authorization,
+                                      @Field("meeting_code") String meeting_code,
+                                      @Field("rowcode") String rowcode,
+                                      @Field("flag_req_accept_prop_time") boolean flag_req_accept_prop_time,
+                                      @Field("sel_meeting_slot_id") String sel_meeting_slot_id,
+                                        @Field("start_time") String start_time,
+                                        @Field("end_time") String end_time);
 
 
     @FormUrlEncoded

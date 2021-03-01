@@ -80,9 +80,9 @@ public class SchedulePagerAdapter extends PagerAdapter {
         ImageView iv_linkdin = view.findViewById(R.id.iv_linkdin);
         ImageView iv_email = view.findViewById(R.id.iv_email);
         ImageView iv_calender= view.findViewById(R.id.iv_calender);
-        TextView txt_tag = view.findViewById(R.id.txt_tag);
-        txt_tag.setText("Expertise");
-        txt_reason.setText("Meeting for "+ item.getMeetingReason());
+        //TextView txt_tag = view.findViewById(R.id.txt_tag);
+        //txt_tag.setText("Expertise");
+        txt_reason.setText("For "+ item.getMeetingReason());
         txt_dateTime.setText(Utility.getScheduledMeetingDate(Utility.ConvertUTCToUserTimezone(item.getPlanStartTime()),
                 Utility.ConvertUTCToUserTimezone(item.getPlanEndTime())));
         FlexboxLayoutManager gridLayout = new FlexboxLayoutManager(context);
@@ -101,6 +101,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
             ArrayList<String> array1 = new ArrayList<>();
             // array1.addAll(meetingListPOJO.getMeetingTag());
             array1.addAll(item.getGiverDomainTags());
+            array1.addAll(item.getGiverSubDomainTags());
             array1.addAll(item.getGiverExpertiseTags());
 
 
@@ -120,18 +121,34 @@ public class SchedulePagerAdapter extends PagerAdapter {
             combine_array.clear();
             combine_array.addAll(hs);
             ArrayList<String> final_array = new ArrayList<>();
-            for (int i =0; i< combine_array.size(); i++)
-            {
-                if (i <= 3){
+            for (int i =0; i< combine_array.size(); i++) {
+                if (i < 2){
                     final_array.add(combine_array.get(i));
                 }
-
             }
 
-            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
+            ArrayList<String> array2 = new ArrayList<>();
+            if (item.getMeetingExpertise()!= null) {
+                array2.add(item.getMeetingExpertise());
+            }
+            if (item.getMeetingDomain()!= null) {
+                array2.add(item.getMeetingDomain());
+            }
+            if (item.getMeetingSubDomain()!= null) {
+                array2.add(item.getMeetingSubDomain());
+            }
 
+            ArrayList<String> meeting_tag_array = new ArrayList<>();
+            for (int i = 0; i < array2.size(); i++){
+                if (!array2.get(i).equals("")){
+                    meeting_tag_array.add(array2.get(i));
+                }
+            }
 
-            txt_giverName.setText("with "+item.getGiverName());
+            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) meeting_tag_array));
+//            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
+
+            txt_giverName.setText(item.getGiverName());
             sharedData.addStringData(SharedData.CALLING_NAME, item.getGiverName());
             try{
                 if (item.getGiverDesignationTags().size() > 0){
@@ -173,7 +190,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         .into(img_giver);
             }
         } else {
-            txt_giverName.setText("with " +item.getRequestorName());
+            txt_giverName.setText(item.getRequestorName());
 
 //
 //            ArrayList <String> arrayList = new ArrayList<>();
@@ -185,6 +202,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
             ArrayList<String> array1 = new ArrayList<>();
             // array1.addAll(meetingListPOJO.getMeetingTag());
             array1.addAll(item.getRequestorDomainTags());
+            array1.addAll(item.getRequestorSubDomainTags());
             array1.addAll(item.getRequestorExpertiseTags());
 //
             ArrayList<String> combine_array = new ArrayList<>();
@@ -200,14 +218,31 @@ public class SchedulePagerAdapter extends PagerAdapter {
             ArrayList<String> final_array = new ArrayList<>();
             for (int i =0; i< combine_array.size(); i++)
             {
-                if (i <= 3){
+                if (i < 2){
                     final_array.add(combine_array.get(i));
                 }
-
             }
 
+            ArrayList<String> array2 = new ArrayList<>();
+            if (item.getMeetingExpertise()!= null) {
+                array2.add(item.getMeetingExpertise());
+            }
+            if (item.getMeetingDomain()!= null) {
+                array2.add(item.getMeetingDomain());
+            }
+            if (item.getMeetingSubDomain()!= null) {
+                array2.add(item.getMeetingSubDomain());
+            }
 
-            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
+            ArrayList<String> meeting_tag_array = new ArrayList<>();
+            for (int i = 0; i < array2.size(); i++){
+                if (!array2.get(i).equals("")){
+                    meeting_tag_array.add(array2.get(i));
+                }
+            }
+
+            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) meeting_tag_array));
+//            rv_tags.setAdapter(new MeetingDomainAdapter(context, final_array, (ArrayList<String>) item.getMeetingTag()));
 
             sharedData.addStringData(SharedData.CALLING_NAME, item.getRequestorName());
             try {
@@ -245,6 +280,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                         .into(img_giver);
             }
         }
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,6 +292,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 //  (MeetingsFragment).callFragment();
             }
         });
+
         img_giver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -267,15 +304,16 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 //  (MeetingsFragment).callFragment();
             }
         });
+
         layout_avail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
-                    ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getGiverPersonaTags().get(0),
+                    ((MeetingsFragment) fragment).getMeetingSlot(item,item.getMeetingCode(), item.getGiverPersonaTags().get(0),
                             item.getMeetingReason(), item.getGiverCountryName(), item.getRequestorCountryName(), "requestor");
 
                 } else {
-                    ((MeetingsFragment) fragment).getMeetingSlot(item.getMeetingCode(), item.getRequestorPersonaTags().get(0),
+                    ((MeetingsFragment) fragment).getMeetingSlot(item,item.getMeetingCode(), item.getRequestorPersonaTags().get(0),
                             item.getMeetingReason(), item.getRequestorCountryName() , item.getGiverCountryName(), "giver");
 
                 }
@@ -319,6 +357,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 }
             }
         });
+
         iv_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -382,6 +421,7 @@ public class SchedulePagerAdapter extends PagerAdapter {
                 }
             }
         });
+
         iv_linkdin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -432,8 +472,59 @@ public class SchedulePagerAdapter extends PagerAdapter {
 
                     }
                 }
+
+
+                if (item.getRequestorId().equals(sharedData.getIntData(SharedData.USER_ID))) {
+                    if (item.getGiverLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        try {
+                            HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                            visitEvent.put("meeting_request_id", item.getMeetingCode());
+                            cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
+
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getGiverLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getGiverLinkedinUrl()));
+                                context.startActivity(intent);
+                            } catch (Exception e1) {
+                            }
+                        }
+
+                    }
+
+                } else {
+                    if (item.getRequestorLinkedinUrl().equals("")){
+                        Toast.makeText(context, "Sorry linkedin not found", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        HashMap<String, Object> visitEvent = new HashMap<String, Object>();
+                        visitEvent.put("meeting_request_id", item.getMeetingCode());
+                        cleverTap.pushEvent(Utility.Clicked_Matched_Users_LinkedIn,visitEvent);
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getRequestorLinkedinUrl()));
+                            intent.setPackage("com.linkedin.android");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                        } catch (Exception e) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(item.getRequestorLinkedinUrl()));
+                                context.startActivity(intent);
+                            } catch (Exception e1) {
+                            }
+                        }
+                    }
+                }
             }
         });
+
         iv_calender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

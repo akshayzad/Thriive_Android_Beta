@@ -73,6 +73,15 @@ public class CommonMetaPOJO {
         private List<ExpertiseListPOJO> expertiseList;
         @SerializedName("flag_expertise")
         private Boolean flagExpertise;
+        @SerializedName("flag_domain_optional")
+        private Boolean flag_domain_optional;
+        @SerializedName("flag_expertise_optional")
+        private Boolean flag_expertise_optional;
+        @SerializedName("flag_req_text")
+        private Boolean flag_req_text;
+        @SerializedName("helper_text")
+        private String helper_text;
+
 
         public Integer getRequestorId() {
             return requestorId;
@@ -208,6 +217,38 @@ public class CommonMetaPOJO {
 
         public void setFlagExpertise(Boolean flagExpertise) {
             this.flagExpertise = flagExpertise;
+        }
+
+        public Boolean getFlag_domain_optional() {
+            return flag_domain_optional;
+        }
+
+        public void setFlag_domain_optional(Boolean flag_domain_optional) {
+            this.flag_domain_optional = flag_domain_optional;
+        }
+
+        public Boolean getFlag_expertise_optional() {
+            return flag_expertise_optional;
+        }
+
+        public void setFlag_expertise_optional(Boolean flag_expertise_optional) {
+            this.flag_expertise_optional = flag_expertise_optional;
+        }
+
+        public Boolean getFlag_req_text() {
+            return flag_req_text;
+        }
+
+        public void setFlag_req_text(Boolean flag_req_text) {
+            this.flag_req_text = flag_req_text;
+        }
+
+        public String getHelper_text() {
+            return helper_text;
+        }
+
+        public void setHelper_text(String helper_text) {
+            this.helper_text = helper_text;
         }
     }
 }

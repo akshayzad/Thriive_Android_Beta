@@ -74,6 +74,17 @@ public class CommonPersonaPOJO {
         @SerializedName("flag_expertise")
         private Boolean flagExpertise;
 
+        @SerializedName("persona_screen_title")
+        private String persona_screen_title;
+
+        public String getPersona_screen_title() {
+            return persona_screen_title;
+        }
+
+        public void setPersona_screen_title(String persona_screen_title) {
+            this.persona_screen_title = persona_screen_title;
+        }
+
         public Integer getRequestorId() {
             return requestorId;
         }

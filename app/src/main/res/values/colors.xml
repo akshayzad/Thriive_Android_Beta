@@ -4,14 +4,15 @@
     <color name="colorPrimaryDark">#2c2c52</color>
     <color name="colorAccent">#d4583d</color>
 
-<!--    <color name="colorGrey">#B9B4B4</color>-->
-<!--    <color name="colorWhite">#ffffff</color>-->
-<!--    <color name="colorBlack">#000000</color>-->
+    <color name="colorGrey">#B9B4B4</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
 
     <color name="paleGrey60">#9AEBF5F3</color>
     <color name="darkSeaGreen">#108568</color>
     <color name="pale48">#D0FFF1DE</color>
     <color name="butterscotch">#FBB04C</color>
+    <color name="butterscotchNew">#FAB04B</color>
     <color name="sienna">#A46715</color>
     <color name="slateGrey">#68686F</color>
     <color name="white50">#99FFFFFF</color>
@@ -29,6 +30,7 @@
     <color name="whiteThree">#F5F5F5</color>
 
     <color name="pinkishGreyThree">#D0C8B9</color>
+    <color name="pinkishGreyThree1">#00000029</color>
     <color name="space_background_color">#757575</color>
     <color name="space_transparent">#00000000</color>
     <color name="space_white">#ffffff</color>
@@ -48,13 +50,16 @@
     <color name="pinkishGreyTwo">#CACACA</color>
     <color name="white78">#C7FFFFFF</color>
     <color name="beige">#1FFBB04C</color>
+    <color name="new_grey">#BDBCBD</color>
 <!--    LinkedIn - 1B64BE-->
 <!--    Gmail - CE593F-->
 <!--    Email - F8AE4D-->
     <color name="blue80">#1B64BE</color>
+    <color name="terracota_40">#66D4583D</color>
     <color name="terracota80">#CE593F</color>
     <color name="butterscotch80">#F8AE4D</color>
     <color name="white90">#E6FFFFFF</color>
+    <color name="black_01">#231F20</color>
 
     <array name="view_dot_active">
         <item>@color/butterscotch</item>
@@ -82,4 +87,22 @@
         <item>@color/whiteTwo</item>
         <item>@color/whiteTwo</item>
     </array>
+
+    <color name="image_item_selected_for_dots">#D4583D</color>
+    <color name="image_item_unselected_for_dots">#CE9B8F</color>
+
+    <color name="color_requests_background">#F7F7F7</color>
+    <color name="card_color_dark">#3D393A</color>
+    <color name="card_accent">#D86B54</color>
+    <color name="card_accent_85">#D9D4583D</color>
+    <color name="featured_obj_bg_pink">#F7EBE8</color>
+    <color name="featured_obj_bg_cascade">#E7F1EE</color>
+    <color name="featured_obj_bg_gray">#E3E3E3</color>
+    <color name="featured_obj_txt_bg_terracota">#D9D4583D</color>
+    <color name="featured_obj_txt_bg_yellow">#D9FBB04C</color>
+    <color name="featured_obj_txt_bg_black">#D9231F20</color>
+    <color name="next_meeting_tag">#5A5A5A</color>
+
+    <color name="txt_tag">#2B2B2F</color>
+    <color name="color_bg_tag">#C3C3C3</color>
 </resources>

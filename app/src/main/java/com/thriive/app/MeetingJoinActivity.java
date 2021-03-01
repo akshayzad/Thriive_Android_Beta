@@ -287,8 +287,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mRemoteView = null;
     }
 
-
-
     private void  onRemoteVideoState(int state){
         runOnUiThread(new Runnable() {
             @Override
@@ -434,7 +432,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
         mSpeakerBtn = findViewById(R.id.btn_speaker);
         mVideoBtn = findViewById(R.id.btn_video);
     }
-
 
 
     public boolean checkSelfPermission(String permission, int requestCode) {
@@ -715,7 +712,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -783,7 +779,6 @@ public class MeetingJoinActivity extends AppCompatActivity {
 
         dialogs.show();
     }
-
 
     private void getMeetingEnd() {
         NetworkInfo networkInfo = checkInternet(MeetingJoinActivity.this);

@@ -23,8 +23,8 @@
                 android:layout_marginBottom="@dimen/_5dp"
                 android:src="@drawable/ic_close"></ImageView>
             <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_10dp"
                 android:src="@drawable/meeting_cancel"></ImageView>
@@ -121,7 +121,7 @@
                 android:gravity="center"
                 android:textColor="#9A9A9A"
                 android:layout_margin="@dimen/_10dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:text="Remember - only one cancellation is allowed each month." />
 
 

@@ -41,7 +41,7 @@ public class CommonWebviewActivity extends AppCompatActivity {
                 .setCancellable(false);
         if (title.equals(Utility.TERMS)){
             label_name.setText(""+Utility.TERMS);
-            webView.loadUrl("https://thriive.app/terms-of-service/");
+            webView.loadUrl("https://thriive.app/terms-service.html");
             webView.getSettings().setJavaScriptEnabled(true);
 
         }else if (title.equals(Utility.REGISTER)){
@@ -50,7 +50,7 @@ public class CommonWebviewActivity extends AppCompatActivity {
             webView.getSettings().setJavaScriptEnabled(true);
         } else {
             label_name.setText(""+Utility.PRIVACY_POLICY);
-            webView.loadUrl("https://thriive.app/privacy-policy/");
+            webView.loadUrl("https://thriive.app/privacy-policy.html");
             webView.getSettings().setJavaScriptEnabled(true);
 
         }

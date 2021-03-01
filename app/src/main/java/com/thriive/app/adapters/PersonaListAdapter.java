@@ -1,6 +1,7 @@
 package com.thriive.app.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +32,14 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
     private ArrayList<PersonaListPOJO> personaList;
     private int currentItem = -1;
     private SharedData sharedData;
+    String hexCode = "";
 
     public static class RecyclerAdapterHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.txt_reasonName)
+        @BindView(R.id.text_l1_attrib_name)
         TextView txt_reasonName;
-        @BindView(R.id.image)
-        ImageView image;
+        @BindView(R.id.text_hexCode)
+        TextView text_hexCode;
+
 
         public RecyclerAdapterHolder(View itemView) {
             super(itemView);
@@ -45,17 +48,18 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
     }
 
 
-    public PersonaListAdapter(Context context, Fragment fragment, ArrayList<PersonaListPOJO> personaList) {
+    public PersonaListAdapter(Context context, Fragment fragment, ArrayList<PersonaListPOJO> personaList, String hexCode) {
         this.context = context;
         this.fragment = fragment;
         this.personaList = personaList;
+        this.hexCode = hexCode;
         sharedData = new SharedData(context);
     }
 
     @Override
     public PersonaListAdapter.RecyclerAdapterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_reason_list, parent, false);
+                .inflate(R.layout.item_attrib_l1, parent, false);
 
         return new PersonaListAdapter.RecyclerAdapterHolder(itemView);
     }
@@ -64,17 +68,18 @@ public class PersonaListAdapter extends RecyclerView.Adapter<PersonaListAdapter.
     public void onBindViewHolder(final PersonaListAdapter.RecyclerAdapterHolder holder, int position) {
         PersonaListPOJO item = personaList.get(position);
         holder.txt_reasonName.setText(item.getPersonaName());
-    //    holder.txt_reasonName.setVisibility(View.VISIBLE);
-        Glide.with(context)
-                .load(sharedData.getStringData(SharedData.API_URL) +"persona_button/"+
-                        item.getRowcode() + ".png" )
-                .into(holder.image);
+        if (!hexCode.equals("")){
+            holder.text_hexCode.setBackgroundColor(Color.parseColor(hexCode));
+        }
+
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
                // ((MeetingRequestFragment) fragment).reason_id = "" + item.getReasonId();
-                ((MeetingRequestFragment) fragment).getMetaDomain("" + item.getPersonaId(), ""+item.getPersonaName());
+                //((MeetingRequestFragment) fragment).getMetaDomain("" + item.getPersonaId(), ""+item.getPersonaName());
+                ((MeetingRequestFragment) fragment).getAttributeL2("" + item.getPersonaId(), ""+item.getPersonaName());
             }
         });
 

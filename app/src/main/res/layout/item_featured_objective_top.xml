@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="6dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    android:background="@color/featured_obj_bg_pink"
+    android:layout_marginTop="@dimen/_10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_featured_objectives"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/featured_obj_bg_cascade"
+        android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginBottom="@dimen/_11dp">
+
+        <ImageView
+            android:id="@+id/img_featured_obj"
+            android:layout_width="250dp"
+            android:layout_height="143dp"
+            android:src="@drawable/img_featured_obj_1"/>
+
+        <com.thriive.app.utilities.BoundedLinearLayout
+            android:id="@+id/layout_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bounded_width="265dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="92dp"
+            android:layout_gravity="bottom|end"
+            android:background="@color/card_accent_85"
+            android:padding="@dimen/_13dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/card_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_15dp"
+                android:text="Keen at meeting someone for Partnership?"/>
+
+            <TextView
+                android:id="@+id/card_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/_11dp"
+                android:text="Thriive will connect you with a seasoned startup professional for tech integration"/>
+
+        </com.thriive.app.utilities.BoundedLinearLayout>
+
+    </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView >

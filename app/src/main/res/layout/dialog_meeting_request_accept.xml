@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/_20dp">
+    android:background="@drawable/rounded_white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/_20dp"
+        android:background="@drawable/rounded_white"
         android:layout_height="wrap_content">
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -13,11 +15,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_white"
                 android:orientation="vertical"
                 android:layout_margin="@dimen/_10dp">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/img_back"
+                        android:layout_width="@dimen/_25dp"
+                        android:layout_height="@dimen/_25dp"
+                        android:layout_weight="0"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginTop="@dimen/_15dp"
+                        android:visibility="gone"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_gravity="left"
+                        android:src="@drawable/image_back"></ImageView>
                     <ImageView
                         android:id="@+id/img_close"
                         android:layout_width="@dimen/_30dp"
@@ -26,20 +40,64 @@
                         android:layout_alignParentRight="true"
                         android:layout_margin="@dimen/_10dp"
                         android:layout_gravity="right"
-                        android:src="@drawable/ic_close"></ImageView>
+                        android:src="@drawable/ic_close">
+                    </ImageView>
                     <TextView
                         android:id="@+id/label_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_bold"
-                        android:textSize="@dimen/_18dp"
+                        android:textSize="@dimen/_17dp"
                         android:layout_centerHorizontal="true"
                         android:layout_centerInParent="true"
                         android:textAlignment="center"
                         android:padding="@dimen/_10dp"
                         android:textColor="@color/darkGreyBlue"
-                        android:text="Meeting Request Detail" />
+                        android:text="New Meeting Request" />
 
+                </RelativeLayout>
+
+                <LinearLayout
+                android:id="@+id/layout_step1"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="80dp"
+                        android:layout_height="@dimen/_25dp"
+                        android:orientation="horizontal"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/background_timer_bubble"
+                        android:layout_margin="@dimen/_10dp">
+
+                        <ImageView
+                            android:id="@+id/img_timer"
+                            android:layout_width="@dimen/_15dp"
+                            android:layout_height="@dimen/_15dp"
+                            android:layout_marginLeft="@dimen/_3dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/pending_timer">
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/label_timer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:textSize="@dimen/_12dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginBottom="1dp"
+                            android:textColor="@color/space_white"
+                            android:maxLength="8"
+                            android:text="00:00" />
+                    </LinearLayout>
 
                 </RelativeLayout>
 
@@ -47,18 +105,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="@dimen/_10dp"
-                    android:layout_margin="@dimen/_5dp"
+                    android:layout_margin="@dimen/_10dp"
                     app:cardElevation="@null"
-                    app:cardBackgroundColor="@color/beige"
-                    >
+                    app:cardBackgroundColor="@color/beige">
+                    <TextView
+                        android:layout_width="6dp"
+                        android:visibility="visible"
+                        android:layout_height="match_parent"
+                        android:background="@color/butterscotchNew"></TextView>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/_5dp"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10dp"
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:orientation="horizontal">
@@ -84,7 +148,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/roboto_medium"
-                                    android:textSize="@dimen/_18dp"
+                                    android:textSize="@dimen/_16dp"
                                     android:padding="1dp"
                                     android:textColor="@color/darkGreyBlue"
                                     android:text="Ashish Ashraful" />
@@ -127,7 +191,7 @@
                             android:text="@string/expertise"
                             android:textSize="@dimen/_15dp"
                             android:layout_marginTop="@dimen/_10dp"
-                            android:layout_marginLeft="@dimen/_10dp"
+                            android:layout_marginLeft="@dimen/_15dp"
                             android:layout_marginRight="@dimen/_10dp"
                             android:textColor="@color/darkGreyBlue"
                             android:fontFamily="@font/roboto_regular"></TextView>
@@ -136,9 +200,11 @@
                             android:id="@+id/rv_expertise"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_5dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_marginBottom="@dimen/_5dp"
+                            android:layout_marginEnd="@dimen/_5dp"
+                            android:layout_marginStart="@dimen/_15dp"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
-
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -161,7 +227,7 @@
                     android:id="@+id/rv_experience"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5dp"
+                    android:layout_margin="@dimen/_10dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
 
                 <TextView
@@ -182,6 +248,33 @@
                     android:layout_margin="@dimen/_10dp"
                     android:textAlignment="center"
                     android:text="Meeting for fundraising" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_meetin_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+
+                <TextView
+                    android:id="@+id/txt_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:layout_marginTop="@dimen/_10dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="@dimen/_20dp"
+                    android:layout_marginRight="@dimen/_20dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/default_inactive_item_color"
+                    android:textSize="@dimen/_12dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text=""
+                    android:layout_gravity="center">
+                </TextView>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -189,8 +282,8 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:layout_margin="@dimen/_10dp">
+
                     <LinearLayout
-                        android:id="@+id/decline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -198,14 +291,25 @@
                         android:layout_marginLeft="@dimen/_5dp"
                         android:layout_marginRight="@dimen/_5dp"
                         android:orientation="vertical">
-                        <ImageButton
-                            android:id="@+id/img_decline"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:background="@drawable/decline_mr"
+                        <LinearLayout
+                            android:id="@+id/decline"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
                             android:layout_gravity="center"
-                            android:layout_margin="@dimen/_5dp"
-                            ></ImageButton>
+                            android:gravity="center"
+                            android:background="@drawable/bg_reject_enable"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:orientation="vertical">
+                            <ImageButton
+                                android:id="@+id/img_decline"
+                                android:layout_width="@dimen/_30dp"
+                                android:layout_height="@dimen/_30dp"
+                                android:background="@drawable/reject_icon"
+                                android:layout_gravity="center"
+                                android:layout_margin="@dimen/_5dp"
+                                ></ImageButton>
+                        </LinearLayout>
                         <TextView
                             android:id="@+id/txt_10"
                             android:layout_width="wrap_content"
@@ -213,29 +317,42 @@
                             android:fontFamily="@font/roboto_regular"
                             android:textSize="@dimen/_14dp"
                             android:layout_gravity="center"
+                            android:visibility="visible"
                             android:gravity="center"
+                            android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginLeft="@dimen/_20dp"
                             android:layout_marginRight="@dimen/_20dp"
                             android:textColor="@color/terracota"
-                            android:text="Decline" />
-
+                            android:text="Reject" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:id="@+id/accept"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:layout_marginRight="@dimen/_5dp"
                         android:layout_marginLeft="@dimen/_5dp"
+                        android:layout_marginRight="@dimen/_5dp"
                         android:orientation="vertical">
-                        <ImageButton
-                            android:id="@+id/img_accept"
-                            android:layout_width="55dp"
-                            android:layout_height="55dp"
-                            android:background="@drawable/accept_mr"
-                            android:layout_margin="@dimen/_5dp"
-                            android:layout_gravity="center"></ImageButton>
+                        <LinearLayout
+                            android:id="@+id/accept"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:background="@drawable/bg_accept_enable"
+                            android:layout_marginRight="@dimen/_5dp"
+                            android:layout_marginLeft="@dimen/_5dp"
+                            android:orientation="vertical">
+                            <ImageButton
+                                android:id="@+id/img_accept"
+                                android:layout_width="@dimen/_30dp"
+                                android:layout_height="@dimen/_30dp"
+                                android:background="@drawable/accept_icon"
+                                android:layout_margin="@dimen/_5dp"
+                                android:layout_gravity="center"></ImageButton>
+
+                        </LinearLayout>
                         <TextView
                             android:id="@+id/txt_11"
                             android:layout_width="wrap_content"
@@ -244,16 +361,466 @@
                             android:textSize="@dimen/_14dp"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:layout_marginTop="@dimen/_5dp"
                             android:layout_marginRight="@dimen/_20dp"
                             android:layout_marginLeft="@dimen/_20dp"
                             android:textColor="@color/darkSeaGreen"
                             android:text="Accept" />
                     </LinearLayout>
 
+                </LinearLayout>
+
+            </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_step2"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Requestor Preferred Time Slots"
+                        android:gravity="center"
+                        android:textColor="@color/darkGreyBlue"
+                        android:textSize="@dimen/_20dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Select your preferred slot:"
+                        android:gravity="center"
+                        android:textColor="@color/darkGreyBlue"
+                        android:textSize="@dimen/_16dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:layout_marginTop="100dp"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:layout_marginRight="@dimen/_15dp"
+                        android:layout_marginBottom="@dimen/_10dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_slots"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginTop="100dp"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginBottom="100dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:id="@+id/layout_decline_step2"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:background="@drawable/bg_reject_enable"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:orientation="vertical">
+                                <ImageButton
+                                    android:id="@+id/img_decline_step2"
+                                    android:layout_width="@dimen/_30dp"
+                                    android:layout_height="@dimen/_30dp"
+                                    android:background="@drawable/reject_icon"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/_5dp"
+                                    ></ImageButton>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textSize="@dimen/_14dp"
+                                android:layout_gravity="center"
+                                android:visibility="visible"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginLeft="@dimen/_20dp"
+                                android:layout_marginRight="@dimen/_20dp"
+                                android:textColor="@color/terracota"
+                                android:text="Reject" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:id="@+id/layout_propose_step2"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:background="@drawable/bg_propose_enable"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:orientation="vertical">
+                                <ImageButton
+                                    android:id="@+id/img_propose_step"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:background="@drawable/propose_new_time"
+                                    android:backgroundTint="#FAB04B"
+                                    android:layout_margin="@dimen/_5dp"
+                                    android:layout_gravity="center">
+                                </ImageButton>
+
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textSize="@dimen/_14dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_20dp"
+                                android:layout_marginLeft="@dimen/_20dp"
+                                android:textColor="#FBB04C"
+                                android:text="Propose New Time" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_accept_disable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:id="@+id/layout_accept_step2"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:background="@drawable/bg_accept_disable"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:orientation="vertical">
+                                <ImageButton
+                                    android:id="@+id/img_accept_step2"
+                                    android:layout_width="@dimen/_30dp"
+                                    android:layout_height="@dimen/_30dp"
+                                    android:background="@drawable/accept_icon"
+                                    android:backgroundTint="#D2E5E0"
+                                    android:layout_margin="@dimen/_5dp"
+                                    android:layout_gravity="center"></ImageButton>
+
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textSize="@dimen/_14dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_20dp"
+                                android:layout_marginLeft="@dimen/_20dp"
+                                android:textColor="#D2E5E0"
+                                android:text="Confirm" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_accept_enable"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:background="@drawable/bg_accept_enable"
+                                android:layout_marginRight="@dimen/_5dp"
+                                android:layout_marginLeft="@dimen/_5dp"
+                                android:orientation="vertical">
+                                <ImageButton
+                                    android:id="@+id/img_accept_step2_enable"
+                                    android:layout_width="@dimen/_30dp"
+                                    android:layout_height="@dimen/_30dp"
+                                    android:background="@drawable/accept_icon"
+                                    android:backgroundTint="@color/darkSeaGreen"
+                                    android:layout_margin="@dimen/_5dp"
+                                    android:layout_gravity="center"></ImageButton>
+
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textSize="@dimen/_14dp"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:layout_marginTop="@dimen/_5dp"
+                                android:layout_marginRight="@dimen/_20dp"
+                                android:layout_marginLeft="@dimen/_20dp"
+                                android:textColor="@color/darkSeaGreen"
+                                android:text="Confirm" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_step3"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/img_info"
+                            android:layout_width="16dp"
+                            android:layout_height="27dp"
+                            android:layout_marginTop="@dimen/_5dp"
+                            android:layout_weight="0"
+                            android:src="@drawable/info" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Propose new time"
+                            android:layout_marginLeft="@dimen/_10dp"
+                            android:gravity="center"
+                            android:textColor="@color/darkGreyBlue"
+                            android:textSize="@dimen/_20dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text_please_select_3_slots"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/_10dp"
+                        android:layout_marginTop="@dimen/_20dp"
+                        android:visibility="visible"
+                        android:layout_marginLeft="@dimen/_10dp"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Select 3 of your preferred meeting times. Limit of 1 time per day. All meetings are 30 mins in duration."
+                        android:gravity="center"
+                        android:textColor="@color/darkGreyBlue"
+                        android:textSize="@dimen/_15dp" />
+
+                    <TextView
+                        android:id="@+id/txt_toaster"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="italic"
+                        android:textSize="@dimen/_15dp"
+                        android:layout_marginTop="@dimen/_10dp"
+                        android:layout_marginRight="@dimen/_20dp"
+                        android:layout_marginLeft="@dimen/_20dp"
+                        android:padding="@dimen/_15dp"
+                        android:background="@drawable/background_bubble"
+                        android:visibility="gone"
+                        android:text="@string/toster_msg"></TextView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/_20dp"
+                        android:layout_marginLeft="@dimen/_15dp"
+                        android:layout_marginRight="@dimen/_15dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_time_slots"
+                            android:layout_width="wrap_content"
+                            android:layout_height="110dp"
+                            android:visibility="visible">
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="@dimen/_40dp"
+                        android:layout_height="wrap_content">
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardview_time_slots"
+                            android:layout_width="match_parent"
+                            android:layout_height="350dp"
+                            app:cardBackgroundColor="@color/space_white"
+                            android:layout_alignParentBottom="true"
+                            app:cardPreventCornerOverlap="true"
+                            app:cardElevation="2dp"
+                            android:visibility="visible"
+                            android:layout_marginTop="@dimen/_15dp"
+                            android:outlineSpotShadowColor="@color/pale48">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_height="match_parent">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:orientation="vertical"
+                                    android:layout_height="wrap_content">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:gravity="center"
+                                        android:orientation="horizontal"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:layout_height="wrap_content">
+
+                                        <ImageView
+                                            android:id="@+id/img_backward"
+                                            android:layout_width="30dp"
+                                            android:layout_height="30dp"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:layout_margin="@dimen/_30dp"
+                                            android:src="@drawable/image_back">
+                                        </ImageView>
+
+                                        <LinearLayout
+                                            android:id="@+id/layout_circle"
+                                            android:layout_width="wrap_content"
+                                            android:gravity="center"
+                                            android:background="@drawable/bg_circle"
+                                            android:orientation="vertical"
+                                            android:layout_height="wrap_content">
+                                            <TextView
+                                                android:id="@+id/txt_year"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="@font/roboto_light"
+                                                android:textSize="@dimen/_12dp"
+                                                android:textColor="@color/space_white"
+                                                android:text="2020" />
+                                            <TextView
+                                                android:id="@+id/txt_month"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="@font/roboto_medium"
+                                                android:textSize="@dimen/_18dp"
+                                                android:textColor="@color/space_white"
+                                                android:text="18 Nov" />
+                                            <TextView
+                                                android:id="@+id/txt_day"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:fontFamily="@font/roboto_regular"
+                                                android:textSize="@dimen/_16dp"
+                                                android:textColor="@color/space_white"
+                                                android:text="Mon" />
+                                        </LinearLayout>
+
+                                        <ImageView
+                                            android:id="@+id/img_forward"
+                                            android:layout_width="@dimen/_30dp"
+                                            android:layout_height="@dimen/_30dp"
+                                            android:layout_margin="@dimen/_30dp"
+                                            android:layout_alignParentRight="true"
+                                            android:layout_alignParentBottom="true"
+                                            android:src="@drawable/forward_icon"></ImageView>
+                                    </LinearLayout>
+
+                                    <androidx.recyclerview.widget.RecyclerView
+                                        android:id="@+id/rv_select_time_slots"
+                                        android:layout_marginTop="@dimen/_10dp"
+                                        android:layout_marginRight="@dimen/_20dp"
+                                        android:layout_marginLeft="@dimen/_20dp"
+                                        android:layout_marginBottom="85dp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:layout_height="wrap_content">
+                                    </androidx.recyclerview.widget.RecyclerView>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="80dp"
+                                    android:visibility="visible"
+                                    android:layout_alignParentBottom="true"
+                                    android:orientation="vertical">
+
+                                    <Button
+                                        android:id="@+id/slot_btn_next"
+                                        android:layout_width="109dp"
+                                        android:layout_height="42dp"
+                                        android:text="Send"
+                                        android:textAllCaps="false"
+                                        android:layout_gravity="center"
+                                        android:layout_alignParentBottom="true"
+                                        android:gravity="center"
+                                        android:layout_marginTop="@dimen/_20dp"
+                                        android:layout_centerInParent="true"
+                                        android:padding="2dp"
+                                        android:background="@drawable/bg_login_button"
+                                        android:textColor="@color/whiteTwo"
+                                        android:textSize="@dimen/_18dp"
+                                        android:fontFamily="@font/roboto_regular"></Button>
+                                </LinearLayout>
+
+                            </RelativeLayout>
+                        </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
+
 
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </RelativeLayout>
-
-</androidx.cardview.widget.CardView>
+</LinearLayout>
